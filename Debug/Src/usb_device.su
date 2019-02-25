@@ -1,0 +1,2 @@
+usb_device.c:86:9:USB_SEND_DATA	16	static
+usb_device.c:97:6:MX_USB_DEVICE_Init	8	static
