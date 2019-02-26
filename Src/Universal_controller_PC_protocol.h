@@ -164,9 +164,9 @@ typedef union {
 	struct{
 		uint8_t CMD;
 		uint8_t bytes_in_packet_N;
-		uint8_t data[253];
+		uint8_t data[256];
 	}fobos_protocol_buf_t;
-	uint8_t data_to_transmit[255];
+	uint8_t data_to_transmit[258];
 }fobos_protocol_buf_u;
 
 #endif /* UNIVERSAL_CONTROLLER_PC_PROTOCOL_H_ */
