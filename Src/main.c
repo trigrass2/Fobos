@@ -209,8 +209,6 @@ int main(void)
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
-//FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-//FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -246,6 +244,7 @@ int main(void)
   PIN_nRESET(SET);
   PIN_nCS1(SET);
   HAL_Delay(800);
+  //tmr period = 1000*(prescaler+1 * counter+1) / freq.   (ms)
 
   {
 	  uint8_t ip_gateway_adr[4] = {192,168,100,2};
@@ -315,12 +314,18 @@ int main(void)
 
 		  }
 	  }*/
-//111111111122222222223333333333444444444455555555556666666666777777777788888888889999999999AAAAAAAAAA //50 символов
+//111111111122222222223333333333444444444455555555556666666666777777777788888888889999999999AAAAAAAAAABB //51 символ
+//AWD: move forward(hex): 	05 4B 08 00 03 AA 00 FB
+//AWD: move backward(hex): 	05 4B 08 00 83 AA 00 7B
+	  //AWD: stop(hex):		05 4B 08 00 00 00 00 A8
 	  if(tmr7_flag)
 	  {
 		  tmr7_flag=0;
 		  volatile static char a=0;
 		  LED_VD6(a^=1);
+		  LED_VD1(a);
+		  /*uint8_t bbb = 0xaa;
+		  uart_send_byte(&bbb, 1);*/
 				int8_t temp_socket_state=0, temp_socket_interrupt=0;
 				getsockopt(SOCKET0,SO_STATUS,&temp_socket_state);
 				ctlsocket(SOCKET0,SIK_RECEIVED,&temp_socket_interrupt);
@@ -332,7 +337,7 @@ int main(void)
 					{
 						LED_VD1(SET);
 						volatile fobos_protocol_buf_u fobos_eth_buf;
-						recv(SOCKET0,fobos_eth_buf.data_to_transmit, 255);
+						recv(SOCKET0,fobos_eth_buf.data_to_transmit, 258);
 						eth_cmds_analysis(&fobos_eth_buf);
 						LED_VD1(RESET);
 					}//if eth msg received
@@ -548,7 +553,7 @@ static void MX_SPI3_Init(void)
   hspi3.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi3.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi3.Init.NSS = SPI_NSS_SOFT;
-  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
+  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
   hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -591,9 +596,9 @@ static void MX_TIM7_Init(void)
 
   /* USER CODE END TIM7_Init 1 */
   htim7.Instance = TIM7;
-  htim7.Init.Prescaler = 3000;
+  htim7.Init.Prescaler = 2000;
   htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim7.Init.Period = 2345;
+  htim7.Init.Period = 179;
   htim7.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim7) != HAL_OK)
   {
