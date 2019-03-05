@@ -76,6 +76,8 @@
 
 FDCAN_HandleTypeDef hfdcan2;
 
+IWDG_HandleTypeDef hiwdg1;
+
 SPI_HandleTypeDef hspi3;
 DMA_HandleTypeDef hdma_spi3_tx;
 
@@ -97,6 +99,7 @@ static void MX_USART6_UART_Init(void);
 static void MX_TIM7_Init(void);
 static void MX_SPI3_Init(void);
 static void MX_FDCAN2_Init(void);
+static void MX_IWDG1_Init(void);
 void EthernetTask_func(void const * argument);
 void DigIOTask_func(void const * argument);
 
@@ -106,7 +109,9 @@ void DigIOTask_func(void const * argument);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+#define LED_VD5(state)		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_12, state)
+#define LED_VD6(state)		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, state)
+#define LED_VD7(state)		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, state)
 /* USER CODE END 0 */
 
 /**
@@ -142,6 +147,7 @@ int main(void)
   MX_TIM7_Init();
   MX_SPI3_Init();
   MX_FDCAN2_Init();
+  MX_IWDG1_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -218,8 +224,9 @@ void SystemClock_Config(void)
   __HAL_RCC_PLL_PLLSOURCE_CONFIG(RCC_PLLSOURCE_HSE);
   /**Initializes the CPU, AHB and APB busses clocks 
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 5;
@@ -330,6 +337,35 @@ static void MX_FDCAN2_Init(void)
   /* USER CODE BEGIN FDCAN2_Init 2 */
 
   /* USER CODE END FDCAN2_Init 2 */
+
+}
+
+/**
+  * @brief IWDG1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_IWDG1_Init(void)
+{
+
+  /* USER CODE BEGIN IWDG1_Init 0 */
+
+  /* USER CODE END IWDG1_Init 0 */
+
+  /* USER CODE BEGIN IWDG1_Init 1 */
+
+  /* USER CODE END IWDG1_Init 1 */
+  hiwdg1.Instance = IWDG1;
+  hiwdg1.Init.Prescaler = IWDG_PRESCALER_64;
+  hiwdg1.Init.Window = 4095;
+  hiwdg1.Init.Reload = 400;//~750ms
+  if (HAL_IWDG_Init(&hiwdg1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN IWDG1_Init 2 */
+  //hiwdg1.Init.Reload = 400;//~780ms! 64 presc
+  /* USER CODE END IWDG1_Init 2 */
 
 }
 
@@ -576,8 +612,6 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE END 4 */
 
-
-
 /* USER CODE BEGIN Header_DigIOTask_func */
 /**
 * @brief Function implementing the DigIOTask thread.
@@ -588,9 +622,14 @@ static void MX_GPIO_Init(void)
 void DigIOTask_func(void const * argument)
 {
   /* USER CODE BEGIN DigIOTask_func */
+	vTaskDelay(250);
+	LED_VD5(SET);
+	LED_VD6(SET);
+	LED_VD7(SET);
   /* Infinite loop */
   for(;;)
   {
+	  //HAL_IWDG_Refresh(&hiwdg1);
     osDelay(1);
   }
   /* USER CODE END DigIOTask_func */

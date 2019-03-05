@@ -15,6 +15,7 @@ uint8_t wiznet820_read_data(SPI_HandleTypeDef *hspi, unsigned short address);
 void wiznet820_send_data(SPI_HandleTypeDef *hspi, unsigned short address, uint8_t data_value);
 void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf);
 void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf);
+uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
 /* USER CODE BEGIN Header_EthernetTask_func */
 /**
   * @brief  Function implementing the EthTask thread.
@@ -22,15 +23,17 @@ void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf);
   * @retval None
   */
 /* USER CODE END Header_EthernetTask_func */
+static uint16_t socket_port = 15000;
+static uint8_t ip_gateway_adr[4] = {192,168,100,2};
+static uint8_t subnet_mask_adr[4] = {255,255,255,0};
+static uint8_t source_hardware_adr[6] = {0x00,0x08,0xDC,0x01,0x02,0x03};
+static uint8_t ip_source_adr[4] = {192,168,100,1};
+static uint8_t ip_destination_adr[4] = {192,168,100,2};
+static uint32_t timeout_period = 1000;
 void EthernetTask_func(void const * argument)
 {
   /* USER CODE BEGIN 5 */
-	uint16_t socket_port = 15000;
-	uint8_t ip_gateway_adr[4] = {192,168,100,2};
-	uint8_t subnet_mask_adr[4] = {255,255,255,0};
-	uint8_t source_hardware_adr[6] = {0x00,0x08,0xDC,0x01,0x02,0x03};
-	uint8_t ip_source_adr[4] = {192,168,100,1};
-	uint8_t ip_destination_adr[4] = {192,168,100,2};
+
 
 	PIN_PWDN(RESET);
 	PIN_nRESET(SET);
@@ -45,11 +48,12 @@ void EthernetTask_func(void const * argument)
 
 	//setsockopt(SOCKET0, SO_DESTPORT, &socket_port);
 	//setsockopt(SOCKET0, SO_DESTIP, ip_destination_adr);
-	setRTR(4000);
-
+	setRTR(timeout_period);
+	extern IWDG_HandleTypeDef hiwdg1;
   /* Infinite loop */
   for(;;)
   {
+	  HAL_IWDG_Refresh(&hiwdg1);
 	  if(!PIN_nINT){
 		  LED_VD1(SET);
 		  disconnect(SOCKET0);
@@ -77,7 +81,7 @@ void EthernetTask_func(void const * argument)
 		  LED_VD2(RESET);
 		  break;
 	  }
-	  vTaskDelay(5);
+	  vTaskDelay(4);
   /* USER CODE END 5 */
 }
 }
@@ -91,16 +95,19 @@ void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_proto
 	send(SOCKET0,fobos_eth_buf->data_to_transmit,bytes_in_packet_N+2);
 }
 
+
 void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
 	switch(fobos_eth_buf->fobos_protocol_buf_t.CMD)
 	{
 	case FOBOS_ETH_ECHO:
 			//fobos_eth_protocol_send(FOBOS_ETH_ECHO, getSn_RX_RSR(SOCKET0), fobos_eth_buf);
-			send(SOCKET0, fobos_eth_buf->data_to_transmit, fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N+2);
-
+		send(SOCKET0,
+			fobos_eth_buf->data_to_transmit,
+			fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N+2);
 		break;
 	case  FOBOS_ETH_RST:
 		fobos_eth_protocol_send(FOBOS_ETH_RST, 1, fobos_eth_buf);
+		while(1);
 		break;
 	case FOBOS_SENSORS_STATE:
 		fobos_eth_protocol_send(FOBOS_SENSORS_STATE, 4, fobos_eth_buf);
@@ -123,6 +130,72 @@ void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
 	case FOBOS_CMD_BARRIER:
 		fobos_eth_protocol_send(FOBOS_CMD_BARRIER, 2, fobos_eth_buf);
 		break;
+	case FOBOS_EMB_SOFT_VER:
+	{
+		char string_data[] = {"Fobos embedded software version 0.1"};
+		int length = strlen(string_data)+1;
+		fobos_eth_buf->fobos_protocol_buf_t.CMD = FOBOS_EMB_SOFT_VER;
+		fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
+		memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, string_data, length);
+		fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N = length;
+		send(SOCKET0,fobos_eth_buf->data_to_transmit,length+2);
+	}
+		break;
+	case FOBOS_ETH_CHANGE_IP:
+		if(confirmation(fobos_eth_buf, ip_source_adr))
+			setSIPR(ip_source_adr);
+		break;
+	case FOBOS_ETH_CHANGE_MASK:
+		if(confirmation(fobos_eth_buf, subnet_mask_adr))
+			setSUBR(subnet_mask_adr);
+		break;
+	case FOBOS_ETH_CHANGE_PORT:
+		if(confirmation(fobos_eth_buf, &socket_port))
+					setSUBR(subnet_mask_adr);
+		break;
+	case FOBOS_CHANGE_TIMEOUT:
+		if(confirmation(fobos_eth_buf, &timeout_period))
+			setRTR(timeout_period);
+		break;
+	}
+}
+
+uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy){
+	if(fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N == 4)
+	{
+		memcpy(data_for_copy,
+		fobos_eth_buf->fobos_protocol_buf_t.data,
+		fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N);
+		fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
+		fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N = 1;
+
+		send(SOCKET0,
+			fobos_eth_buf->data_to_transmit,
+			fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N+2);
+		return 1;
+	}
+	else if(fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N == 2
+			&& (fobos_eth_buf->fobos_protocol_buf_t.CMD == FOBOS_ETH_CHANGE_PORT
+					|| fobos_eth_buf->fobos_protocol_buf_t.CMD == FOBOS_CHANGE_TIMEOUT)){
+				*data_for_copy = fobos_eth_buf->fobos_protocol_buf_t.data[1];
+				*(data_for_copy + 1) = fobos_eth_buf->fobos_protocol_buf_t.data[0];
+
+				fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
+				fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N = 1;
+
+				send(SOCKET0,
+					fobos_eth_buf->data_to_transmit,
+					fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N+2);
+				return 1;
+	}
+	else
+	{
+		fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_PA;
+		fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N = 1;
+		send(SOCKET0,
+			fobos_eth_buf->data_to_transmit,
+			fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N+2);
+		return 0;
 	}
 }
 
