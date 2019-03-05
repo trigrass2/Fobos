@@ -65,7 +65,9 @@ void EthernetTask_func(void const * argument)
 		  LED_VD2(SET);
 		  fobos_protocol_buf_u fobos_eth_buf;
 			recv(SOCKET0,fobos_eth_buf.data_to_transmit, 258);
+			LED_VD1(SET);
 			eth_cmds_analysis(&fobos_eth_buf);
+			LED_VD1(RESET);
 	  }
 		  break;
 	  case SOCK_CLOSE_WAIT:
