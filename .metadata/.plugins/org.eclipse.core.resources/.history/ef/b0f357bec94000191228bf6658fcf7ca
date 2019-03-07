@@ -702,11 +702,12 @@ void vTimerCallback(TimerHandle_t Timer){
 }
 
 void vTimerCallback1(TimerHandle_t Timer){
-	LED_VD7(SET);
-	DIG_OUT3(RESET);//magnets for table
+	static a=1;
+	LED_VD7(a^=1);
+	DIG_OUT3(RESET);
 }
 
-
+#define BTN_STATE DIG_IN6
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_DigIOTask_func */
@@ -719,18 +720,16 @@ void vTimerCallback1(TimerHandle_t Timer){
 void DigIOTask_func(void const * argument)
 {
   /* USER CODE BEGIN DigIOTask_func */
-	XRAY_GEN_START(RESET);
-	MOTOR_STO_EN(SET);
+
 
 	int CAN_id = check_adr_func();
 	FDCAN_Config(CAN_id);
-	{
-		uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
-		buf[3] = (uint8_t)CAN_id;
-		vTaskDelay(100);
-		can_tx_func(&hfdcan2, 0x80, 8, buf, FDCAN_TX_BUFFER0);
-		vTaskDelay(100);
-		can_tx_func(&hfdcan2, 0x80, 8, buf, FDCAN_TX_BUFFER0);
+	{uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
+	buf[3] = (uint8_t)CAN_id;
+	vTaskDelay(100);
+	can_tx_func(&hfdcan2, 0x80, 8, buf, FDCAN_TX_BUFFER0);
+	vTaskDelay(100);
+	can_tx_func(&hfdcan2, 0x80, 8, buf, FDCAN_TX_BUFFER0);
 	}
 	LED_VD5(SET);
 	LED_VD6(SET);
@@ -743,28 +742,21 @@ void DigIOTask_func(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	  if(BTN_STATE)
-	  {
+	  if(BTN_STATE){
 		  btn_press_val <<= 1;
 		  btn_press_val |= 1;
-		  if(btn_press_val == 0xFF && BTN_STATE != prev_btn_state && BTN_STATE - prev_btn_state > 0)
-		  {
-			  xTimerStart(xTimer_btn_timer, 0);
-			  DIG_OUT3(SET);
-			  LED_VD7(RESET);
-			  prev_btn_state = BTN_STATE;
-		  }
 	  }
-	  else
-	  {
+	  else{
 		  btn_press_val = 0;
 		  prev_btn_state = 0;
 	  }
-
-	  if(INTERLOCKS_STATE == 0)
-		  XRAY_GEN_START(RESET);
-
-	  vTaskDelay(3);
+	  if(btn_press_val == 0xFF && BTN_STATE != prev_btn_state && BTN_STATE - prev_btn_state > 0)
+	  {
+		  xTimerStart(xTimer_btn_timer, 0);
+		  DIG_OUT3(SET);
+		  prev_btn_state = BTN_STATE;
+	  }
+	  vTaskDelay(5);
   }
   /* USER CODE END DigIOTask_func */
 }

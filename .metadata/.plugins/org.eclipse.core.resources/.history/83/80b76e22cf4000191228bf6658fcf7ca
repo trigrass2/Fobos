@@ -8,6 +8,12 @@
 #ifndef FOBOS_ETH_H_
 #define FOBOS_ETH_H_
 
+#define BTN_STATE 				DIG_IN6
+#define XRAY_GEN_START(state) 	DIG_OUT1(state)
+#define INTERLOCKS_STATE		DIG_IN8
+#define MOTOR_STO_EN(state)		DIG_OUT3(state)
+
+
 #define DATA_READ_CMD 	0x00
 #define DATA_WRITE_CMD	0x80
 

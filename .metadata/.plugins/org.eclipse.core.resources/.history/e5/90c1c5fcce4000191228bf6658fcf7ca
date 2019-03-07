@@ -8,6 +8,9 @@
 #ifndef FOBOS_ETH_H_
 #define FOBOS_ETH_H_
 
+
+
+
 #define DATA_READ_CMD 	0x00
 #define DATA_WRITE_CMD	0x80
 

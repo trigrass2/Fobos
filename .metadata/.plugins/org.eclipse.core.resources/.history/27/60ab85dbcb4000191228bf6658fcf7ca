@@ -702,11 +702,13 @@ void vTimerCallback(TimerHandle_t Timer){
 }
 
 void vTimerCallback1(TimerHandle_t Timer){
+	static a=1;
 	LED_VD7(SET);
 	DIG_OUT3(RESET);//magnets for table
 }
 
-
+#define BTN_STATE DIG_IN6
+#define XRAY_GEN_START(state) DIG_OUT1(state)
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_DigIOTask_func */
@@ -720,7 +722,7 @@ void DigIOTask_func(void const * argument)
 {
   /* USER CODE BEGIN DigIOTask_func */
 	XRAY_GEN_START(RESET);
-	MOTOR_STO_EN(SET);
+
 
 	int CAN_id = check_adr_func();
 	FDCAN_Config(CAN_id);
@@ -743,8 +745,7 @@ void DigIOTask_func(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	  if(BTN_STATE)
-	  {
+	  if(BTN_STATE){
 		  btn_press_val <<= 1;
 		  btn_press_val |= 1;
 		  if(btn_press_val == 0xFF && BTN_STATE != prev_btn_state && BTN_STATE - prev_btn_state > 0)
@@ -755,16 +756,14 @@ void DigIOTask_func(void const * argument)
 			  prev_btn_state = BTN_STATE;
 		  }
 	  }
-	  else
-	  {
+	  else{
 		  btn_press_val = 0;
 		  prev_btn_state = 0;
 	  }
 
-	  if(INTERLOCKS_STATE == 0)
-		  XRAY_GEN_START(RESET);
 
-	  vTaskDelay(3);
+
+	  vTaskDelay(5);
   }
   /* USER CODE END DigIOTask_func */
 }

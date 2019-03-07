@@ -111,18 +111,11 @@ void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
 	case FOBOS_SENSORS_STATE:
 		{
 			uint8_t sensors_state = 0;
-			can_tx_func(&hfdcan2, 2, 0, &sensors_state, FDCAN_TX_BUFFER1);
-			fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
-			if(TABLE_LOCK_SENSOR_LEFT)
+			if(INTERLOCKS_STATE)
 				sensors_state |= 0x01;
-			if(EMERGENCY_LIMIT_SW1)
-				sensors_state |= 0x02;
-			if(EMERGENCY_LIMIT_SW2)
-				sensors_state |= 0x04;
-			if(TABLE_LOCK_SENSOR_RIGHT)
-				sensors_state |= 0x08;
 
-			fobos_eth_buf->fobos_protocol_buf_t.data[3] = sensors_state;
+
+
 			fobos_eth_protocol_send(FOBOS_SENSORS_STATE, 4, fobos_eth_buf);
 		}
 		break;
