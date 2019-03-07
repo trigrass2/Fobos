@@ -1,0 +1,73 @@
+08:48:13 **** Incremental Build of configuration Debug for project Universal_controller ****
+Info: Internal Builder is used for build
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\BoardComTask_FreeRTOS.o ..\Src\BoardComTask_FreeRTOS.c 
+..\Src\BoardComTask_FreeRTOS.c: In function 'rs485_rx_task':
+..\Src\BoardComTask_FreeRTOS.c:129:33: warning: passing argument 2 of 'HAL_UART_Receive' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+    if(HAL_UART_Receive(&huart6, buf_rx.data, buf_rx.lenght, 100) == HAL_OK)
+                                 ^~~~~~
+In file included from ../Inc/stm32h7xx_hal_conf.h:376:0,
+                 from ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:46,
+                 from ..\Src\own_defines.h:7,
+                 from ..\Src\BoardComTask_FreeRTOS.h:11,
+                 from ..\Src\BoardComTask_FreeRTOS.c:14:
+../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h:1541:19: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'volatile uint8_t * {aka volatile unsigned char *}'
+ HAL_StatusTypeDef HAL_UART_Receive(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size, uint32_t Timeout);
+                   ^~~~~~~~~~~~~~~~
+..\Src\BoardComTask_FreeRTOS.c:131:13: warning: type defaults to 'int' in declaration of 'a' [-Wimplicit-int]
+     {static a=0;
+             ^
+..\Src\BoardComTask_FreeRTOS.c:166:56: warning: passing argument 4 of 'can_tx_func' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+           can_tx_func(&hfdcan2, 0x6A0+0x100+CAN_ID, 8, can_tx_data[count_pack_num], can_buf_num);
+                                                        ^~~~~~~~~~~
+..\Src\BoardComTask_FreeRTOS.c:16:6: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'volatile uint8_t * {aka volatile unsigned char *}'
+ char can_tx_func(FDCAN_HandleTypeDef *hfdcan, unsigned int ID, uint32_t data_lenght, uint8_t *data, uint32_t can_buf_num)
+      ^~~~~~~~~~~
+In file included from ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h:104:0,
+                 from ..\Src\BoardComTask_FreeRTOS.h:13,
+                 from ..\Src\BoardComTask_FreeRTOS.c:14:
+..\Src\BoardComTask_FreeRTOS.c: In function 'board_com_task':
+../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:355:97: warning: passing argument 2 of 'xQueueGenericSend' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+ #define xQueueSendToFront( xQueue, pvItemToQueue, xTicksToWait ) xQueueGenericSend( ( xQueue ), ( pvItemToQueue ), ( xTicksToWait ), queueSEND_TO_FRONT )
+                                                                                                 ^
+..\Src\BoardComTask_FreeRTOS.c:237:6: note: in expansion of macro 'xQueueSendToFront'
+      xQueueSendToFront(xQueue_digital_ports, &ports, 5);
+      ^~~~~~~~~~~~~~~~~
+../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:692:32: note: expected 'const void * const' but argument is of type 'volatile digital_ports * {aka volatile struct digIO *}'
+ PRIVILEGED_FUNCTION BaseType_t xQueueGenericSend( QueueHandle_t xQueue, const void * const pvItemToQueue, TickType_t xTicksToWait, const BaseType_t xCopyPosition );
+                                ^~~~~~~~~~~~~~~~~
+..\Src\BoardComTask_FreeRTOS.c:276:7: warning: implicit declaration of function 'memcpy' [-Wimplicit-function-declaration]
+       memcpy(buf_tx.data, &Rx_Can_Data[1], buf_tx.lenght);
+       ^~~~~~
+..\Src\BoardComTask_FreeRTOS.c:276:7: warning: incompatible implicit declaration of built-in function 'memcpy'
+..\Src\BoardComTask_FreeRTOS.c:276:7: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\BoardComTask_FreeRTOS.c:282:7: warning: incompatible implicit declaration of built-in function 'memcpy'
+       memcpy(&buf_tx.data[cnt_bytes*7], &Rx_Can_Data[1], 7);
+       ^~~~~~
+..\Src\BoardComTask_FreeRTOS.c:282:7: note: include '<string.h>' or provide a declaration of 'memcpy'
+In file included from ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h:104:0,
+                 from ..\Src\BoardComTask_FreeRTOS.h:13,
+                 from ..\Src\BoardComTask_FreeRTOS.c:14:
+../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:521:90: warning: passing argument 2 of 'xQueueGenericSend' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+ #define xQueueSend( xQueue, pvItemToQueue, xTicksToWait ) xQueueGenericSend( ( xQueue ), ( pvItemToQueue ), ( xTicksToWait ), queueSEND_TO_BACK )
+                                                                                          ^
+..\Src\BoardComTask_FreeRTOS.c:304:5: note: in expansion of macro 'xQueueSend'
+     xQueueSend(xQueue_digital_ports_2, &ports, 10);
+     ^~~~~~~~~~
+../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:692:32: note: expected 'const void * const' but argument is of type 'volatile digital_ports * {aka volatile struct digIO *}'
+ PRIVILEGED_FUNCTION BaseType_t xQueueGenericSend( QueueHandle_t xQueue, const void * const pvItemToQueue, TickType_t xTicksToWait, const BaseType_t xCopyPosition );
+                                ^~~~~~~~~~~~~~~~~
+arm-atollic-eabi-gcc -o Universal_controller.elf Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_cortex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_fdcan.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_gpio.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hsem.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_iwdg.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_mdma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pcd.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pcd_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_ll_usb.o Middlewares\ST\STM32_USB_Device_Library\Class\CDC\Src\usbd_cdc.o Middlewares\ST\STM32_USB_Device_Library\Core\Src\usbd_core.o Middlewares\ST\STM32_USB_Device_Library\Core\Src\usbd_ctlreq.o Middlewares\ST\STM32_USB_Device_Library\Core\Src\usbd_ioreq.o Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.o Middlewares\Third_Party\FreeRTOS\Source\croutine.o Middlewares\Third_Party\FreeRTOS\Source\event_groups.o Middlewares\Third_Party\FreeRTOS\Source\list.o Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM7\r0p1\port.o Middlewares\Third_Party\FreeRTOS\Source\portable\MemMang\heap_4.o Middlewares\Third_Party\FreeRTOS\Source\queue.o Middlewares\Third_Party\FreeRTOS\Source\tasks.o Middlewares\Third_Party\FreeRTOS\Source\timers.o Src\BoardComTask_FreeRTOS.o Src\StartDefaultTask_FreeRTOS.o Src\adani_can_medical_protocol.o Src\freertos.o Src\main.o Src\own_defines.o Src\stm32h7xx_hal_msp.o Src\stm32h7xx_it.o Src\system_stm32h7xx.o Src\usb_device.o Src\usbd_cdc_if.o Src\usbd_conf.o Src\usbd_desc.o startup\startup_stm32h743xx.o -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -T../STM32H743VI_FLASH.ld -specs=nosys.specs -static -Wl,-Map=Universal_controller.map -Wl,--gc-sections -Wl,--defsym=malloc_getpagesize_P=0x80 -Wl,--start-group -lc -lm -Wl,--end-group -specs=nano.specs 
+C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\ide\jre\bin\java -jar C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\Tools\arm-atollic-reports.jar sizeinfo list Universal_controller.elf 
+Generate build reports...
+Print size information
+   text	   data	    bss	    dec	    hex	filename
+  39896	    476	  20308	  60680	   ed08	Universal_controller.elf
+Print size information done
+Generate listing file
+Output sent to: Universal_controller.list
+Generate listing file done
+Generate build reports done
+arm-atollic-eabi-objcopy.exe -O ihex Universal_controller.elf Universal_controller.hex 
+
+08:48:15 Build Finished (took 2s.214ms)
+

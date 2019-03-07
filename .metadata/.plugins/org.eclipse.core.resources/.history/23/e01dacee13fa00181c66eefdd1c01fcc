@@ -1,0 +1,17 @@
+/*
+ * own_defines.h
+ *
+ *  Created on: 7 дек. 2018 г.
+ *      Author: zilkov
+ */
+
+#ifndef OWN_DEFINES_H_
+#define OWN_DEFINES_H_
+
+#define LED_VD1(state)		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, state)
+#define LED_VD2(state)		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_1, state)
+#define LED_VD5(state)		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_12, state)
+#define LED_VD6(state)		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, state)
+#define LED_VD7(state)		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, state)
+
+#endif /* OWN_DEFINES_H_ */

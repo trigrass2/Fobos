@@ -1,0 +1,32 @@
+/*
+ * BoardComTask_FreeRTOS.h
+ *
+ *  Created on: 12 дек. 2018 г.
+ *      Author: zilkov
+ */
+
+#ifndef BOARDCOMTASK_FREERTOS_H_
+#define BOARDCOMTASK_FREERTOS_H_
+
+#include "own_defines.h"
+#include "adani_can_medical_protocol.h"
+#include "cmsis_os.h"
+#include "main.h"
+
+extern IWDG_HandleTypeDef hiwdg1;
+extern volatile SemaphoreHandle_t xSemaphore_dig_pins;
+extern volatile QueueHandle_t xQueue_digital_ports, xQueue_rs485,
+							xQueue_digital_ports_fb, xSemaphore_rs485;
+extern FDCAN_HandleTypeDef hfdcan2;
+
+void board_com_task(void const * argument);
+void rs485_com_task(void const * argument);
+#define RS485_PACKET_SIZE	20
+typedef struct{
+	uint8_t data[RS485_PACKET_SIZE]; //посылка, описывается в DATA1..7
+	uint8_t lenght;   //длина посылки, описывается в DATA0
+}rs485_buf_t;
+
+extern xSemaphoreHandle xSemaphore_usb_mutex;
+
+#endif /* BOARDCOMTASK_FREERTOS_H_ */

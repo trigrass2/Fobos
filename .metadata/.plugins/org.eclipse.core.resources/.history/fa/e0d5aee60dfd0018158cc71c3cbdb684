@@ -1,0 +1,14 @@
+/*
+ * adani_can_medical_protocol.c
+ *
+ *  Created on: 11 дек. 2018 г.
+ *      Author: zilkov
+ */
+
+#include "adani_can_medical_protocol.h"
+
+void can_protocol_data_analyzing(FDCAN_HandleTypeDef *hfdcan, uint32_t RxLocation,
+								FDCAN_RxHeaderTypeDef *pRxHeader, uint8_t *pRxData)
+{
+
+}

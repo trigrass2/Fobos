@@ -1,0 +1,12 @@
+/*
+ * adani_can_medical_protocol.c
+ *
+ *  Created on: 11 дек. 2018 г.
+ *      Author: zilkov
+ */
+
+#include "adani_can_medical_protocol.h"
+
+void can_data_analyzing(){
+
+}

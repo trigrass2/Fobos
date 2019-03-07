@@ -1,0 +1,26 @@
+13:12:55 **** Incremental Build of configuration Debug for project Fobos_master_brd ****
+Info: Internal Builder is used for build
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\main.o ..\Src\main.c 
+..\Src\main.c: In function 'vTimerCallback':
+..\Src\main.c:696:9: warning: type defaults to 'int' in declaration of 'a' [-Wimplicit-int]
+  static a=0;
+         ^
+..\Src\main.c: In function 'vTimerCallback1':
+..\Src\main.c:705:9: warning: type defaults to 'int' in declaration of 'a' [-Wimplicit-int]
+  static a=1;
+         ^
+arm-atollic-eabi-gcc -o Fobos_master_brd.elf Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_cortex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_fdcan.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_gpio.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hsem.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_iwdg.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_mdma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart_ex.o Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.o Middlewares\Third_Party\FreeRTOS\Source\croutine.o Middlewares\Third_Party\FreeRTOS\Source\event_groups.o Middlewares\Third_Party\FreeRTOS\Source\list.o Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM7\r0p1\port.o Middlewares\Third_Party\FreeRTOS\Source\portable\MemMang\heap_4.o Middlewares\Third_Party\FreeRTOS\Source\queue.o Middlewares\Third_Party\FreeRTOS\Source\tasks.o Middlewares\Third_Party\FreeRTOS\Source\timers.o Src\ethernet\socket.o Src\ethernet\w5200.o Src\ethernet\wizchip_conf.o Src\fobos_eth.o Src\freertos.o Src\main.o Src\own_defines.o Src\stm32h7xx_hal_msp.o Src\stm32h7xx_it.o Src\system_stm32h7xx.o startup\startup_stm32h743xx.o -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -T../STM32H743VI_FLASH.ld -specs=nosys.specs -static -Wl,-Map=Fobos_master_brd.map -Wl,--gc-sections -Wl,--defsym=malloc_getpagesize_P=0x80 -Wl,--start-group -lc -lm -Wl,--end-group -specs=nano.specs 
+C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\ide\jre\bin\java -jar C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\Tools\arm-atollic-reports.jar sizeinfo list Fobos_master_brd.elf 
+Generate build reports...
+Print size information
+   text	   data	    bss	    dec	    hex	filename
+  29076	    192	  18084	  47352	   b8f8	Fobos_master_brd.elf
+Print size information done
+Generate listing file
+Output sent to: Fobos_master_brd.list
+Generate listing file done
+Generate build reports done
+arm-atollic-eabi-objcopy.exe -O ihex Fobos_master_brd.elf Fobos_master_brd.hex 
+
+13:12:57 Build Finished (took 2s.277ms)
+
