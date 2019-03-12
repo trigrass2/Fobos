@@ -20,9 +20,9 @@
 &lt;/div&gt;    
 &lt;p&gt;Where to start? This is not a blog article about how to work with STM32CubeMX. There is plenty of information available on that topic on st.com. This blog rather tries to describe the specific challenges that may arise when trying to use STM32CubeMX with TrueSTUDIO. Do not miss the FAQ at the end which are the most common issues that first-time users run into. But first a table of content and some concept definition and orientation...&lt;/p&gt;    
 &lt;img src="https://track.hubspot.com/__ptq.gif?a=460400&amp;amp;k=14&amp;amp;r=http%3A%2F%2Fblog.atollic.com%2Fbest-practices-faq-truestudio-stm32cubemx&amp;amp;bu=http%253A%252F%252Fblog.atollic.com&amp;amp;bvt=rss" alt="" width="1" height="1" style="min-height:1px!important;width:1px!important;border-width:0!important;margin-top:0!important;margin-bottom:0!important;margin-right:0!important;margin-left:0!important;padding-top:0!important;padding-bottom:0!important;padding-right:0!important;padding-left:0!important; "&gt;</content:encoded>
+      <category>Atollic TrueSTUDIO</category>
       <category>STM32CubeMX</category>
       <category>STM32Cube</category>
-      <category>Atollic TrueSTUDIO</category>
       <pubDate>Mon, 12 Nov 2018 08:43:55 GMT</pubDate>
       <author>mattias.norlander@atollic.com (Mattias Norlander)</author>
       <guid>http://blog.atollic.com/best-practices-faq-truestudio-stm32cubemx</guid>
@@ -40,13 +40,13 @@
 &lt;/div&gt;    
 &lt;p&gt;In the beginning of 2018 we released the first ever version of "TrueSTUDIO for STM32". It was called version 9.0.0 to highlight that it is a major shift from old products. Version 9.0.2 came in April to provide new STM32 target support. End of last week TrueSTUDIO for STM32 version 9.1.0 was released. Read this article to learn more about new target support and updates made to the ST-LINK GDB-server.&lt;/p&gt;    
 &lt;img src="https://track.hubspot.com/__ptq.gif?a=460400&amp;amp;k=14&amp;amp;r=http%3A%2F%2Fblog.atollic.com%2Ftruestudio-for-stm32-9.1.0-is-released&amp;amp;bu=http%253A%252F%252Fblog.atollic.com&amp;amp;bvt=rss" alt="" width="1" height="1" style="min-height:1px!important;width:1px!important;border-width:0!important;margin-top:0!important;margin-bottom:0!important;margin-right:0!important;margin-left:0!important;padding-top:0!important;padding-bottom:0!important;padding-right:0!important;padding-left:0!important; "&gt;</content:encoded>
-      <category>SWV</category>
       <category>Atollic TrueSTUDIO</category>
-      <category>STM32F7VL</category>
-      <category>STM32H7VL</category>
+      <category>SWV</category>
       <category>STM32CubeProgrammer</category>
       <category>ST-LINK GDB-server</category>
       <category>External QSPI FLASH</category>
+      <category>STM32F7VL</category>
+      <category>STM32H7VL</category>
       <pubDate>Fri, 19 Oct 2018 13:00:39 GMT</pubDate>
       <author>mattias.norlander@atollic.com (Mattias Norlander)</author>
       <guid>http://blog.atollic.com/truestudio-for-stm32-9.1.0-is-released</guid>
@@ -77,8 +77,8 @@
 &lt;/div&gt;    
 &lt;p&gt;ST recently released &lt;a href="http://www.st.com/en/development-tools/stm32cubeprog.html"&gt;STM32CubeProgrammer&lt;/a&gt;, a software tool allowing users to flash STM32 devices through the SWD/JTAG debug interface and via the UAR/USB bootloader interface. STM32CubeProgrammer can be integrated with Atollic TrueSTUDIO. This is &lt;strong&gt;&lt;em&gt;how&lt;/em&gt; &lt;/strong&gt;and &lt;strong&gt;&lt;em&gt;why&lt;/em&gt;&lt;/strong&gt;!&lt;/p&gt;    
 &lt;img src="https://track.hubspot.com/__ptq.gif?a=460400&amp;amp;k=14&amp;amp;r=http%3A%2F%2Fblog.atollic.com%2Fstm32cubeprogrammer-atollic-truestudio-for-stm32&amp;amp;bu=http%253A%252F%252Fblog.atollic.com&amp;amp;bvt=rss" alt="" width="1" height="1" style="min-height:1px!important;width:1px!important;border-width:0!important;margin-top:0!important;margin-bottom:0!important;margin-right:0!important;margin-left:0!important;padding-top:0!important;padding-bottom:0!important;padding-right:0!important;padding-left:0!important; "&gt;</content:encoded>
-      <category>STM32Cube</category>
       <category>STM32</category>
+      <category>STM32Cube</category>
       <category>flash load</category>
       <pubDate>Tue, 20 Feb 2018 13:29:27 GMT</pubDate>
       <author>mattias.norlander@atollic.com (Mattias Norlander)</author>

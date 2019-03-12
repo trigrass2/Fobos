@@ -14,7 +14,7 @@
 #define LED_VD7(state)		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, state)
 
 #define SPI_SS_ADC(state)			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_4, state); HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, !state)
-#define SPI_SS_ISO_BRD_EN(state)	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, state)
+#define SPI_SS_ISO_BRD_EN(state)		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, state)
 #define SPI_SSI_nRE(state)			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_1, state)
 #define SPI_SSI_DE(state)			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, state)
 
@@ -45,12 +45,13 @@ uint32_t check_adr_func();
 char can_tx_func(FDCAN_HandleTypeDef *hfdcan, unsigned int ID, uint32_t data_lenght, uint8_t *data, uint32_t can_buf_num);
 
 //	fobos(master) defs >>>>>
-#define BTN_STATE 				DIG_IN6
-#define XRAY_GEN_START(state) 	DIG_OUT1(state)
+#define BTN_STATE 			DIG_IN6
+#define XRAY_GEN_START(state) 		DIG_OUT1(state)
 #define INTERLOCKS_STATE		DIG_IN8
 #define MOTOR_STO_EN(state)		DIG_OUT3(state)
-#define TABLE_LOCK_SENSOR_LEFT	DIG_IN4
-#define TABLE_LOCK_SENSOR_RIGHT	DIG_IN5
+#define TABLE_MAGNETS(state)		DIG_OUT3(state)
+#define TABLE_LOCK_SENSOR_LEFT		DIG_IN4
+#define TABLE_LOCK_SENSOR_RIGHT		DIG_IN5
 #define EMERGENCY_LIMIT_SW1		DIG_IN2
 #define EMERGENCY_LIMIT_SW2		DIG_IN3
 

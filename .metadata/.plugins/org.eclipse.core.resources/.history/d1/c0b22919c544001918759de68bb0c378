@@ -1,0 +1,13 @@
+/*
+ * dhcp.h
+ *
+ *  Created on: 12 мар. 2019 г.
+ *      Author: zilkov
+ */
+
+#ifndef INTERNET_DHCP_H_
+#define INTERNET_DHCP_H_
+
+
+
+#endif /* INTERNET_DHCP_H_ */

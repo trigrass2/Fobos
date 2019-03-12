@@ -89,7 +89,7 @@ UART_HandleTypeDef huart6;
 osThreadId EthTaskHandle;
 osThreadId DigIOTaskHandle;
 
-TimerHandle_t xTimer_period_reset, xTimer_btn_timer;
+TimerHandle_t xTimer_btn_timer;
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -167,11 +167,8 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
-  xTimer_period_reset = xTimerCreate("Period timer", 200, pdTRUE, (void*)0, vTimerCallback);
-  xTimerStart(xTimer_period_reset, 0);
 
   xTimer_btn_timer = xTimerCreate("Btn timer", 2000, pdFALSE, (void*)0, vTimerCallback1);
-  //xTimerStart(xTimer_btn_timer, 0);
   /* USER CODE END RTOS_TIMERS */
 
   /* Create the thread(s) */
@@ -652,6 +649,8 @@ char can_tx_func(FDCAN_HandleTypeDef *hfdcan, unsigned int ID, uint32_t data_len
 
 	HAL_FDCAN_AddMessageToTxBuffer(hfdcan, &TxHeader, data, can_buf_num);
 	HAL_FDCAN_EnableTxBufferRequest(hfdcan, can_buf_num);
+	static a=0;
+	LED_VD6(a^=1);
 	  return 0xFF;
 }
 
@@ -662,9 +661,9 @@ void FDCAN_Config(uint32_t adr)
 	sFilterConfig.IdType = FDCAN_STANDARD_ID;
 	sFilterConfig.FilterIndex = 1;
 	sFilterConfig.FilterType = FDCAN_FILTER_MASK;
-	sFilterConfig.FilterConfig = FDCAN_FILTER_TO_RXFIFO0_HP;
+	sFilterConfig.FilterConfig = FDCAN_FILTER_TO_RXFIFO0;
 	sFilterConfig.FilterID1 = adr;
-	sFilterConfig.FilterID2 = 0x01F;
+	sFilterConfig.FilterID2 = 0x000;
 
 	sFilterConfig1.IdType = FDCAN_STANDARD_ID;
 	sFilterConfig1.FilterIndex = 2;
@@ -692,14 +691,7 @@ void FDCAN_Config(uint32_t adr)
   }
 }
 
-void vTimerCallback(TimerHandle_t Timer){
-	static a=0;
-	LED_VD6(a^=1);
-	uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
-	int CAN_id = check_adr_func();
-		buf[3] = (uint8_t)CAN_id;
-	can_tx_func(&hfdcan2, 0x80, 8, buf, FDCAN_TX_BUFFER0);
-}
+
 
 void vTimerCallback1(TimerHandle_t Timer){
 	LED_VD7(SET);
@@ -721,7 +713,7 @@ void DigIOTask_func(void const * argument)
   /* USER CODE BEGIN DigIOTask_func */
 	XRAY_GEN_START(RESET);
 	MOTOR_STO_EN(SET);
-
+	TABLE_MAGNETS(RESET);
 	int CAN_id = check_adr_func();
 	FDCAN_Config(CAN_id);
 	{
@@ -735,7 +727,7 @@ void DigIOTask_func(void const * argument)
 	LED_VD5(SET);
 	LED_VD6(SET);
 	LED_VD7(SET);
-	xTimerStart(xTimer_period_reset, 1);
+
 
 	//timer creating
 	uint8_t prev_btn_state = 0, btn_press_val = 0;
