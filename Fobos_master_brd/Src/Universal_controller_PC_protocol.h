@@ -3,6 +3,7 @@
  *
  *  Created on: 5th march 2018
  *      Author: Zilkov
+ *      Protocol version: 9.1
  */
 
 #ifndef UNIVERSAL_CONTROLLER_PC_PROTOCOL_H_
@@ -26,6 +27,13 @@
  * 	4 - Переключение на статический/динамический (DHCP клиент)
  * 	5 - Изменение Timeout
  * 	6 - Reset устройства Eth
+ * 	7 - получение MAC адреса платы
+ * 	Получение значений системных команд:
+ * 	255-1=254 - IP адрес платы	(4 bytes)
+ * 	253 - адрес маски подсети платы (6 bytes)
+ * 	252 - порт платы		(2 bytes)
+ * 	251 - DHCP-клиент (статический/динамический) (1 byte)
+ * 	250 - Значение Timeout			(2 bytes)
  *
  *	Команды опроса:
  * 	10 - запрос состояния всех датчиков (Концевики, в каком положении С-рама)
@@ -75,7 +83,7 @@
  * 	CMD = 3		N = 1	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
  *
  * 	===TX
- * 	CMD = 4		N = 1	DATA0 = 0 - static, 1 - dynamic (DHCP)		//По умолчанию:	Без DHCP (т.е. 0)
+ * 	CMD = 4		N = 1	DATA0 = 1 - static, 2 - dynamic (DHCP)		//По умолчанию:	с DHCP (т.е. 2)
  * 	===RX
  * 	CMD = 4		N = 1	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
  *
@@ -88,6 +96,18 @@
  * 	CMD = 6		N = 1	DATA0 = 1
  * 	===RX
  * 	CMD = 6		N = 1	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
+ *
+ *	===TX
+ *	CMD = 7		N = 1	DATA0 = 0
+ *	===RX
+ *	CMD = 7		N = 7	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
+ *				DATA1..DATA6 // mac address {0x00, 0x08, 0xDC, 0x01, 0x02, 0x03}
+ *
+ *	===TX
+ *	CMD = 250..254	N = 0	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
+ *	===RX
+ *	CMD = 250..254	N = 1 + кол-во байт команд №1-5 	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
+ *														DATA1..DATAx // запрашиваемые данные согласно отправлениям команд №1-5
  *
  * 	Отправка информации о датчиках (при запросе):
  * 	===TX (от ПК к контроллеру):
@@ -168,6 +188,12 @@
 #define FOBOS_ETH_DHCP				4
 #define FOBOS_CHANGE_TIMEOUT			5
 #define FOBOS_ETH_RST				6 	//сброс в значения по умолчанию
+#define FOBOS_ETH_GET_MAC			7
+#define FOBOS_ETH_GET_IP			255-FOBOS_ETH_CHANGE_IP
+#define FOBOS_ETH_GET_MASK			255-FOBOS_ETH_CHANGE_MASK
+#define FOBOS_ETH_GET_PORT			255-FOBOS_ETH_CHANGE_PORT
+#define FOBOS_ETH_GET_DHCP_STATE		255-FOBOS_ETH_DHCP
+#define FOBOS_ETH_GET_TIMEOUT			255-FOBOS_CHANGE_TIMEOUT
 
 #define FOBOS_SENSORS_STATE			10	//данные со всех датчиков (концевых)
 #define FOBOS_GENERATOR_STATE			11	//интерлоки

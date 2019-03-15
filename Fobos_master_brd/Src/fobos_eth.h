@@ -1,7 +1,7 @@
 /*
  * fobos_eth.h
  *
- *  Created on: 4 мар. 2019 г.
+ *  Created on: 4 пїЅпїЅпїЅ. 2019 пїЅ.
  *      Author: zilkov
  */
 
@@ -22,6 +22,7 @@
 #define SOCKET_NMBR		0
 #define SOCKET0 		0
 #define SOCKET1 		1
+#define SOCKET5 		5
 
 void EthernetTask_func(void const * argument);
 

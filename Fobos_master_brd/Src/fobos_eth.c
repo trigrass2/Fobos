@@ -19,6 +19,7 @@ uint8_t wiznet820_read_data(SPI_HandleTypeDef *hspi, unsigned short address);
 void wiznet820_send_data(SPI_HandleTypeDef *hspi, unsigned short address, uint8_t data_value);
 void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf);
 void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf);
+void feedback_params(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy, uint8_t tx_bytes);
 uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
 void vTimerCallback(TimerHandle_t);
 /* USER CODE BEGIN Header_EthernetTask_func */
@@ -33,11 +34,13 @@ static uint8_t ip_gateway_adr[4] = {192,168,100,2};
 static uint8_t subnet_mask_adr[4] = {255,255,255,0};
 static uint8_t source_hardware_adr[6] = {0x00,0x08,0xDC,0x01,0x02,0x03};
 static uint8_t ip_source_adr[4] = {192,168,100,1};
+//static uint8_t ip_source_adr[4] = {192,168,101,170};
 static uint8_t ip_destination_adr[4] = {192,168,100,2};
 static uint32_t timeout_period = 1000;
+static wiz_NetInfo wiz_NetData;
 
 typedef void * TimerHandle_t;
-
+uint8_t dhcp_buf[580] = {0};
 void EthernetTask_func(void const * argument)
 {
   /* USER CODE BEGIN 5 */
@@ -49,41 +52,37 @@ void EthernetTask_func(void const * argument)
 	//osDelay(200);
 	vTaskDelay(200);
 
-	wiz_NetInfo wiz_NetData;
-	/*wiz_NetData.dhcp = 2;
+	wiz_NetData.dhcp = 2;
 	memcpy(wiz_NetData.sn, subnet_mask_adr, 4);
 	memcpy(wiz_NetData.ip, ip_source_adr, 4);
+	memcpy(wiz_NetData.mac, source_hardware_adr,6);
+	wizchip_setnetinfo(&wiz_NetData);
 
-	wizchip_setnetinfo(&wiz_NetData);*/
-
-	  uint8_t dhcp_buf[600];
-	  DHCP_init(SOCKET1, dhcp_buf);
-
-
-	//setSUBR(subnet_mask_adr);
-	//setGAR(ip_gateway_adr);
-	//setSHAR(source_hardware_adr);
-	//setSIPR(ip_source_adr);
-
-	//setsockopt(SOCKET0, SO_DESTPORT, &socket_port);
-	//setsockopt(SOCKET0, SO_DESTIP, ip_destination_adr);
+	setsockopt(SOCKET0, SO_DESTPORT, &socket_port);
+	setsockopt(SOCKET0, SO_DESTIP, ip_destination_adr);
 	setRTR(timeout_period);
+
+	//DHCP>>>>
+	taskENTER_CRITICAL();
+	DHCP_init(SOCKET5, dhcp_buf);
+	taskEXIT_CRITICAL();
+	//DHCP====
+
 	extern IWDG_HandleTypeDef hiwdg1;
 
 	TimerHandle_t xTimer_period_reset;
-	xTimer_period_reset = xTimerCreate("Period timer", 150, pdTRUE, (void*)0, vTimerCallback);
+	xTimer_period_reset = xTimerCreate("Period timer", 200, pdTRUE, (void*)0, vTimerCallback);
 	xTimerStart(xTimer_period_reset, 0);
-
-
+	vTaskDelay(2000);
   /* Infinite loop */
   for(;;)
   {
-	  HAL_IWDG_Refresh(&hiwdg1);
-	  if(DHCP_run() != DHCP_RUNNING)
-	    LED_VD7(RESET);
 
-
-
+	  taskENTER_CRITICAL();
+	  if(DHCP_run() == DHCP_IP_LEASED)
+	    LED_VD5(RESET);
+	  taskEXIT_CRITICAL();
+	  LED_VD1(SET);
 	  if(!PIN_nINT)
 	    {
 		  LED_VD1(SET);
@@ -123,7 +122,8 @@ void EthernetTask_func(void const * argument)
 	    LED_VD2(RESET);
 		  break;
 	  }
-	  vTaskDelay(4);
+	  HAL_IWDG_Refresh(&hiwdg1);
+	  vTaskDelay(150);
   /* USER CODE END 5 */
 }
 }
@@ -144,6 +144,17 @@ void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
 			fobos_eth_buf->data_to_transmit,
 			fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N+2);
 		break;
+	case  FOBOS_ETH_GET_MAC:
+	  {
+	    uint8_t mac_adr[6] = {0};
+	    getSHAR(mac_adr);
+	    fobos_eth_buf->fobos_protocol_buf_t.CMD = FOBOS_ETH_GET_MAC;
+	    fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
+	    memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, mac_adr, 6);
+	    fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N = 6+1;
+	    fobos_eth_protocol_send(FOBOS_ETH_GET_MAC, fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N, fobos_eth_buf);
+	  }
+	  break;
 	case  FOBOS_ETH_RST:
 		fobos_eth_protocol_send(FOBOS_ETH_RST, 1, fobos_eth_buf);
 		while(1);
@@ -256,14 +267,92 @@ void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
 			setSUBR(subnet_mask_adr);
 		break;
 	case FOBOS_ETH_CHANGE_PORT:
+		socket_port = (fobos_eth_buf->fobos_protocol_buf_t.data[1]<<8)|fobos_eth_buf->fobos_protocol_buf_t.data[2];
 		if(confirmation(fobos_eth_buf, &socket_port))
-					setSUBR(subnet_mask_adr);
+		  setSn_PORT(SOCKET0, socket_port);
 		break;
 	case FOBOS_CHANGE_TIMEOUT:
 		if(confirmation(fobos_eth_buf, &timeout_period))
 			setRTR(timeout_period);
 		break;
+
+	//GET ethernet statements >>>>
+	case FOBOS_ETH_GET_IP:
+	  {
+	    uint8_t ip[4];
+	    getSIPR(ip);
+	    fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
+	    feedback_params(fobos_eth_buf, ip, 4+1);
+	  }
+	  break;
+	case FOBOS_ETH_DHCP:
+	  {
+	    uint8_t dhcp_state = fobos_eth_buf->fobos_protocol_buf_t.data[1];
+	    wiz_NetData.dhcp = dhcp_state;
+	    if(dhcp_state == 1 || dhcp_state == 2)
+	    {
+		fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
+		feedback_params(fobos_eth_buf, &dhcp_state, 1+1);
+	    }
+	    else
+	    {
+		fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_PA;
+		fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N = 1;
+		send(SOCKET0,fobos_eth_buf->data_to_transmit,fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N+2);
+	    }
+	  }
+	  break;
+	case FOBOS_ETH_GET_MASK:
+	  {
+	    uint8_t mask[4]={0};
+	    getSUBR(mask);
+	    fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
+	    feedback_params(fobos_eth_buf, mask, 4+1);
+	  }
+	  break;
+	case FOBOS_ETH_GET_PORT:
+		  {
+		    uint8_t port[2]={0};
+		    socket_port = getSn_PORT(SOCKET0);
+		    port[0] = socket_port>>8;
+		    port[1] = socket_port;
+		    fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
+		    feedback_params(fobos_eth_buf, port, 2+1);
+		  }
+		  break;
+	case FOBOS_ETH_GET_TIMEOUT:
+		  {
+		    uint8_t timeout[2];
+		    uint16_t timeout_temp1;
+		    timeout_temp1 = getRTR();
+		    timeout[0] = timeout_temp1>>8;
+		    timeout[1] = timeout_temp1;
+		    fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
+		    feedback_params(fobos_eth_buf, timeout, 2+1);
+		  }
+		  break;
+	case FOBOS_ETH_GET_DHCP_STATE:
+	  {
+	    uint8_t dhcp_state = 0;
+	    dhcp_state = wiz_NetData.dhcp;
+	    fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
+	    feedback_params(fobos_eth_buf, &dhcp_state, 1+1);
+	  }
+	  break;
+	default:
+	  fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N = 1;
+	  fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_CMD;
+	  fobos_eth_protocol_send(fobos_eth_buf->fobos_protocol_buf_t.CMD, 1, fobos_eth_buf);
+	  break;
 	}
+}
+
+void feedback_params(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy, uint8_t tx_bytes){
+  fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N = tx_bytes;
+  memcpy(&fobos_eth_buf->fobos_protocol_buf_t.data[1], data_for_copy, tx_bytes-1);
+  send(SOCKET0,
+      fobos_eth_buf->data_to_transmit,
+      fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N+2);
 }
 
 uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy){
@@ -337,6 +426,8 @@ void wiznet820_send_data(SPI_HandleTypeDef *hspi, unsigned short address, uint8_
 }
 
 void vTimerCallback(TimerHandle_t Timer){
+  	extern IWDG_HandleTypeDef hiwdg1;
+	HAL_IWDG_Refresh(&hiwdg1);
 	static a=0;
 	LED_VD6(a^=1);
 	uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};

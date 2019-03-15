@@ -69,7 +69,7 @@ extern "C" {
 
 
 /* UDP port numbers for DHCP */
-#define DHCP_SERVER_PORT      	67	      ///< DHCP server port number
+#define DHCP_SERVER_PORT      	 67	      ///< DHCP server port number
 #define DHCP_CLIENT_PORT         68	      ///< DHCP client port number
 
 
