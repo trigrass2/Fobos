@@ -89,6 +89,10 @@ UART_HandleTypeDef huart6;
 osThreadId EthTaskHandle;
 osThreadId DigIOTaskHandle;
 
+TaskHandle_t xFobos_scan_Handle = NULL;//osThreadId is a TaskHandle_t
+
+QueueHandle_t xQueue_Scanning_start = NULL;
+
 TimerHandle_t xTimer_btn_timer;
 /* USER CODE BEGIN PV */
 
@@ -107,6 +111,7 @@ void EthernetTask_func(void const * argument);
 void DigIOTask_func(void const * argument);
 void vTimerCallback(TimerHandle_t);
 void vTimerCallback1(TimerHandle_t);
+void vFobos_Start_Process();
 
 /* USER CODE BEGIN PFP */
 
@@ -182,10 +187,15 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
+  if(xTaskCreate(vFobos_Start_Process, "Fobos_start_scan", 256, (void*)1, osPriorityAboveNormal, xFobos_scan_Handle) != pdPASS)
+    Error_Handler();
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
+  xQueue_Scanning_start = xQueueCreate(1, sizeof(uint8_t));
+  if(xQueue_Scanning_start == NULL)
+    Error_Handler();
   /* USER CODE END RTOS_QUEUES */
  
 
@@ -691,13 +701,17 @@ void FDCAN_Config(uint32_t adr)
   }
 }
 
-
-
 void vTimerCallback1(TimerHandle_t Timer){
 	LED_VD7(SET);
 	DIG_OUT3(RESET);//magnets for table
 }
 
+void vFobos_Start_Process(){
+
+  for(;;){
+      if(xQueueReceive())
+  }
+}
 
 /* USER CODE END 4 */
 
@@ -768,6 +782,7 @@ void DigIOTask_func(void const * argument)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
+  while(1);
   /* User can add his own implementation to report the HAL error return state */
 
   /* USER CODE END Error_Handler_Debug */

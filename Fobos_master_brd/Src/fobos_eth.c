@@ -255,7 +255,20 @@ void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
 	  }
 		break;
 	case FOBOS_CMD_WORK:
-	  fobos_eth_protocol_send(FOBOS_CMD_WORK, 1, fobos_eth_buf);
+	  {
+	    uint8_t can_data_buf[16] = {0x08, 0x05, 0x4B, 0x08, 0x00, 0x83, 0xDE, 0x00, 0x08, 0x47}, temp_lim_switches = 0;
+	    FDCAN_RxHeaderTypeDef RxHeader;
+	    if(fobos_eth_buf->fobos_protocol_buf_t.data[1] && fobos_eth_buf->fobos_protocol_buf_t.data[1] <= 3){
+		//передать значения в другой поток
+	    }
+	    else
+	      fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_PA;
+	    can_tx_func(&hfdcan2, 0x640+2, 8, &can_data_buf[0], FDCAN_TX_BUFFER1);
+	    can_tx_func(&hfdcan2, 0x640+2, 8, &can_data_buf[8], FDCAN_TX_BUFFER2);
+	    while(RxHeader.Identifier != 0x740+2)
+	      can_protocol_data_analyzing(&hfdcan2, &RxHeader, can_data_buf);
+	    fobos_eth_protocol_send(FOBOS_CMD_WORK, 1, fobos_eth_buf);
+	  }
 		break;
 	case FOBOS_CMD_BARRIER:
 	  fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;

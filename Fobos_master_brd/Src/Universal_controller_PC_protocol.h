@@ -3,7 +3,7 @@
  *
  *  Created on: 5th march 2018
  *      Author: Zilkov
- *      Protocol version: 9.2
+ *      Protocol version: 9.4
  */
 
 #ifndef UNIVERSAL_CONTROLLER_PC_PROTOCOL_H_
@@ -84,33 +84,55 @@
  * 	CMD = 3		N = 1	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
  *
  * 	===TX
- * 	CMD = 4		N = 1	DATA0 = 0..6 FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD, 	DATA1 = 1 - static, 2 - dynamic (DHCP)
- * 											//По умолчанию:с DHCP (т.е. 2)
+ * 	CMD = 4		N = 1	DATA1 = 1 - static, 2 - dynamic (DHCP)											//По умолчанию:с DHCP (т.е. 2)
  * 	===RX
  * 	CMD = 4		N = 2	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
- *				DATA1 = 1..2 // static/dynamic value of the board
+ *						DATA1 = 1..2 // static/dynamic value of the board
  * 	===TX
- * 	CMD = 5		N = 3	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
- * 				DATA1..DATA2 = {high_byte, low_byte} (uint16_t)timeout (ms)		//По умолчанию: 100 мс
+ * 	CMD = 5		N = 2	DATA0..DATA1 = {high_byte, low_byte} (uint16_t)timeout (ms)		//По умолчанию: 100 мс
  * 	===RX
  * 	CMD = 5		N = 3	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
- *				DATA1..DATA2 = {high_byte, low_byte} (uint16_t)timeout (ms)
+ *						DATA1..DATA2 = {high_byte, low_byte} (uint16_t)timeout (ms)
  * 	===TX
- * 	CMD = 6		N = 1	DATA0 = 1
+ * 	CMD = 6		N = 0
  * 	===RX
  * 	CMD = 6		N = 1	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
  *
  *	===TX
- *	CMD = 7		N = 1	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
+ *	CMD = 7		N = 0
  *	===RX
  *	CMD = 7		N = 7	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
- *				DATA1..DATA6 // mac address {0x5A, 0x69, 0x4C, 0x6B, 0x6F, 0x76}
+ *						DATA1..DATA6 // mac address {0x5A, 0x69, 0x4C, 0x6B, 0x6F, 0x76}
  *
  *	===TX
- *	CMD = 250..254	N = 0	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
+ *	CMD = 254	N = 0
  *	===RX
- *	CMD = 250..254	N = 1 + кол-во байт команд №1-5 	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
- *														DATA1..DATAx // запрашиваемые данные согласно отправлениям команд №1-5
+ *	CMD = 254	N = 5	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
+ *				IP: DATA1..DATA4 = {xxx(high ex.192),xxx(168),xxx,xxx(low)}
+ *
+ *	===TX
+ *	CMD = 253	N = 0
+ *	===RX
+ *	CMD = 253	N = 5	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
+ *				DATA1..DATA4 = {xxx(high),xxx,xxx,xxx(low)}
+ *
+ *	===TX
+ *	CMD = 252	N = 0
+ *	===RX
+ *	CMD = 252	N = 3	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
+ *				DATA1..DATA2 = {high_byte, low_byte}
+ *
+ *	===TX
+ *	CMD = 251	N = 0
+ *	===RX
+ *	CMD = 251	N = 3	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
+ *				DATA1 = 1..2 // static/dynamic value of the board
+ *
+ *	===TX
+ *	CMD = 250	N = 0
+ *	===RX
+ *	CMD = 250	N = 3 	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
+ *				DATA1..DATA2 = {high_byte, low_byte} (uint16_t)timeout (ms)
  *
  * 	Отправка информации о датчиках (при запросе):
  * 	===TX (от ПК к контроллеру):
@@ -171,8 +193,9 @@
  *	CMD = 20	N = 1	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
  *
  *	===TX
- *	CMD = 21	N = 2		start (DATA0 = 1), cancel (DATA0 = 0),
- * 	тип сканирования "фронтальное сканирование" (DATA1 = 1), "боковое сканирование" (DATA1 = 2), "фронтальное+боковое" (DATA1 = 3)
+ *	CMD = 21	N = 2		start (DATA0 = !0), cancel (DATA0 = 0),
+ * 					тип сканирования "фронтальное сканирование" (DATA1 = 1),
+ * 					"боковое сканирование" (DATA1 = 2), "фронтальное+боковое" (DATA1 = 3)
  *	===RX
  *	CMD = 21	N = 1	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
  *
