@@ -32,7 +32,7 @@ void vTimerCallback(TimerHandle_t);
 static uint16_t socket_port = 15000;
 static uint8_t ip_gateway_adr[4] = {192,168,100,2};
 static uint8_t subnet_mask_adr[4] = {255,255,255,0};
-static uint8_t source_hardware_adr[6] = {0x00,0x08,0xDC,0x01,0x02,0x03};
+static uint8_t source_hardware_adr[6] = {0x5A,0x69,0x4C,0x6B,0x6F,0x76};
 static uint8_t ip_source_adr[4] = {192,168,100,1};
 //static uint8_t ip_source_adr[4] = {192,168,101,170};
 static uint8_t ip_destination_adr[4] = {192,168,100,2};
@@ -214,12 +214,15 @@ void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
 	    can_tx_func(&hfdcan2, 0x620+2, 0, can_data_buf, FDCAN_TX_BUFFER1);
 	    fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
 	    //запрос к двигателю линейного перемещения о положении ->
-	    int servo_pos = 1619;
+	    int servo_pos = 1619;//запрос к двигателю о его положении
 	    fobos_eth_buf->fobos_protocol_buf_t.data[1] = servo_pos>>8;
 	    fobos_eth_buf->fobos_protocol_buf_t.data[2] = servo_pos;
+	    if(servo_pos > 100)
+	      fobos_eth_buf->fobos_protocol_buf_t.data[3] = 0;
+	    else
+	      fobos_eth_buf->fobos_protocol_buf_t.data[3] = 0xFF;
 
-	    fobos_eth_buf->fobos_protocol_buf_t.data[3] = 0;
-	    while(RxHeader.Identifier != 0x722)
+	    while(RxHeader.Identifier != 0x720+2)
 	      can_protocol_data_analyzing(&hfdcan2, &RxHeader, can_data_buf);
 	    if(can_data_buf[1] & 0b11000011)
 	      temp_lim_switches = can_data_buf[1] & 0b11000011;//S1,S2 ... S4,S3 в соответствии с единицами в байте.
@@ -233,8 +236,23 @@ void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
 	  fobos_eth_buf->fobos_protocol_buf_t.data[1] = 0;			//не готово устройство
 	  fobos_eth_protocol_send(FOBOS_STATEMENT, 2, fobos_eth_buf);
 		break;
-	case FOBOS_CMD_BASING_SERVO:
-	  fobos_eth_protocol_send(FOBOS_CMD_BASING_SERVO, 1, fobos_eth_buf);
+	case FOBOS_CMD_BASING:
+	  {
+	    //поворот в обратную сторону (к нижнему концевику)
+	    uint8_t can_data_buf[16] = {0x08, 0x05, 0x4B, 0x08, 0x00, 0x83, 0xDE, 0x00, 0x08, 0x47}, temp_lim_switches = 0;
+	    FDCAN_RxHeaderTypeDef RxHeader;
+	    can_tx_func(&hfdcan2, 0x640+2, 8, &can_data_buf[0], FDCAN_TX_BUFFER1);
+	    can_tx_func(&hfdcan2, 0x640+2, 8, &can_data_buf[8], FDCAN_TX_BUFFER2);
+	    while(RxHeader.Identifier != 0x740+2)
+	      can_protocol_data_analyzing(&hfdcan2, &RxHeader, can_data_buf);
+	    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	    //запрос к линейному приводу о положении
+	    //uint8_t motor_data_can_buf[8] = {0x43, 0x7A, 0x60, 0x00, 0,0,0,0};//not sure
+	    //can_tx_func(&hfdcan2, 0x280+1??, 8, motor_data_can_buf, FDCAN_TX_BUFFER1);
+	    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+	    fobos_eth_protocol_send(FOBOS_CMD_BASING, 1, fobos_eth_buf);
+	  }
 		break;
 	case FOBOS_CMD_WORK:
 	  fobos_eth_protocol_send(FOBOS_CMD_WORK, 1, fobos_eth_buf);
@@ -246,7 +264,7 @@ void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
 		break;
 	case FOBOS_EMB_SOFT_VER:
 	{
-		char string_data[] = {"Fobos embedded software version 0.12"};
+		char string_data[] = {"Fobos embedded software version 0.14"};
 		int length = strlen(string_data)+1;
 		fobos_eth_buf->fobos_protocol_buf_t.CMD = FOBOS_EMB_SOFT_VER;
 		fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;

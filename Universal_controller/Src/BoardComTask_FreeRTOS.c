@@ -111,6 +111,12 @@ void rs485_tx_task(void const * argument){
 	}
 	/* USER CODE END rs485_tx_task */
 }
+
+//111111111122222222223333333333444444444455555555556666666666777777777788888888889999999999AAAAAAAAAABB //51 символ
+//AWD: move forward(hex): 	05 4B 08 00 03 AA 00 FB		05 4B 08 00 03 DE 00 C7	//990 max
+//AWD: move backward(hex): 	05 4B 08 00 83 AA 00 7B		05 4B 08 00 83 DE 00 47	//-990 max
+//AWD: stop(hex):				05 4B 08 00 00 00 00 A8
+
 static volatile int rs_485_length = 8;
 void rs485_rx_task(void const * argument)
 {

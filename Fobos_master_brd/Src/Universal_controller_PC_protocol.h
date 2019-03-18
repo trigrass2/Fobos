@@ -3,7 +3,7 @@
  *
  *  Created on: 5th march 2018
  *      Author: Zilkov
- *      Protocol version: 9.1
+ *      Protocol version: 9.2
  */
 
 #ifndef UNIVERSAL_CONTROLLER_PC_PROTOCOL_H_
@@ -28,6 +28,7 @@
  * 	5 - Изменение Timeout
  * 	6 - Reset устройства Eth
  * 	7 - получение MAC адреса платы
+ *
  * 	Получение значений системных команд:
  * 	255-1=254 - IP адрес платы	(4 bytes)
  * 	253 - адрес маски подсети платы (6 bytes)
@@ -38,8 +39,8 @@
  *	Команды опроса:
  * 	10 - запрос состояния всех датчиков (Концевики, в каком положении С-рама)
  * 	11 - состояние генератора
- * 	12 - положение сервопривода (значение энкодера, датчик базирования)
- * 	13 - Состояние аппарата
+ * 	12 - положение сервопривода (значение энкодера, базирование)
+ * 	13 - Состояние готовности аппарата
  * 	14 - Версия прошивки
  *
  * 	Команды исполнения:
@@ -83,25 +84,27 @@
  * 	CMD = 3		N = 1	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
  *
  * 	===TX
- * 	CMD = 4		N = 1	DATA0 = 1 - static, 2 - dynamic (DHCP)		//По умолчанию:	с DHCP (т.е. 2)
+ * 	CMD = 4		N = 1	DATA0 = 0..6 FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD, 	DATA1 = 1 - static, 2 - dynamic (DHCP)
+ * 											//По умолчанию:с DHCP (т.е. 2)
  * 	===RX
- * 	CMD = 4		N = 1	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
- *
+ * 	CMD = 4		N = 2	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
+ *				DATA1 = 1..2 // static/dynamic value of the board
  * 	===TX
- * 	CMD = 5		N = 2	DATA0..DATA1 = {high_byte, low_byte} (uint16_t)timeout (ms)		//По умолчанию: 100 мс
+ * 	CMD = 5		N = 3	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
+ * 				DATA1..DATA2 = {high_byte, low_byte} (uint16_t)timeout (ms)		//По умолчанию: 100 мс
  * 	===RX
- * 	CMD = 5		N = 1	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
- *
+ * 	CMD = 5		N = 3	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
+ *				DATA1..DATA2 = {high_byte, low_byte} (uint16_t)timeout (ms)
  * 	===TX
  * 	CMD = 6		N = 1	DATA0 = 1
  * 	===RX
  * 	CMD = 6		N = 1	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
  *
  *	===TX
- *	CMD = 7		N = 1	DATA0 = 0
+ *	CMD = 7		N = 1	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
  *	===RX
  *	CMD = 7		N = 7	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
- *				DATA1..DATA6 // mac address {0x00, 0x08, 0xDC, 0x01, 0x02, 0x03}
+ *				DATA1..DATA6 // mac address {0x5A, 0x69, 0x4C, 0x6B, 0x6F, 0x76}
  *
  *	===TX
  *	CMD = 250..254	N = 0	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
@@ -148,7 +151,7 @@
  *	===RX (от контроллера к ПК)
  *	CMD = 12	N = 4	DATA0 = 0..6 // значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
  *                      DATA1..DATA2 = {high_byte, low_byte} - значение энкодера
- *			DATA3 - датчик базирования (0 не нажат, !0 - нажат)
+ *			DATA3 - базирование (0 не сбазирована С-рама, !0 - сбазирована)
  *
  *	===TX (от ПК к контроллеру):
  *	CMD = 13	N = 0
@@ -173,7 +176,6 @@
  *	===RX
  *	CMD = 21	N = 1	DATA0 = 0..6 // DATA0 это значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
  *
- *
  *	Команды ошибок аппарата:
  *	===TX
  *	CMD = 30	N = 0		препятствие C-рамы
@@ -197,12 +199,16 @@
 
 #define FOBOS_SENSORS_STATE			10	//данные со всех датчиков (концевых)
 #define FOBOS_GENERATOR_STATE			11	//интерлоки
-#define FOBOS_SERVOMOTOR_PLACEMENT		12
+#define FOBOS_SERVOMOTOR_PLACEMENT		12	//положение сервомотора
 #define FOBOS_STATEMENT				13 	// состояние готовности аппарата
 #define FOBOS_EMB_SOFT_VER			14	//версия прошивки платы
 
-#define FOBOS_CMD_BASING_SERVO			20
-#define FOBOS_CMD_WORK				21
+#define FOBOS_CMD_BASING			20	//выполнить базирование и повернуть С-раму в начальное положение
+#define FOBOS_CMD_WORK				21	//команды работы с фобосом start (DATA0 = 0xFF), cancel (DATA0 = 0),
+							//выбор типа сканирования "фронтальное сканирование" (DATA1 = 1),
+							//"боковое сканирование" (DATA1 = 2),
+							//"фронтальное+боковое" (DATA1 = 3)
+#define FOBOS_CMD_READY_STATEMENT		22	//Проверка начальных установок для готовности аппарата фобос
 
 #define FOBOS_CMD_BARRIER			30
 
