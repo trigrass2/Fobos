@@ -117,7 +117,7 @@ void rs485_tx_task(void const * argument){
 //AWD: move backward(hex): 	05 4B 08 00 83 AA 00 7B		05 4B 08 00 83 DE 00 47	//-990 max
 //AWD: stop(hex):				05 4B 08 00 00 00 00 A8
 
-static volatile int rs_485_length = 8;
+static int rs_485_length = 8;
 void rs485_rx_task(void const * argument)
 {
   /* USER CODE BEGIN rs485_rx_task */
@@ -261,6 +261,7 @@ extern UART_HandleTypeDef huart6;
 				buf_tx.lenght = Rx_Can_Data[0] & 0x1F;
 				if(buf_tx.lenght > 0)
 				{
+				    static int cnt_bytes = 0;
 					if(Rx_Can_Data[0] == 0xF0){//если DATA0 = 0xF0, то изменить длину принимаемой посылки по rs485 на DATA1 (<21)
 						uint8_t tx_data[2] = {0};
 						taskENTER_CRITICAL();
@@ -277,6 +278,10 @@ extern UART_HandleTypeDef huart6;
 
 						can_tx_func(&hfdcan2, ((address&0x1F)+0x640+0x100), 2, tx_data, FDCAN_TX_BUFFER4);
 					}
+					else if(Rx_Can_Data[0] == 0xEE){
+					    buf_tx.lenght = 0;
+					    cnt_bytes = 0;
+					}
 					else if(buf_tx.lenght <= 7)
 					{
 						memcpy(buf_tx.data, &Rx_Can_Data[1], buf_tx.lenght);
@@ -284,7 +289,6 @@ extern UART_HandleTypeDef huart6;
 					}
 					else if(buf_tx.lenght > 7 && buf_tx.lenght <= RS485_PACKET_SIZE)
 					{
-						static int cnt_bytes = 0;
 						memcpy(&buf_tx.data[cnt_bytes*7], &Rx_Can_Data[1], 7);
 						cnt_bytes++;
 						if((cnt_bytes * 7) >= buf_tx.lenght)
