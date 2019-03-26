@@ -2,20 +2,20 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="PORT" key="selection"/>
+		<item value="RxHeader" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="RxHeader"/>
+			<item value="can_data_buf"/>
+			<item value="hfdcan2"/>
+			<item value="taskCreate"/>
+			<item value="Create"/>
+			<item value="create"/>
+			<item value="FOBOS_CMD_WORK"/>
 			<item value="port"/>
-			<item value="wiz_NetData"/>
-			<item value="FOBOS_ETH_DHCP"/>
-			<item value="dhcp"/>
-			<item value="dhcp_mode"/>
-			<item value="source_hardware_adr"/>
-			<item value="tim"/>
-			<item value="SIDFC"/>
 		</list>
 		<list key="replacehistory">
 		</list>

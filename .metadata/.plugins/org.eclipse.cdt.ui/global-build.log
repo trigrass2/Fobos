@@ -1,16 +1,524 @@
-16:23:23 **** Incremental Build of configuration Debug for project Fobos_master_brd ****
+15:54:53 **** Incremental Build of configuration Debug for project Fobos_master_brd ****
 Info: Internal Builder is used for build
-arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\main.o ..\Src\main.c 
-..\Src\main.c: In function 'can_tx_func':
-..\Src\main.c:662:9: warning: type defaults to 'int' in declaration of 'a' [-Wimplicit-int]
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\fobos_eth.o ..\Src\fobos_eth.c 
+..\Src\fobos_eth.c: In function 'EthernetTask_func':
+..\Src\fobos_eth.c:87:5: warning: implicit declaration of function 'Error_Handler' [-Wimplicit-function-declaration]
+     Error_Handler();
+     ^~~~~~~~~~~~~
+..\Src\fobos_eth.c:92:2: warning: implicit declaration of function 'memcpy' [-Wimplicit-function-declaration]
+  memcpy(wiz_NetData.sn, subnet_mask_adr, 4);
+  ^~~~~~
+..\Src\fobos_eth.c:92:2: warning: incompatible implicit declaration of built-in function 'memcpy'
+..\Src\fobos_eth.c:92:2: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c:122:28: warning: unused variable 'RxHeader' [-Wunused-variable]
+      FDCAN_RxHeaderTypeDef RxHeader;
+                            ^~~~~~~~
+..\Src\fobos_eth.c: In function 'eth_cmds_analysis':
+..\Src\fobos_eth.c:206:6: warning: incompatible implicit declaration of built-in function 'memcpy'
+      memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, mac_adr, 6);
+      ^~~~~~
+..\Src\fobos_eth.c:206:6: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c:265:63: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
+      uint8_t can_data_buf[8] = {0x40, 0x64, 0x60, 0,0,0,0,0}, temp_lim_switches = 0;
+                                                               ^~~~~~~~~~~~~~~~~
+..\Src\fobos_eth.c:357:6: warning: this 'while' clause does not guard... [-Wmisleading-indentation]
+      while(RxHeader.Identifier != 0x740+2)
+      ^~~~~
+..\Src\fobos_eth.c:359:8: note: ...this statement, but the latter is misleadingly indented as if it is guarded by the 'while'
+        fobos_eth_protocol_send(FOBOS_CMD_WORK, 1, fobos_eth_buf);
+        ^~~~~~~~~~~~~~~~~~~~~~~
+..\Src\fobos_eth.c:343:14: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
+      uint8_t temp_lim_switches = 0,
+              ^~~~~~~~~~~~~~~~~
+..\Src\fobos_eth.c:371:16: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
+   int length = strlen(string_data)+1;
+                ^~~~~~
+..\Src\fobos_eth.c:371:16: warning: incompatible implicit declaration of built-in function 'strlen'
+..\Src\fobos_eth.c:371:16: note: include '<string.h>' or provide a declaration of 'strlen'
+..\Src\fobos_eth.c:374:3: warning: incompatible implicit declaration of built-in function 'memcpy'
+   memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, string_data, length);
+   ^~~~~~
+..\Src\fobos_eth.c:374:3: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c:392:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
+   if(confirmation(fobos_eth_buf, &socket_port))
+                                  ^
+..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint16_t * {aka short unsigned int *}'
+ uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
+         ^~~~~~~~~~~~
+..\Src\fobos_eth.c:396:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
+   if(confirmation(fobos_eth_buf, &timeout_period))
+                                  ^
+..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint32_t * {aka long unsigned int *}'
+ uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
+         ^~~~~~~~~~~~
+..\Src\fobos_eth.c: In function 'feedback_params':
+..\Src\fobos_eth.c:473:3: warning: incompatible implicit declaration of built-in function 'memcpy'
+   memcpy(&fobos_eth_buf->fobos_protocol_buf_t.data[1], data_for_copy, tx_bytes-1);
+   ^~~~~~
+..\Src\fobos_eth.c:473:3: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c: In function 'confirmation':
+..\Src\fobos_eth.c:482:3: warning: incompatible implicit declaration of built-in function 'memcpy'
+   memcpy(data_for_copy,
+   ^~~~~~
+..\Src\fobos_eth.c:482:3: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c: In function 'vFobos_Start_Process':
+..\Src\fobos_eth.c:566:23: warning: unused variable 'RxHeader' [-Wunused-variable]
+ FDCAN_RxHeaderTypeDef RxHeader;
+                       ^~~~~~~~
+..\Src\fobos_eth.c:565:25: warning: variable 'can_data_rx' set but not used [-Wunused-but-set-variable]
+ uint8_t scan_types = 0, can_data_rx[8] = {0};
+                         ^~~~~~~~~~~
+..\Src\fobos_eth.c: In function 'can_tx_func':
+..\Src\fobos_eth.c:667:9: warning: type defaults to 'int' in declaration of 'a' [-Wimplicit-int]
   static a=0;
          ^
+At top level:
+..\Src\fobos_eth.c:42:16: warning: 'ip_gateway_adr' defined but not used [-Wunused-variable]
+ static uint8_t ip_gateway_adr[4] = {192,168,100,2};
+                ^~~~~~~~~~~~~~
 arm-atollic-eabi-gcc -o Fobos_master_brd.elf Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_cortex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_fdcan.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_gpio.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hsem.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_iwdg.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_mdma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart_ex.o Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.o Middlewares\Third_Party\FreeRTOS\Source\croutine.o Middlewares\Third_Party\FreeRTOS\Source\event_groups.o Middlewares\Third_Party\FreeRTOS\Source\list.o Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM7\r0p1\port.o Middlewares\Third_Party\FreeRTOS\Source\portable\MemMang\heap_4.o Middlewares\Third_Party\FreeRTOS\Source\queue.o Middlewares\Third_Party\FreeRTOS\Source\tasks.o Middlewares\Third_Party\FreeRTOS\Source\timers.o Src\adani_can_medical_protocol.o Src\ethernet\socket.o Src\ethernet\w5200.o Src\ethernet\wizchip_conf.o Src\fobos_eth.o Src\freertos.o Src\internet\dhcp.o Src\main.o Src\own_defines.o Src\stm32h7xx_hal_msp.o Src\stm32h7xx_it.o Src\system_stm32h7xx.o startup\startup_stm32h743xx.o -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -T../STM32H743VI_FLASH.ld -specs=nosys.specs -static -Wl,-Map=Fobos_master_brd.map -Wl,--gc-sections -Wl,--defsym=malloc_getpagesize_P=0x80 -Wl,--start-group -lc -lm -Wl,--end-group -specs=nano.specs 
 C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\ide\jre\bin\java -jar C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\Tools\arm-atollic-reports.jar sizeinfo list Fobos_master_brd.elf 
 Generate build reports...
 Print size information
    text	   data	    bss	    dec	    hex	filename
-  34628	    120	  18740	  53488	   d0f0	Fobos_master_brd.elf
+  31728	     92	  18108	  49928	   c308	Fobos_master_brd.elf
+Print size information done
+Generate listing file
+Output sent to: Fobos_master_brd.list
+Generate listing file done
+Generate build reports done
+arm-atollic-eabi-objcopy.exe -O ihex Fobos_master_brd.elf Fobos_master_brd.hex 
+Info: Nothing to build for Fobos_master_brd
+15:58:36 **** Incremental Build of configuration Debug for project Fobos_master_brd ****
+Info: Internal Builder is used for build
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\fobos_eth.o ..\Src\fobos_eth.c 
+..\Src\fobos_eth.c: In function 'EthernetTask_func':
+..\Src\fobos_eth.c:87:5: warning: implicit declaration of function 'Error_Handler' [-Wimplicit-function-declaration]
+     Error_Handler();
+     ^~~~~~~~~~~~~
+..\Src\fobos_eth.c:92:2: warning: implicit declaration of function 'memcpy' [-Wimplicit-function-declaration]
+  memcpy(wiz_NetData.sn, subnet_mask_adr, 4);
+  ^~~~~~
+..\Src\fobos_eth.c:92:2: warning: incompatible implicit declaration of built-in function 'memcpy'
+..\Src\fobos_eth.c:92:2: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c:122:28: warning: unused variable 'RxHeader' [-Wunused-variable]
+      FDCAN_RxHeaderTypeDef RxHeader;
+                            ^~~~~~~~
+..\Src\fobos_eth.c: In function 'eth_cmds_analysis':
+..\Src\fobos_eth.c:206:6: warning: incompatible implicit declaration of built-in function 'memcpy'
+      memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, mac_adr, 6);
+      ^~~~~~
+..\Src\fobos_eth.c:206:6: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c:265:63: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
+      uint8_t can_data_buf[8] = {0x40, 0x64, 0x60, 0,0,0,0,0}, temp_lim_switches = 0;
+                                                               ^~~~~~~~~~~~~~~~~
+..\Src\fobos_eth.c:332:8: error: 'buf' undeclared (first use in this function)
+        buf[3] = 0x0F;
+        ^~~
+..\Src\fobos_eth.c:332:8: note: each undeclared identifier is reported only once for each function it appears in
+..\Src\fobos_eth.c:357:6: warning: this 'while' clause does not guard... [-Wmisleading-indentation]
+      while(RxHeader.Identifier != 0x740+2)
+      ^~~~~
+..\Src\fobos_eth.c:359:8: note: ...this statement, but the latter is misleadingly indented as if it is guarded by the 'while'
+        fobos_eth_protocol_send(FOBOS_CMD_WORK, 1, fobos_eth_buf);
+        ^~~~~~~~~~~~~~~~~~~~~~~
+..\Src\fobos_eth.c:343:14: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
+      uint8_t temp_lim_switches = 0,
+              ^~~~~~~~~~~~~~~~~
+..\Src\fobos_eth.c:371:16: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
+   int length = strlen(string_data)+1;
+                ^~~~~~
+..\Src\fobos_eth.c:371:16: warning: incompatible implicit declaration of built-in function 'strlen'
+..\Src\fobos_eth.c:371:16: note: include '<string.h>' or provide a declaration of 'strlen'
+..\Src\fobos_eth.c:374:3: warning: incompatible implicit declaration of built-in function 'memcpy'
+   memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, string_data, length);
+   ^~~~~~
+..\Src\fobos_eth.c:374:3: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c:392:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
+   if(confirmation(fobos_eth_buf, &socket_port))
+                                  ^
+..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint16_t * {aka short unsigned int *}'
+ uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
+         ^~~~~~~~~~~~
+..\Src\fobos_eth.c:396:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
+   if(confirmation(fobos_eth_buf, &timeout_period))
+                                  ^
+..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint32_t * {aka long unsigned int *}'
+ uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
+         ^~~~~~~~~~~~
+..\Src\fobos_eth.c: In function 'feedback_params':
+..\Src\fobos_eth.c:473:3: warning: incompatible implicit declaration of built-in function 'memcpy'
+   memcpy(&fobos_eth_buf->fobos_protocol_buf_t.data[1], data_for_copy, tx_bytes-1);
+   ^~~~~~
+..\Src\fobos_eth.c:473:3: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c: In function 'confirmation':
+..\Src\fobos_eth.c:482:3: warning: incompatible implicit declaration of built-in function 'memcpy'
+   memcpy(data_for_copy,
+   ^~~~~~
+..\Src\fobos_eth.c:482:3: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c: In function 'vFobos_Start_Process':
+..\Src\fobos_eth.c:566:23: warning: unused variable 'RxHeader' [-Wunused-variable]
+ FDCAN_RxHeaderTypeDef RxHeader;
+                       ^~~~~~~~
+..\Src\fobos_eth.c:565:25: warning: variable 'can_data_rx' set but not used [-Wunused-but-set-variable]
+ uint8_t scan_types = 0, can_data_rx[8] = {0};
+                         ^~~~~~~~~~~
+..\Src\fobos_eth.c: In function 'can_tx_func':
+..\Src\fobos_eth.c:667:9: warning: type defaults to 'int' in declaration of 'a' [-Wimplicit-int]
+  static a=0;
+         ^
+At top level:
+..\Src\fobos_eth.c:42:16: warning: 'ip_gateway_adr' defined but not used [-Wunused-variable]
+ static uint8_t ip_gateway_adr[4] = {192,168,100,2};
+                ^~~~~~~~~~~~~~
+15:59:06 **** Incremental Build of configuration Debug for project Fobos_master_brd ****
+Info: Internal Builder is used for build
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\fobos_eth.o ..\Src\fobos_eth.c 
+..\Src\fobos_eth.c: In function 'EthernetTask_func':
+..\Src\fobos_eth.c:87:5: warning: implicit declaration of function 'Error_Handler' [-Wimplicit-function-declaration]
+     Error_Handler();
+     ^~~~~~~~~~~~~
+..\Src\fobos_eth.c:92:2: warning: implicit declaration of function 'memcpy' [-Wimplicit-function-declaration]
+  memcpy(wiz_NetData.sn, subnet_mask_adr, 4);
+  ^~~~~~
+..\Src\fobos_eth.c:92:2: warning: incompatible implicit declaration of built-in function 'memcpy'
+..\Src\fobos_eth.c:92:2: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c:122:28: warning: unused variable 'RxHeader' [-Wunused-variable]
+      FDCAN_RxHeaderTypeDef RxHeader;
+                            ^~~~~~~~
+..\Src\fobos_eth.c: In function 'eth_cmds_analysis':
+..\Src\fobos_eth.c:206:6: warning: incompatible implicit declaration of built-in function 'memcpy'
+      memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, mac_adr, 6);
+      ^~~~~~
+..\Src\fobos_eth.c:206:6: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c:265:63: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
+      uint8_t can_data_buf[8] = {0x40, 0x64, 0x60, 0,0,0,0,0}, temp_lim_switches = 0;
+                                                               ^~~~~~~~~~~~~~~~~
+..\Src\fobos_eth.c:357:6: warning: this 'while' clause does not guard... [-Wmisleading-indentation]
+      while(RxHeader.Identifier != 0x740+2)
+      ^~~~~
+..\Src\fobos_eth.c:359:8: note: ...this statement, but the latter is misleadingly indented as if it is guarded by the 'while'
+        fobos_eth_protocol_send(FOBOS_CMD_WORK, 1, fobos_eth_buf);
+        ^~~~~~~~~~~~~~~~~~~~~~~
+..\Src\fobos_eth.c:343:14: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
+      uint8_t temp_lim_switches = 0,
+              ^~~~~~~~~~~~~~~~~
+..\Src\fobos_eth.c:371:16: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
+   int length = strlen(string_data)+1;
+                ^~~~~~
+..\Src\fobos_eth.c:371:16: warning: incompatible implicit declaration of built-in function 'strlen'
+..\Src\fobos_eth.c:371:16: note: include '<string.h>' or provide a declaration of 'strlen'
+..\Src\fobos_eth.c:374:3: warning: incompatible implicit declaration of built-in function 'memcpy'
+   memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, string_data, length);
+   ^~~~~~
+..\Src\fobos_eth.c:374:3: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c:392:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
+   if(confirmation(fobos_eth_buf, &socket_port))
+                                  ^
+..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint16_t * {aka short unsigned int *}'
+ uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
+         ^~~~~~~~~~~~
+..\Src\fobos_eth.c:396:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
+   if(confirmation(fobos_eth_buf, &timeout_period))
+                                  ^
+..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint32_t * {aka long unsigned int *}'
+ uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
+         ^~~~~~~~~~~~
+..\Src\fobos_eth.c: In function 'feedback_params':
+..\Src\fobos_eth.c:473:3: warning: incompatible implicit declaration of built-in function 'memcpy'
+   memcpy(&fobos_eth_buf->fobos_protocol_buf_t.data[1], data_for_copy, tx_bytes-1);
+   ^~~~~~
+..\Src\fobos_eth.c:473:3: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c: In function 'confirmation':
+..\Src\fobos_eth.c:482:3: warning: incompatible implicit declaration of built-in function 'memcpy'
+   memcpy(data_for_copy,
+   ^~~~~~
+..\Src\fobos_eth.c:482:3: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c: In function 'vFobos_Start_Process':
+..\Src\fobos_eth.c:566:23: warning: unused variable 'RxHeader' [-Wunused-variable]
+ FDCAN_RxHeaderTypeDef RxHeader;
+                       ^~~~~~~~
+..\Src\fobos_eth.c:565:25: warning: variable 'can_data_rx' set but not used [-Wunused-but-set-variable]
+ uint8_t scan_types = 0, can_data_rx[8] = {0};
+                         ^~~~~~~~~~~
+..\Src\fobos_eth.c: In function 'can_tx_func':
+..\Src\fobos_eth.c:667:9: warning: type defaults to 'int' in declaration of 'a' [-Wimplicit-int]
+  static a=0;
+         ^
+At top level:
+..\Src\fobos_eth.c:42:16: warning: 'ip_gateway_adr' defined but not used [-Wunused-variable]
+ static uint8_t ip_gateway_adr[4] = {192,168,100,2};
+                ^~~~~~~~~~~~~~
+arm-atollic-eabi-gcc -o Fobos_master_brd.elf Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_cortex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_fdcan.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_gpio.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hsem.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_iwdg.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_mdma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart_ex.o Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.o Middlewares\Third_Party\FreeRTOS\Source\croutine.o Middlewares\Third_Party\FreeRTOS\Source\event_groups.o Middlewares\Third_Party\FreeRTOS\Source\list.o Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM7\r0p1\port.o Middlewares\Third_Party\FreeRTOS\Source\portable\MemMang\heap_4.o Middlewares\Third_Party\FreeRTOS\Source\queue.o Middlewares\Third_Party\FreeRTOS\Source\tasks.o Middlewares\Third_Party\FreeRTOS\Source\timers.o Src\adani_can_medical_protocol.o Src\ethernet\socket.o Src\ethernet\w5200.o Src\ethernet\wizchip_conf.o Src\fobos_eth.o Src\freertos.o Src\internet\dhcp.o Src\main.o Src\own_defines.o Src\stm32h7xx_hal_msp.o Src\stm32h7xx_it.o Src\system_stm32h7xx.o startup\startup_stm32h743xx.o -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -T../STM32H743VI_FLASH.ld -specs=nosys.specs -static -Wl,-Map=Fobos_master_brd.map -Wl,--gc-sections -Wl,--defsym=malloc_getpagesize_P=0x80 -Wl,--start-group -lc -lm -Wl,--end-group -specs=nano.specs 
+C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\ide\jre\bin\java -jar C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\Tools\arm-atollic-reports.jar sizeinfo list Fobos_master_brd.elf 
+Generate build reports...
+Print size information
+   text	   data	    bss	    dec	    hex	filename
+  31688	     92	  18108	  49888	   c2e0	Fobos_master_brd.elf
+Print size information done
+Generate listing file
+Output sent to: Fobos_master_brd.list
+Generate listing file done
+Generate build reports done
+arm-atollic-eabi-objcopy.exe -O ihex Fobos_master_brd.elf Fobos_master_brd.hex 
+16:02:09 **** Incremental Build of configuration Debug for project Fobos_master_brd ****
+Info: Internal Builder is used for build
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\fobos_eth.o ..\Src\fobos_eth.c 
+..\Src\fobos_eth.c: In function 'EthernetTask_func':
+..\Src\fobos_eth.c:87:5: warning: implicit declaration of function 'Error_Handler' [-Wimplicit-function-declaration]
+     Error_Handler();
+     ^~~~~~~~~~~~~
+..\Src\fobos_eth.c:92:2: warning: implicit declaration of function 'memcpy' [-Wimplicit-function-declaration]
+  memcpy(wiz_NetData.sn, subnet_mask_adr, 4);
+  ^~~~~~
+..\Src\fobos_eth.c:92:2: warning: incompatible implicit declaration of built-in function 'memcpy'
+..\Src\fobos_eth.c:92:2: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c: In function 'eth_cmds_analysis':
+..\Src\fobos_eth.c:207:6: warning: incompatible implicit declaration of built-in function 'memcpy'
+      memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, mac_adr, 6);
+      ^~~~~~
+..\Src\fobos_eth.c:207:6: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c:266:63: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
+      uint8_t can_data_buf[8] = {0x40, 0x64, 0x60, 0,0,0,0,0}, temp_lim_switches = 0;
+                                                               ^~~~~~~~~~~~~~~~~
+..\Src\fobos_eth.c:358:6: warning: this 'while' clause does not guard... [-Wmisleading-indentation]
+      while(RxHeader.Identifier != 0x740+2)
+      ^~~~~
+..\Src\fobos_eth.c:360:8: note: ...this statement, but the latter is misleadingly indented as if it is guarded by the 'while'
+        fobos_eth_protocol_send(FOBOS_CMD_WORK, 1, fobos_eth_buf);
+        ^~~~~~~~~~~~~~~~~~~~~~~
+..\Src\fobos_eth.c:344:14: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
+      uint8_t temp_lim_switches = 0,
+              ^~~~~~~~~~~~~~~~~
+..\Src\fobos_eth.c:372:16: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
+   int length = strlen(string_data)+1;
+                ^~~~~~
+..\Src\fobos_eth.c:372:16: warning: incompatible implicit declaration of built-in function 'strlen'
+..\Src\fobos_eth.c:372:16: note: include '<string.h>' or provide a declaration of 'strlen'
+..\Src\fobos_eth.c:375:3: warning: incompatible implicit declaration of built-in function 'memcpy'
+   memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, string_data, length);
+   ^~~~~~
+..\Src\fobos_eth.c:375:3: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c:393:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
+   if(confirmation(fobos_eth_buf, &socket_port))
+                                  ^
+..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint16_t * {aka short unsigned int *}'
+ uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
+         ^~~~~~~~~~~~
+..\Src\fobos_eth.c:397:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
+   if(confirmation(fobos_eth_buf, &timeout_period))
+                                  ^
+..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint32_t * {aka long unsigned int *}'
+ uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
+         ^~~~~~~~~~~~
+..\Src\fobos_eth.c: In function 'feedback_params':
+..\Src\fobos_eth.c:474:3: warning: incompatible implicit declaration of built-in function 'memcpy'
+   memcpy(&fobos_eth_buf->fobos_protocol_buf_t.data[1], data_for_copy, tx_bytes-1);
+   ^~~~~~
+..\Src\fobos_eth.c:474:3: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c: In function 'confirmation':
+..\Src\fobos_eth.c:483:3: warning: incompatible implicit declaration of built-in function 'memcpy'
+   memcpy(data_for_copy,
+   ^~~~~~
+..\Src\fobos_eth.c:483:3: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c: In function 'vFobos_Start_Process':
+..\Src\fobos_eth.c:567:23: warning: unused variable 'RxHeader' [-Wunused-variable]
+ FDCAN_RxHeaderTypeDef RxHeader;
+                       ^~~~~~~~
+..\Src\fobos_eth.c:566:25: warning: variable 'can_data_rx' set but not used [-Wunused-but-set-variable]
+ uint8_t scan_types = 0, can_data_rx[8] = {0};
+                         ^~~~~~~~~~~
+..\Src\fobos_eth.c: In function 'can_tx_func':
+..\Src\fobos_eth.c:668:9: warning: type defaults to 'int' in declaration of 'a' [-Wimplicit-int]
+  static a=0;
+         ^
+At top level:
+..\Src\fobos_eth.c:42:16: warning: 'ip_gateway_adr' defined but not used [-Wunused-variable]
+ static uint8_t ip_gateway_adr[4] = {192,168,100,2};
+                ^~~~~~~~~~~~~~
+arm-atollic-eabi-gcc -o Fobos_master_brd.elf Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_cortex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_fdcan.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_gpio.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hsem.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_iwdg.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_mdma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart_ex.o Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.o Middlewares\Third_Party\FreeRTOS\Source\croutine.o Middlewares\Third_Party\FreeRTOS\Source\event_groups.o Middlewares\Third_Party\FreeRTOS\Source\list.o Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM7\r0p1\port.o Middlewares\Third_Party\FreeRTOS\Source\portable\MemMang\heap_4.o Middlewares\Third_Party\FreeRTOS\Source\queue.o Middlewares\Third_Party\FreeRTOS\Source\tasks.o Middlewares\Third_Party\FreeRTOS\Source\timers.o Src\adani_can_medical_protocol.o Src\ethernet\socket.o Src\ethernet\w5200.o Src\ethernet\wizchip_conf.o Src\fobos_eth.o Src\freertos.o Src\internet\dhcp.o Src\main.o Src\own_defines.o Src\stm32h7xx_hal_msp.o Src\stm32h7xx_it.o Src\system_stm32h7xx.o startup\startup_stm32h743xx.o -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -T../STM32H743VI_FLASH.ld -specs=nosys.specs -static -Wl,-Map=Fobos_master_brd.map -Wl,--gc-sections -Wl,--defsym=malloc_getpagesize_P=0x80 -Wl,--start-group -lc -lm -Wl,--end-group -specs=nano.specs 
+C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\ide\jre\bin\java -jar C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\Tools\arm-atollic-reports.jar sizeinfo list Fobos_master_brd.elf 
+Generate build reports...
+Print size information
+   text	   data	    bss	    dec	    hex	filename
+  31712	     92	  18108	  49912	   c2f8	Fobos_master_brd.elf
+Print size information done
+Generate listing file
+Output sent to: Fobos_master_brd.list
+Generate listing file done
+Generate build reports done
+arm-atollic-eabi-objcopy.exe -O ihex Fobos_master_brd.elf Fobos_master_brd.hex 
+16:04:12 **** Incremental Build of configuration Debug for project Fobos_master_brd ****
+Info: Internal Builder is used for build
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\fobos_eth.o ..\Src\fobos_eth.c 
+..\Src\fobos_eth.c: In function 'EthernetTask_func':
+..\Src\fobos_eth.c:87:5: warning: implicit declaration of function 'Error_Handler' [-Wimplicit-function-declaration]
+     Error_Handler();
+     ^~~~~~~~~~~~~
+..\Src\fobos_eth.c:92:2: warning: implicit declaration of function 'memcpy' [-Wimplicit-function-declaration]
+  memcpy(wiz_NetData.sn, subnet_mask_adr, 4);
+  ^~~~~~
+..\Src\fobos_eth.c:92:2: warning: incompatible implicit declaration of built-in function 'memcpy'
+..\Src\fobos_eth.c:92:2: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c: In function 'eth_cmds_analysis':
+..\Src\fobos_eth.c:209:6: warning: incompatible implicit declaration of built-in function 'memcpy'
+      memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, mac_adr, 6);
+      ^~~~~~
+..\Src\fobos_eth.c:209:6: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c:268:63: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
+      uint8_t can_data_buf[8] = {0x40, 0x64, 0x60, 0,0,0,0,0}, temp_lim_switches = 0;
+                                                               ^~~~~~~~~~~~~~~~~
+..\Src\fobos_eth.c:360:6: warning: this 'while' clause does not guard... [-Wmisleading-indentation]
+      while(RxHeader.Identifier != 0x740+2)
+      ^~~~~
+..\Src\fobos_eth.c:362:8: note: ...this statement, but the latter is misleadingly indented as if it is guarded by the 'while'
+        fobos_eth_protocol_send(FOBOS_CMD_WORK, 1, fobos_eth_buf);
+        ^~~~~~~~~~~~~~~~~~~~~~~
+..\Src\fobos_eth.c:346:14: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
+      uint8_t temp_lim_switches = 0,
+              ^~~~~~~~~~~~~~~~~
+..\Src\fobos_eth.c:374:16: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
+   int length = strlen(string_data)+1;
+                ^~~~~~
+..\Src\fobos_eth.c:374:16: warning: incompatible implicit declaration of built-in function 'strlen'
+..\Src\fobos_eth.c:374:16: note: include '<string.h>' or provide a declaration of 'strlen'
+..\Src\fobos_eth.c:377:3: warning: incompatible implicit declaration of built-in function 'memcpy'
+   memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, string_data, length);
+   ^~~~~~
+..\Src\fobos_eth.c:377:3: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c:395:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
+   if(confirmation(fobos_eth_buf, &socket_port))
+                                  ^
+..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint16_t * {aka short unsigned int *}'
+ uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
+         ^~~~~~~~~~~~
+..\Src\fobos_eth.c:399:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
+   if(confirmation(fobos_eth_buf, &timeout_period))
+                                  ^
+..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint32_t * {aka long unsigned int *}'
+ uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
+         ^~~~~~~~~~~~
+..\Src\fobos_eth.c: In function 'feedback_params':
+..\Src\fobos_eth.c:476:3: warning: incompatible implicit declaration of built-in function 'memcpy'
+   memcpy(&fobos_eth_buf->fobos_protocol_buf_t.data[1], data_for_copy, tx_bytes-1);
+   ^~~~~~
+..\Src\fobos_eth.c:476:3: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c: In function 'confirmation':
+..\Src\fobos_eth.c:485:3: warning: incompatible implicit declaration of built-in function 'memcpy'
+   memcpy(data_for_copy,
+   ^~~~~~
+..\Src\fobos_eth.c:485:3: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c: In function 'vFobos_Start_Process':
+..\Src\fobos_eth.c:569:23: warning: unused variable 'RxHeader' [-Wunused-variable]
+ FDCAN_RxHeaderTypeDef RxHeader;
+                       ^~~~~~~~
+..\Src\fobos_eth.c:568:25: warning: variable 'can_data_rx' set but not used [-Wunused-but-set-variable]
+ uint8_t scan_types = 0, can_data_rx[8] = {0};
+                         ^~~~~~~~~~~
+..\Src\fobos_eth.c: In function 'can_tx_func':
+..\Src\fobos_eth.c:670:9: warning: type defaults to 'int' in declaration of 'a' [-Wimplicit-int]
+  static a=0;
+         ^
+At top level:
+..\Src\fobos_eth.c:42:16: warning: 'ip_gateway_adr' defined but not used [-Wunused-variable]
+ static uint8_t ip_gateway_adr[4] = {192,168,100,2};
+                ^~~~~~~~~~~~~~
+arm-atollic-eabi-gcc -o Fobos_master_brd.elf Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_cortex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_fdcan.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_gpio.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hsem.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_iwdg.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_mdma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart_ex.o Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.o Middlewares\Third_Party\FreeRTOS\Source\croutine.o Middlewares\Third_Party\FreeRTOS\Source\event_groups.o Middlewares\Third_Party\FreeRTOS\Source\list.o Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM7\r0p1\port.o Middlewares\Third_Party\FreeRTOS\Source\portable\MemMang\heap_4.o Middlewares\Third_Party\FreeRTOS\Source\queue.o Middlewares\Third_Party\FreeRTOS\Source\tasks.o Middlewares\Third_Party\FreeRTOS\Source\timers.o Src\adani_can_medical_protocol.o Src\ethernet\socket.o Src\ethernet\w5200.o Src\ethernet\wizchip_conf.o Src\fobos_eth.o Src\freertos.o Src\internet\dhcp.o Src\main.o Src\own_defines.o Src\stm32h7xx_hal_msp.o Src\stm32h7xx_it.o Src\system_stm32h7xx.o startup\startup_stm32h743xx.o -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -T../STM32H743VI_FLASH.ld -specs=nosys.specs -static -Wl,-Map=Fobos_master_brd.map -Wl,--gc-sections -Wl,--defsym=malloc_getpagesize_P=0x80 -Wl,--start-group -lc -lm -Wl,--end-group -specs=nano.specs 
+C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\ide\jre\bin\java -jar C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\Tools\arm-atollic-reports.jar sizeinfo list Fobos_master_brd.elf 
+Generate build reports...
+Print size information
+   text	   data	    bss	    dec	    hex	filename
+  31716	     92	  18108	  49916	   c2fc	Fobos_master_brd.elf
+Print size information done
+Generate listing file
+Output sent to: Fobos_master_brd.list
+Generate listing file done
+Generate build reports done
+arm-atollic-eabi-objcopy.exe -O ihex Fobos_master_brd.elf Fobos_master_brd.hex 
+16:05:43 **** Incremental Build of configuration Debug for project Fobos_master_brd ****
+Info: Internal Builder is used for build
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\fobos_eth.o ..\Src\fobos_eth.c 
+..\Src\fobos_eth.c: In function 'EthernetTask_func':
+..\Src\fobos_eth.c:87:5: warning: implicit declaration of function 'Error_Handler' [-Wimplicit-function-declaration]
+     Error_Handler();
+     ^~~~~~~~~~~~~
+..\Src\fobos_eth.c:92:2: warning: implicit declaration of function 'memcpy' [-Wimplicit-function-declaration]
+  memcpy(wiz_NetData.sn, subnet_mask_adr, 4);
+  ^~~~~~
+..\Src\fobos_eth.c:92:2: warning: incompatible implicit declaration of built-in function 'memcpy'
+..\Src\fobos_eth.c:92:2: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c:123:28: warning: unused variable 'RxHeader' [-Wunused-variable]
+      FDCAN_RxHeaderTypeDef RxHeader;
+                            ^~~~~~~~
+..\Src\fobos_eth.c: In function 'eth_cmds_analysis':
+..\Src\fobos_eth.c:210:6: warning: incompatible implicit declaration of built-in function 'memcpy'
+      memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, mac_adr, 6);
+      ^~~~~~
+..\Src\fobos_eth.c:210:6: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c:269:63: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
+      uint8_t can_data_buf[8] = {0x40, 0x64, 0x60, 0,0,0,0,0}, temp_lim_switches = 0;
+                                                               ^~~~~~~~~~~~~~~~~
+..\Src\fobos_eth.c:361:6: warning: this 'while' clause does not guard... [-Wmisleading-indentation]
+      while(RxHeader.Identifier != 0x740+2)
+      ^~~~~
+..\Src\fobos_eth.c:363:8: note: ...this statement, but the latter is misleadingly indented as if it is guarded by the 'while'
+        fobos_eth_protocol_send(FOBOS_CMD_WORK, 1, fobos_eth_buf);
+        ^~~~~~~~~~~~~~~~~~~~~~~
+..\Src\fobos_eth.c:347:14: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
+      uint8_t temp_lim_switches = 0,
+              ^~~~~~~~~~~~~~~~~
+..\Src\fobos_eth.c:375:16: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
+   int length = strlen(string_data)+1;
+                ^~~~~~
+..\Src\fobos_eth.c:375:16: warning: incompatible implicit declaration of built-in function 'strlen'
+..\Src\fobos_eth.c:375:16: note: include '<string.h>' or provide a declaration of 'strlen'
+..\Src\fobos_eth.c:378:3: warning: incompatible implicit declaration of built-in function 'memcpy'
+   memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, string_data, length);
+   ^~~~~~
+..\Src\fobos_eth.c:378:3: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c:396:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
+   if(confirmation(fobos_eth_buf, &socket_port))
+                                  ^
+..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint16_t * {aka short unsigned int *}'
+ uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
+         ^~~~~~~~~~~~
+..\Src\fobos_eth.c:400:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
+   if(confirmation(fobos_eth_buf, &timeout_period))
+                                  ^
+..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint32_t * {aka long unsigned int *}'
+ uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
+         ^~~~~~~~~~~~
+..\Src\fobos_eth.c: In function 'feedback_params':
+..\Src\fobos_eth.c:477:3: warning: incompatible implicit declaration of built-in function 'memcpy'
+   memcpy(&fobos_eth_buf->fobos_protocol_buf_t.data[1], data_for_copy, tx_bytes-1);
+   ^~~~~~
+..\Src\fobos_eth.c:477:3: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c: In function 'confirmation':
+..\Src\fobos_eth.c:486:3: warning: incompatible implicit declaration of built-in function 'memcpy'
+   memcpy(data_for_copy,
+   ^~~~~~
+..\Src\fobos_eth.c:486:3: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c: In function 'vFobos_Start_Process':
+..\Src\fobos_eth.c:570:23: warning: unused variable 'RxHeader' [-Wunused-variable]
+ FDCAN_RxHeaderTypeDef RxHeader;
+                       ^~~~~~~~
+..\Src\fobos_eth.c:569:25: warning: variable 'can_data_rx' set but not used [-Wunused-but-set-variable]
+ uint8_t scan_types = 0, can_data_rx[8] = {0};
+                         ^~~~~~~~~~~
+..\Src\fobos_eth.c: In function 'can_tx_func':
+..\Src\fobos_eth.c:671:9: warning: type defaults to 'int' in declaration of 'a' [-Wimplicit-int]
+  static a=0;
+         ^
+At top level:
+..\Src\fobos_eth.c:42:16: warning: 'ip_gateway_adr' defined but not used [-Wunused-variable]
+ static uint8_t ip_gateway_adr[4] = {192,168,100,2};
+                ^~~~~~~~~~~~~~
+arm-atollic-eabi-gcc -o Fobos_master_brd.elf Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_cortex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_fdcan.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_gpio.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hsem.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_iwdg.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_mdma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart_ex.o Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.o Middlewares\Third_Party\FreeRTOS\Source\croutine.o Middlewares\Third_Party\FreeRTOS\Source\event_groups.o Middlewares\Third_Party\FreeRTOS\Source\list.o Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM7\r0p1\port.o Middlewares\Third_Party\FreeRTOS\Source\portable\MemMang\heap_4.o Middlewares\Third_Party\FreeRTOS\Source\queue.o Middlewares\Third_Party\FreeRTOS\Source\tasks.o Middlewares\Third_Party\FreeRTOS\Source\timers.o Src\adani_can_medical_protocol.o Src\ethernet\socket.o Src\ethernet\w5200.o Src\ethernet\wizchip_conf.o Src\fobos_eth.o Src\freertos.o Src\internet\dhcp.o Src\main.o Src\own_defines.o Src\stm32h7xx_hal_msp.o Src\stm32h7xx_it.o Src\system_stm32h7xx.o startup\startup_stm32h743xx.o -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -T../STM32H743VI_FLASH.ld -specs=nosys.specs -static -Wl,-Map=Fobos_master_brd.map -Wl,--gc-sections -Wl,--defsym=malloc_getpagesize_P=0x80 -Wl,--start-group -lc -lm -Wl,--end-group -specs=nano.specs 
+C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\ide\jre\bin\java -jar C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\Tools\arm-atollic-reports.jar sizeinfo list Fobos_master_brd.elf 
+Generate build reports...
+Print size information
+   text	   data	    bss	    dec	    hex	filename
+  31700	     92	  18108	  49900	   c2ec	Fobos_master_brd.elf
 Print size information done
 Generate listing file
 Output sent to: Fobos_master_brd.list

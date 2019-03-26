@@ -25,5 +25,4 @@
 #define SOCKET5 		5
 
 void EthernetTask_func(void const * argument);
-
 #endif /* FOBOS_ETH_H_ */

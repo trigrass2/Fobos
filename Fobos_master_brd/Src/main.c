@@ -91,8 +91,6 @@ osThreadId DigIOTaskHandle;
 
 TaskHandle_t xFobos_scan_Handle = NULL;//osThreadId is a TaskHandle_t
 
-QueueHandle_t xQueue_Scanning_start = NULL;
-
 TimerHandle_t xTimer_btn_timer;
 /* USER CODE BEGIN PV */
 
@@ -193,9 +191,7 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
-  xQueue_Scanning_start = xQueueCreate(1, sizeof(uint8_t));
-  if(xQueue_Scanning_start == NULL)
-    Error_Handler();
+
   /* USER CODE END RTOS_QUEUES */
  
 
@@ -705,13 +701,8 @@ void vTimerCallback1(TimerHandle_t Timer){
 	LED_VD7(SET);
 	DIG_OUT3(RESET);//magnets for table
 }
+extern uint8_t canopen_transmit(uint16_t COB_ID, uint8_t control_field, uint16_t index, uint8_t subindex, uint8_t *data);
 
-void vFobos_Start_Process(){
-
-  for(;;){
-      if(xQueueReceive())
-  }
-}
 
 /* USER CODE END 4 */
 
@@ -749,6 +740,7 @@ void DigIOTask_func(void const * argument)
   /* Infinite loop */
   for(;;)
   {
+      if(0)
 	  if(BTN_STATE)
 	  {
 		  btn_press_val <<= 1;
@@ -771,6 +763,13 @@ void DigIOTask_func(void const * argument)
 		  XRAY_GEN_START(RESET);
 
 	  vTaskDelay(3);
+     /* static uint8_t a=1;
+            vTaskDelay(800);
+            LED_VD7(a^=1);
+            DIG_OUT1(a);
+            DIG_OUT2(a);
+            DIG_OUT3(a);
+            DIG_OUT4(a);*/
   }
   /* USER CODE END DigIOTask_func */
 }
