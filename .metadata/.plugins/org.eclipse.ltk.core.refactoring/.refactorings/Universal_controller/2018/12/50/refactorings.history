@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;Universal_controller/Src/adani_medical_protocol.h&apos; to &apos;adani_can_medical_protocol.h&apos;" description="Rename resource &apos;adani_medical_protocol.h&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Src/adani_medical_protocol.h" name="adani_can_medical_protocol.h" stamp="1544508616364" updateReferences="true"/>
+</session>

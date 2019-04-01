@@ -1,0 +1,38 @@
+12:54:53 **** Incremental Build of configuration Debug for project test_proj ****
+Info: Internal Builder is used for build
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\main.o ..\Src\main.c 
+..\Src\main.c: In function 'main':
+..\Src\main.c:340:20: warning: passing argument 2 of 'recv' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+       recv(SOCKET0,fobos_eth_buf.data_to_transmit, 258);
+                    ^~~~~~~~~~~~~
+In file included from ..\Src\main.c:58:0:
+../Inc/../ethernet/socket.h:272:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'volatile uint8_t * {aka volatile unsigned char *}'
+ int32_t recv(uint8_t sn, uint8_t * buf, uint16_t len);
+         ^~~~
+..\Src\main.c:341:25: warning: passing argument 1 of 'eth_cmds_analysis' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+       eth_cmds_analysis(&fobos_eth_buf);
+                         ^
+..\Src\main.c:180:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+ void eth_cmds_analysis(fobos_protocol_buf_u *);
+      ^~~~~~~~~~~~~~~~~
+..\Src\main.c:267:62: warning: unused variable 'rcv_buf' [-Wunused-variable]
+   uint8_t buf[8] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'}, rcv_buf[9];
+                                                              ^~~~~~~
+..\Src\main.c:267:11: warning: unused variable 'buf' [-Wunused-variable]
+   uint8_t buf[8] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'}, rcv_buf[9];
+           ^~~
+arm-atollic-eabi-gcc -o test_proj.elf Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_cortex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_fdcan.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_gpio.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hsem.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_mdma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pcd.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pcd_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_ll_usb.o Middlewares\ST\STM32_USB_Device_Library\Class\CDC\Src\usbd_cdc.o Middlewares\ST\STM32_USB_Device_Library\Core\Src\usbd_core.o Middlewares\ST\STM32_USB_Device_Library\Core\Src\usbd_ctlreq.o Middlewares\ST\STM32_USB_Device_Library\Core\Src\usbd_ioreq.o Src\main.o Src\stm32h7xx_hal_msp.o Src\stm32h7xx_it.o Src\system_stm32h7xx.o Src\usb_device.o Src\usbd_cdc_if.o Src\usbd_conf.o Src\usbd_desc.o ethernet\socket.o ethernet\w5200.o ethernet\wizchip_conf.o ethernet\wiznet_spi.o startup\startup_stm32h743xx.o -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -T../STM32H743VI_FLASH.ld -specs=nosys.specs -static -Wl,--gc-sections -Wl,--defsym=malloc_getpagesize_P=0x80 -Wl,--start-group -lc -lm -Wl,--end-group -specs=nano.specs 
+C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\ide\jre\bin\java -jar C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\Tools\arm-atollic-reports.jar convert-hex sizeinfo test_proj.elf 
+Generate build reports...
+Converting build output to hex
+Output sent to: test_proj.hex
+Converting build output to hex done
+Print size information
+   text	   data	    bss	    dec	    hex	filename
+  56768	    508	   8044	  65320	   ff28	test_proj.elf
+Print size information done
+Generate build reports done
+arm-atollic-eabi-objcopy.exe -O ihex test_proj.elf test_proj.hex 
+
+12:54:55 Build Finished (took 1s.880ms)
+

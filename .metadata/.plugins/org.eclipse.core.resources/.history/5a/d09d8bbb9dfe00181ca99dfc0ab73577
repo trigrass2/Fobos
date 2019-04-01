@@ -1,0 +1,15 @@
+/*
+ * StartDefaultTask_FreeRTOS.h
+ *
+ *  Created on: 12 дек. 2018 г.
+ *      Author: zilkov
+ */
+
+#ifndef STARTDEFAULTTASK_FREERTOS_H_
+#define STARTDEFAULTTASK_FREERTOS_H_
+
+#include "cmsis_os.h"
+
+void StartDefaultTask(void const * argument);
+
+#endif /* STARTDEFAULTTASK_FREERTOS_H_ */

@@ -1,0 +1,891 @@
+/* USER CODE BEGIN Header */
+/**
+  ******************************************************************************
+  * @file           : main.c
+  * @brief          : Main program body
+  ******************************************************************************
+  * This notice applies to any and all portions of this file
+  * that are not between comment pairs USER CODE BEGIN and
+  * USER CODE END. Other portions of this file, whether 
+  * inserted by the user or by software development tools
+  * are owned by their respective copyright owners.
+  *
+  * Copyright (c) 2019 STMicroelectronics International N.V. 
+  * All rights reserved.
+  *
+  * Redistribution and use in source and binary forms, with or without 
+  * modification, are permitted, provided that the following conditions are met:
+  *
+  * 1. Redistribution of source code must retain the above copyright notice, 
+  *    this list of conditions and the following disclaimer.
+  * 2. Redistributions in binary form must reproduce the above copyright notice,
+  *    this list of conditions and the following disclaimer in the documentation
+  *    and/or other materials provided with the distribution.
+  * 3. Neither the name of STMicroelectronics nor the names of other 
+  *    contributors to this software may be used to endorse or promote products 
+  *    derived from this software without specific written permission.
+  * 4. This software, including modifications and/or derivative works of this 
+  *    software, must execute solely and exclusively on microcontroller or
+  *    microprocessor devices manufactured by or for STMicroelectronics.
+  * 5. Redistribution and use of this software other than as permitted under 
+  *    this license is void and will automatically terminate your rights under 
+  *    this license. 
+  *
+  * THIS SOFTWARE IS PROVIDED BY STMICROELECTRONICS AND CONTRIBUTORS "AS IS" 
+  * AND ANY EXPRESS, IMPLIED OR STATUTORY WARRANTIES, INCLUDING, BUT NOT 
+  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+  * PARTICULAR PURPOSE AND NON-INFRINGEMENT OF THIRD PARTY INTELLECTUAL PROPERTY
+  * RIGHTS ARE DISCLAIMED TO THE FULLEST EXTENT PERMITTED BY LAW. IN NO EVENT 
+  * SHALL STMICROELECTRONICS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+  * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+  * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  *
+  ******************************************************************************
+  */
+/* USER CODE END Header */
+
+/* Includes ------------------------------------------------------------------*/
+#include "main.h"
+#include "usb_device.h"
+
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+#include <../ethernet/w5200.h>
+#include <../ethernet/socket.h>
+#include <../ethernet/wizchip_conf.h>
+#include "Universal_controller_PC_protocol.h"
+
+#define LED_VD1(state)		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, state)
+#define LED_VD2(state)		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_1, state)
+#define LED_VD5(state)		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_12, state)
+#define LED_VD6(state)		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, state)
+#define LED_VD7(state)		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, state)
+
+#define DATA_READ_CMD 	0x00
+#define DATA_WRITE_CMD	0x80
+
+#define PIN_nINT		 	HAL_GPIO_ReadPin(GPIOD,GPIO_PIN_7)
+#define PIN_nCS1(state) 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, state)
+#define PIN_PWDN(state) 	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, state)
+#define PIN_nRESET(state) 	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_4, state)
+/* USER CODE END Includes */
+
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN PTD */
+
+/* USER CODE END PTD */
+
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+
+/* USER CODE END PD */
+
+/* Private macro -------------------------------------------------------------*/
+/* USER CODE BEGIN PM */
+
+/* USER CODE END PM */
+
+/* Private variables ---------------------------------------------------------*/
+
+FDCAN_HandleTypeDef hfdcan2;
+
+SPI_HandleTypeDef hspi3;
+DMA_HandleTypeDef hdma_spi3_tx;
+
+TIM_HandleTypeDef htim7;
+
+UART_HandleTypeDef huart6;
+
+/* USER CODE BEGIN PV */
+/* Private variables ---------------------------------------------------------*/
+
+/* USER CODE END PV */
+
+/* Private function prototypes -----------------------------------------------*/
+void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
+static void MX_DMA_Init(void);
+static void MX_USART6_UART_Init(void);
+static void MX_TIM7_Init(void);
+static void MX_SPI3_Init(void);
+static void MX_FDCAN2_Init(void);
+/* USER CODE BEGIN PFP */
+/* Private function prototypes -----------------------------------------------*/
+
+void FDCAN_Config(uint32_t adr)
+{
+
+  /* Configure Rx filter */
+	FDCAN_FilterTypeDef sFilterConfig;
+	sFilterConfig.IdType = FDCAN_STANDARD_ID;
+	sFilterConfig.FilterIndex = 0;
+	sFilterConfig.FilterType = FDCAN_FILTER_MASK;
+	sFilterConfig.FilterConfig = FDCAN_FILTER_TO_RXBUFFER;
+	sFilterConfig.FilterID1 = adr;
+	sFilterConfig.FilterID2 = 0x01F;
+	HAL_FDCAN_ConfigGlobalFilter(&hfdcan2, FDCAN_REJECT, FDCAN_REJECT, DISABLE, DISABLE);
+	if (HAL_FDCAN_ConfigFilter(&hfdcan2, &sFilterConfig) != HAL_OK)
+	{
+		/* Filter configuration Error */
+		Error_Handler();
+	}
+
+  /* Start the FDCAN module */
+  if (HAL_FDCAN_Start(&hfdcan2) != HAL_OK)
+  {
+    /* Start Error */
+    Error_Handler();
+  }
+}
+
+char can_tx_func(FDCAN_HandleTypeDef *hfdcan, unsigned int ID, uint32_t data_lenght, uint8_t *data, uint32_t can_buf_num)
+{
+	/* Prepare Tx Header */
+	FDCAN_TxHeaderTypeDef TxHeader;
+	TxHeader.Identifier = ID;
+	TxHeader.IdType = FDCAN_STANDARD_ID;
+	TxHeader.TxFrameType = FDCAN_DATA_FRAME;
+	TxHeader.DataLength = (data_lenght<<16);
+	TxHeader.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
+	TxHeader.BitRateSwitch = FDCAN_BRS_OFF;
+	TxHeader.FDFormat = FDCAN_CLASSIC_CAN;
+	TxHeader.TxEventFifoControl = FDCAN_TX_EVENT;
+	TxHeader.MessageMarker = 0;
+	//HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, &TxHeader, data);
+	HAL_FDCAN_AddMessageToTxBuffer(hfdcan, &TxHeader, data, can_buf_num);
+	HAL_FDCAN_EnableTxBufferRequest(hfdcan, can_buf_num);
+	return 0xFF;
+}
+
+void wiznet820_send_data(SPI_HandleTypeDef *hspi, unsigned short address, uint8_t data_value);
+uint8_t wiznet820_read_data(SPI_HandleTypeDef *hspi, unsigned short address){
+		PIN_nCS1(RESET);
+		uint8_t data[5] = {0};
+		unsigned short adr, data_lenght = 1;
+		uint8_t data_rcv=0;
+		adr = address;
+		data[0] = (uint8_t)(adr>>8);
+		data[1] = (uint8_t)adr;
+		data[2] = (uint8_t)(DATA_READ_CMD|(data_lenght>>8));
+		data[3] = (uint8_t)data_lenght;
+		HAL_SPI_Transmit(hspi, data, 4, 10);
+		HAL_SPI_Receive(hspi, &data_rcv, 1, 10);
+		PIN_nCS1(SET);
+		return data_rcv;
+}
+void eth_cmds_analysis(fobos_protocol_buf_u *);
+void uart_send_byte(uint8_t *data, char lenght);
+/* USER CODE END PFP */
+
+/* Private user code ---------------------------------------------------------*/
+/* USER CODE BEGIN 0 */
+volatile char tmr7_flag=0;
+
+uint8_t s_Buffer[8];
+volatile uint32_t count_rs485_bytes=0;
+volatile uint8_t buff = 0, buf_rx[3] = {0};
+
+int rand_val(int min, int max){
+   return min + rand() / (RAND_MAX / (max - min + 1) + 1);
+}
+
+/* USER CODE END 0 */
+
+/**
+  * @brief  The application entry point.
+  * @retval int
+  */
+int main(void)
+{
+  /* USER CODE BEGIN 1 */
+
+  /* USER CODE END 1 */
+
+  /* MCU Configuration--------------------------------------------------------*/
+
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
+//FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+//FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
+  /* Configure the system clock */
+  SystemClock_Config();
+
+  /* USER CODE BEGIN SysInit */
+
+  /* USER CODE END SysInit */
+
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_DMA_Init();
+  MX_USB_DEVICE_Init();
+  MX_USART6_UART_Init();
+  MX_TIM7_Init();
+  MX_SPI3_Init();
+  MX_FDCAN2_Init();
+  /* USER CODE BEGIN 2 */
+  PIN_PWDN(SET);
+  PIN_nRESET(RESET);
+  //HAL_Delay(200);
+  LED_VD5(SET);
+  LED_VD6(SET);
+  LED_VD7(SET);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, SET);
+#define SOCKET_NMBR		0
+#define SOCKET0 		0
+#define SOCKET1 		1
+  uint16_t socket_port = 15000;
+  PIN_PWDN(RESET);
+  PIN_nRESET(SET);
+  PIN_nCS1(SET);
+  HAL_Delay(800);
+
+  {
+	  uint8_t ip_gateway_adr[4] = {192,168,100,2};
+	  uint8_t subnet_mask_adr[4] = {255,255,255,0};
+	  uint8_t source_hardware_adr[6] = {0x00,0x08,0xDC,0x01,0x02,0x03};
+	  uint8_t ip_source_adr[4] = {192,168,100,1};
+	  uint8_t ip_destination_adr[4] = {192,168,100,2};
+
+		setSUBR(subnet_mask_adr);
+		setGAR(ip_gateway_adr);
+		setSHAR(source_hardware_adr);
+		setSIPR(ip_source_adr);
+
+		setsockopt(SOCKET0, SO_DESTPORT, &socket_port);
+		setsockopt(SOCKET0, SO_DESTIP, ip_destination_adr);
+  }
+  FDCAN_Config(1);
+  HAL_TIM_Base_Start_IT(&htim7);
+
+  uint8_t buf[8] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'}, rcv_buf[9];
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, RESET);
+
+  //HAL_MDMA_Start(&hmdma_mdma_channel0_dma1_stream0_tc_0, )
+  /* USER CODE END 2 */
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+
+
+  while (1)
+  {
+	 /* if(0)
+	  if(HAL_UART_Receive(&huart6, rcv_buf, 9, 100) == HAL_OK){
+		  LED_VD7(RESET);
+		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, SET);
+		  HAL_UART_Transmit(&huart6, rcv_buf, 9, 100);
+		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, RESET);
+		  LED_VD7(SET);
+	  }
+
+	  int delay = rand_val(100,400);
+	  HAL_Delay(delay);
+	  {static a=0;
+	  LED_VD7(a);
+	  a^=1;}
+	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, SET);
+	  uint8_t ok[] = "987654321";
+	  HAL_UART_Transmit(&huart6, ok, 9, 100);
+	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, RESET);
+
+	  if(tmr7_flag)
+	  {
+		  LED_VD7(RESET);
+		  tmr7_flag = 0;
+		  uint8_t tx_data[2] = {0x31, 0x32};
+		  static int a = 0;
+
+		  LED_VD7(SET);
+		  if(a)
+			  LED_VD5(a^=1);
+		  else{
+			  int8_t temp_socket_state=0xAA;
+			  //HAL_SPI_Transmit_DMA(&hspi3, &temp_socket_state, 1);
+			  //HAL_SPI_Transmit(&hspi3, &temp_socket_state, 1, 100);
+			  LED_VD5(a^=1);
+			  //can_tx_func(&hfdcan2, 0xAA, 2, tx_data, FDCAN_TX_BUFFER0);
+
+		  }
+	  }*/
+
+	  if(tmr7_flag)
+	  {
+		  tmr7_flag=0;
+		  static char a=0;
+			if(a)
+			{
+				int8_t temp_socket_state=0, temp_socket_interrupt=0;
+				getsockopt(SOCKET0,SO_STATUS,&temp_socket_state);
+				ctlsocket(SOCKET0,SIK_RECEIVED,&temp_socket_interrupt);
+				if(temp_socket_state == SOCK_ESTABLISHED)
+				{
+					LED_VD2(SET);
+					//if(getSn_IR(SOCKET0)&Sn_IR_RECV)
+					if(getsockopt(SOCKET0, SO_RECVBUF, &temp_socket_state) == 1)
+					{
+						uint16_t length, src_mask, src_ptr;
+						//src_mask = getSn_RX_RD(SOCKET0) & getSn_RxMASK(SOCKET0);
+						//src_ptr = getSn_RxBASE(SOCKET0);
+						volatile fobos_protocol_buf_u fobos_eth_buf;
+						uint8_t zero[255] = {0};
+						//memcpy(fobos_eth_buf.data_to_transmit, zero, 255);
+						recv(SOCKET0,fobos_eth_buf.data_to_transmit, 255);// getSn_RX_RSR(SOCKET0) - length
+						eth_cmds_analysis(&fobos_eth_buf);
+					}//if eth msg received
+				}
+				else if(temp_socket_state == SOCK_CLOSE_WAIT)
+					close(SOCKET0);
+
+				else if(temp_socket_state == SOCK_CLOSED)
+				{
+					if(socket(SOCKET0, Sn_MR_TCP, socket_port, SF_TCP_NODELAY) == SOCKET0)
+					  if(listen(SOCKET0) == SOCK_OK)
+							LED_VD2(RESET);
+				}
+
+				//USB
+				//CDC_Transmit_FS(s,strlen(s));
+				//USB end
+
+				LED_VD6(RESET);
+				//LED_VD1(SET);
+				  }
+			else
+			{
+				//LED_VD1(RESET);
+				LED_VD6(SET);
+
+			}
+			a^=1;
+							/*uint8_t length = 10;
+							uint8_t data1[] = "01234567";
+							uint8_t data2[] = "089ABCDE";
+							data1[0] = length;
+							data2[0] = length;
+							can_tx_func(&hfdcan2, 0x645, 8, data1, FDCAN_TX_BUFFER0);
+							can_tx_func(&hfdcan2, 0x645, 8, data2, FDCAN_TX_BUFFER1);//working!*/
+	  }
+  }
+
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+
+
+  /* USER CODE END 3 */
+}
+
+/**
+  * @brief System Clock Configuration
+  * @retval None
+  */
+void SystemClock_Config(void)
+{
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+  RCC_CRSInitTypeDef RCC_CRSInitStruct = {0};
+
+  /**Supply configuration update enable 
+  */
+  MODIFY_REG(PWR->CR3, PWR_CR3_SCUEN, 0);
+  /**Configure the main internal regulator output voltage 
+  */
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
+
+  while ((PWR->D3CR & (PWR_D3CR_VOSRDY)) != PWR_D3CR_VOSRDY) 
+  {
+    
+  }
+  /**Macro to configure the PLL clock source 
+  */
+  __HAL_RCC_PLL_PLLSOURCE_CONFIG(RCC_PLLSOURCE_HSE);
+  /**Initializes the CPU, AHB and APB busses clocks 
+  */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLM = 5;
+  RCC_OscInitStruct.PLL.PLLN = 72;
+  RCC_OscInitStruct.PLL.PLLP = 4;
+  RCC_OscInitStruct.PLL.PLLQ = 8;
+  RCC_OscInitStruct.PLL.PLLR = 2;
+  RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_2;
+  RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
+  RCC_OscInitStruct.PLL.PLLFRACN = 0;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /**Initializes the CPU, AHB and APB busses clocks 
+  */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
+                              |RCC_CLOCKTYPE_D3PCLK1|RCC_CLOCKTYPE_D1PCLK1;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.SYSCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB3CLKDivider = RCC_APB3_DIV8;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_APB1_DIV2;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV8;
+  RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV8;
+
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USART6|RCC_PERIPHCLK_FDCAN
+                              |RCC_PERIPHCLK_SPI3|RCC_PERIPHCLK_USB;
+  PeriphClkInitStruct.PLL2.PLL2M = 20;
+  PeriphClkInitStruct.PLL2.PLL2N = 150;
+  PeriphClkInitStruct.PLL2.PLL2P = 2;
+  PeriphClkInitStruct.PLL2.PLL2Q = 30;
+  PeriphClkInitStruct.PLL2.PLL2R = 2;
+  PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_0;
+  PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOMEDIUM;
+  PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
+  PeriphClkInitStruct.PLL3.PLL3M = 8;
+  PeriphClkInitStruct.PLL3.PLL3N = 96;
+  PeriphClkInitStruct.PLL3.PLL3P = 128;
+  PeriphClkInitStruct.PLL3.PLL3Q = 5;
+  PeriphClkInitStruct.PLL3.PLL3R = 2;
+  PeriphClkInitStruct.PLL3.PLL3RGE = RCC_PLL3VCIRANGE_1;
+  PeriphClkInitStruct.PLL3.PLL3VCOSEL = RCC_PLL3VCOWIDE;
+  PeriphClkInitStruct.PLL3.PLL3FRACN = 0;
+  PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL;
+  PeriphClkInitStruct.FdcanClockSelection = RCC_FDCANCLKSOURCE_PLL;
+  PeriphClkInitStruct.Usart16ClockSelection = RCC_USART16CLKSOURCE_PLL2;
+  PeriphClkInitStruct.UsbClockSelection = RCC_USBCLKSOURCE_PLL3;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /**Enable the SYSCFG APB clock 
+  */
+  __HAL_RCC_CRS_CLK_ENABLE();
+  /**Configures CRS 
+  */
+  RCC_CRSInitStruct.Prescaler = RCC_CRS_SYNC_DIV1;
+  RCC_CRSInitStruct.Source = RCC_CRS_SYNC_SOURCE_USB2;
+  RCC_CRSInitStruct.Polarity = RCC_CRS_SYNC_POLARITY_RISING;
+  RCC_CRSInitStruct.ReloadValue = __HAL_RCC_CRS_RELOADVALUE_CALCULATE(48000000,1000);
+  RCC_CRSInitStruct.ErrorLimitValue = 34;
+  RCC_CRSInitStruct.HSI48CalibrationValue = 32;
+
+  HAL_RCCEx_CRSConfig(&RCC_CRSInitStruct);
+}
+
+/**
+  * @brief FDCAN2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_FDCAN2_Init(void)
+{
+
+  /* USER CODE BEGIN FDCAN2_Init 0 */
+
+  /* USER CODE END FDCAN2_Init 0 */
+
+  /* USER CODE BEGIN FDCAN2_Init 1 */
+
+  /* USER CODE END FDCAN2_Init 1 */
+  hfdcan2.Instance = FDCAN2;
+  hfdcan2.Init.FrameFormat = FDCAN_FRAME_CLASSIC;
+  hfdcan2.Init.Mode = FDCAN_MODE_NORMAL;
+  hfdcan2.Init.AutoRetransmission = DISABLE;
+  hfdcan2.Init.TransmitPause = DISABLE;
+  hfdcan2.Init.NominalPrescaler = 4;
+  hfdcan2.Init.NominalSyncJumpWidth = 1;
+  hfdcan2.Init.NominalTimeSeg1 = 15;
+  hfdcan2.Init.NominalTimeSeg2 = 2;
+  hfdcan2.Init.DataPrescaler = 1;
+  hfdcan2.Init.DataSyncJumpWidth = 1;
+  hfdcan2.Init.DataTimeSeg1 = 1;
+  hfdcan2.Init.DataTimeSeg2 = 1;
+  hfdcan2.Init.MessageRAMOffset = 0;
+  hfdcan2.Init.StdFiltersNbr = 1;
+  hfdcan2.Init.ExtFiltersNbr = 0;
+  hfdcan2.Init.RxFifo0ElmtsNbr = 0;
+  hfdcan2.Init.RxFifo0ElmtSize = FDCAN_DATA_BYTES_8;
+  hfdcan2.Init.RxFifo1ElmtsNbr = 0;
+  hfdcan2.Init.RxFifo1ElmtSize = FDCAN_DATA_BYTES_8;
+  hfdcan2.Init.RxBuffersNbr = 1;
+  hfdcan2.Init.RxBufferSize = FDCAN_DATA_BYTES_8;
+  hfdcan2.Init.TxEventsNbr = 0;
+  hfdcan2.Init.TxBuffersNbr = 5;
+  hfdcan2.Init.TxFifoQueueElmtsNbr = 0;
+  hfdcan2.Init.TxFifoQueueMode = FDCAN_TX_QUEUE_OPERATION;
+  hfdcan2.Init.TxElmtSize = FDCAN_DATA_BYTES_8;
+  hfdcan2.msgRam.StandardFilterSA = 0;
+  hfdcan2.msgRam.ExtendedFilterSA = 0;
+  hfdcan2.msgRam.RxFIFO0SA = 0;
+  hfdcan2.msgRam.RxFIFO1SA = 0;
+  hfdcan2.msgRam.RxBufferSA = 0;
+  hfdcan2.msgRam.TxEventFIFOSA = 0;
+  hfdcan2.msgRam.TxBufferSA = 0;
+  hfdcan2.msgRam.TxFIFOQSA = 0;
+  hfdcan2.msgRam.TTMemorySA = 0;
+  hfdcan2.msgRam.EndAddress = 0;
+  hfdcan2.ErrorCode = 0;
+  if (HAL_FDCAN_Init(&hfdcan2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN FDCAN2_Init 2 */
+
+  /* USER CODE END FDCAN2_Init 2 */
+
+}
+
+/**
+  * @brief SPI3 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_SPI3_Init(void)
+{
+
+  /* USER CODE BEGIN SPI3_Init 0 */
+
+  /* USER CODE END SPI3_Init 0 */
+
+  /* USER CODE BEGIN SPI3_Init 1 */
+
+  /* USER CODE END SPI3_Init 1 */
+  /* SPI3 parameter configuration*/
+  hspi3.Instance = SPI3;
+  hspi3.Init.Mode = SPI_MODE_MASTER;
+  hspi3.Init.Direction = SPI_DIRECTION_2LINES;
+  hspi3.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi3.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi3.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi3.Init.NSS = SPI_NSS_SOFT;
+  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
+  hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
+  hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
+  hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+  hspi3.Init.CRCPolynomial = 7;
+  hspi3.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
+  hspi3.Init.NSSPolarity = SPI_NSS_POLARITY_LOW;
+  hspi3.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA;
+  hspi3.Init.TxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
+  hspi3.Init.RxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
+  hspi3.Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE;
+  hspi3.Init.MasterInterDataIdleness = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE;
+  hspi3.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE;
+  hspi3.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_DISABLE;
+  hspi3.Init.IOSwap = SPI_IO_SWAP_DISABLE;
+  if (HAL_SPI_Init(&hspi3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN SPI3_Init 2 */
+
+  /* USER CODE END SPI3_Init 2 */
+
+}
+
+/**
+  * @brief TIM7 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM7_Init(void)
+{
+
+  /* USER CODE BEGIN TIM7_Init 0 */
+
+  /* USER CODE END TIM7_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM7_Init 1 */
+
+  /* USER CODE END TIM7_Init 1 */
+  htim7.Instance = TIM7;
+  htim7.Init.Prescaler = 3000;
+  htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim7.Init.Period = 2345;
+  htim7.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim7) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim7, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM7_Init 2 */
+
+  /* USER CODE END TIM7_Init 2 */
+
+}
+
+/**
+  * @brief USART6 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART6_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART6_Init 0 */
+
+  /* USER CODE END USART6_Init 0 */
+
+  /* USER CODE BEGIN USART6_Init 1 */
+
+  /* USER CODE END USART6_Init 1 */
+  huart6.Instance = USART6;
+  huart6.Init.BaudRate = 9600;
+  huart6.Init.WordLength = UART_WORDLENGTH_8B;
+  huart6.Init.StopBits = UART_STOPBITS_1;
+  huart6.Init.Parity = UART_PARITY_NONE;
+  huart6.Init.Mode = UART_MODE_TX_RX;
+  huart6.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart6.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart6.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  huart6.Init.Prescaler = UART_PRESCALER_DIV1;
+  huart6.Init.FIFOMode = UART_FIFOMODE_DISABLE;
+  huart6.Init.TXFIFOThreshold = UART_TXFIFO_THRESHOLD_1_8;
+  huart6.Init.RXFIFOThreshold = UART_RXFIFO_THRESHOLD_1_8;
+  huart6.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&huart6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART6_Init 2 */
+  HAL_NVIC_SetPriority(USART6_IRQn, 0, 1);
+  HAL_NVIC_EnableIRQ(USART6_IRQn);
+  /* USER CODE END USART6_Init 2 */
+
+}
+
+/** 
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void) 
+{
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA1_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA1_Stream0_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
+
+}
+
+/**
+  * @brief GPIO Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_GPIO_Init(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOH_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOE_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8|GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_4, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6|GPIO_PIN_7, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : PA5 PA6 PA7 */
+  GPIO_InitStruct.Pin = GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PC4 PC5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PB0 PB1 PB2 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PE8 PE9 PE10 PE11 */
+  GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PE12 PE13 PE14 PE15 */
+  GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PC8 PC10 PC11 PC12 */
+  GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PD1 PD2 PD4 */
+  GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_4;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PD7 */
+  GPIO_InitStruct.Pin = GPIO_PIN_7;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PB6 */
+  GPIO_InitStruct.Pin = GPIO_PIN_6;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PB7 */
+  GPIO_InitStruct.Pin = GPIO_PIN_7;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /**/
+  HAL_I2CEx_EnableFastModePlus(SYSCFG_PMCR_I2C_PB6_FMP);
+
+}
+
+/* USER CODE BEGIN 4 */
+
+void uart_send_byte(uint8_t *data, char lenght){
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, SET);
+	HAL_UART_Transmit(&huart6, data, lenght, 10);
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, RESET);
+}
+
+void wiznet820_send_data(SPI_HandleTypeDef *hspi, unsigned short address, uint8_t data_value){
+	PIN_nCS1(RESET);
+	HAL_Delay(10);
+	unsigned short adr, data_lenght = 1;
+	adr = address;
+	uint8_t data[5] = {0};
+	data[0] = (uint8_t)(adr>>8);
+	data[1] = (uint8_t)adr;
+	data[2] = (uint8_t)(DATA_WRITE_CMD|(data_lenght>>8));
+	data[3] = (uint8_t)data_lenght;
+	data[4] = data_value;
+	HAL_SPI_Transmit(hspi, data, 5, 10);
+	PIN_nCS1(SET);
+}
+
+void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){//убрать строку с [0]=0!
+	fobos_eth_buf->fobos_protocol_buf_t.CMD = CMD;
+	fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N = bytes_in_packet_N;
+	for(int i=0; i<bytes_in_packet_N; i++)
+	fobos_eth_buf->fobos_protocol_buf_t.data[i] = (uint8_t)(rand()%7);
+	fobos_eth_buf->fobos_protocol_buf_t.data[0]=0;//!!!@@@###
+	send(SOCKET0,fobos_eth_buf->data_to_transmit,bytes_in_packet_N+2);
+}
+
+void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
+	switch(fobos_eth_buf->fobos_protocol_buf_t.CMD)
+	{
+	case FOBOS_ETH_ECHO:
+
+			//fobos_eth_protocol_send(FOBOS_ETH_ECHO, getSn_RX_RSR(SOCKET0), fobos_eth_buf);
+			send(SOCKET0, fobos_eth_buf->data_to_transmit, fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N+2);
+
+		break;
+	case  FOBOS_ETH_RST:
+		fobos_eth_protocol_send(FOBOS_ETH_RST, 1, fobos_eth_buf);
+		break;
+	case FOBOS_SENSORS_STATE:
+		fobos_eth_protocol_send(FOBOS_SENSORS_STATE, 4, fobos_eth_buf);
+		break;
+	case FOBOS_GENERATOR_STATE:
+		fobos_eth_protocol_send(FOBOS_GENERATOR_STATE, 2, fobos_eth_buf);
+		break;
+	case FOBOS_SERVOMOTOR_PLACEMENT:
+		fobos_eth_protocol_send(FOBOS_SERVOMOTOR_PLACEMENT, 4, fobos_eth_buf);
+		break;
+	case FOBOS_STATEMENT:
+		fobos_eth_protocol_send(FOBOS_STATEMENT, 2, fobos_eth_buf);
+		break;
+	case FOBOS_CMD_BASING_SERVO:
+		fobos_eth_protocol_send(FOBOS_CMD_BASING_SERVO, 1, fobos_eth_buf);
+		break;
+	case FOBOS_CMD_WORK:
+		fobos_eth_protocol_send(FOBOS_CMD_WORK, 1, fobos_eth_buf);
+		break;
+	case FOBOS_CMD_BARRIER:
+		fobos_eth_protocol_send(FOBOS_CMD_BARRIER, 2, fobos_eth_buf);
+		break;
+	}
+}
+
+/* USER CODE END 4 */
+
+/**
+  * @brief  This function is executed in case of error occurrence.
+  * @retval None
+  */
+void Error_Handler(void)
+{
+  /* USER CODE BEGIN Error_Handler_Debug */
+  /* User can add his own implementation to report the HAL error return state */
+  while(1)
+  {
+  }
+  /* USER CODE END Error_Handler_Debug */
+}
+
+#ifdef  USE_FULL_ASSERT
+/**
+  * @brief  Reports the name of the source file and the source line number
+  *         where the assert_param error has occurred.
+  * @param  file: pointer to the source file name
+  * @param  line: assert_param error line source number
+  * @retval None
+  */
+void assert_failed(uint8_t *file, uint32_t line)
+{ 
+  /* USER CODE BEGIN 6 */
+  /* User can add his own implementation to report the file name and line number,
+     tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+  /* USER CODE END 6 */
+}
+#endif /* USE_FULL_ASSERT */
+
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

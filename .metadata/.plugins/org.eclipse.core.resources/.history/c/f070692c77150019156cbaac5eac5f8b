@@ -1,0 +1,262 @@
+/*
+ * BoardComTask_FreeRTOS.c
+ *
+ *  Created on: 12 дек. 2018 г.
+ *      Author: Zilkov
+ */
+/* USER CODE BEGIN Header_board_com_task */
+/**
+* @brief Function implementing the board_com thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_board_com_task */
+#include "BoardComTask_FreeRTOS.h"
+
+char can_tx_func(FDCAN_HandleTypeDef *hfdcan, unsigned int ID, uint32_t data_lenght, uint8_t *data)
+{
+	/* Prepare Tx Header */
+	FDCAN_TxHeaderTypeDef TxHeader;
+	TxHeader.Identifier = ID;
+	TxHeader.IdType = FDCAN_STANDARD_ID;
+	TxHeader.TxFrameType = FDCAN_DATA_FRAME;
+	TxHeader.DataLength = (data_lenght<<16);//shifts 16 bits to the left
+	TxHeader.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
+	TxHeader.BitRateSwitch = FDCAN_BRS_OFF;
+	TxHeader.FDFormat = FDCAN_CLASSIC_CAN;
+	TxHeader.TxEventFifoControl = FDCAN_NO_TX_EVENTS;
+	TxHeader.MessageMarker = 0;
+
+	if(HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, &TxHeader, data) == 0)
+	  return 0xFF;
+
+	else
+	  return 0;
+}
+
+uint32_t check_adr_func(){
+	uint32_t address_buf=0;
+	if(HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_12))//1
+		address_buf |= 1;
+	if(HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_13))//2
+			address_buf |= 2;
+	if(HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_14))//3
+			address_buf |= 4;
+	if(HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_15))//4
+			address_buf |= 8;
+	if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_10))//5
+			address_buf |= 16;
+	/*if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_11))//6
+			address_buf += 6;*/
+	return address_buf;
+}
+
+void FDCAN_Config(uint32_t adr)
+{
+
+  /* Configure Rx filter */
+	FDCAN_FilterTypeDef sFilterConfig;
+	sFilterConfig.IdType = FDCAN_STANDARD_ID;
+	sFilterConfig.FilterIndex = 0;
+	sFilterConfig.FilterType = FDCAN_FILTER_MASK;
+	sFilterConfig.FilterConfig = FDCAN_FILTER_TO_RXFIFO0;
+	sFilterConfig.FilterID1 = adr;
+	sFilterConfig.FilterID2 = 0x01F;
+	HAL_FDCAN_ConfigGlobalFilter(&hfdcan2, FDCAN_REJECT, FDCAN_REJECT, DISABLE, DISABLE);
+	if (HAL_FDCAN_ConfigFilter(&hfdcan2, &sFilterConfig) != HAL_OK)
+	{
+		/* Filter configuration Error */
+		Error_Handler();
+	}
+
+  /* Start the FDCAN module */
+  if (HAL_FDCAN_Start(&hfdcan2) != HAL_OK)
+  {
+    /* Start Error */
+    Error_Handler();
+  }
+}
+
+void rs485_tx_task(void const * argument)//communicates with rs485
+{
+	extern UART_HandleTypeDef huart6;
+	uint32_t can_adr = check_adr_func();
+	rs485_buf_t buf = {{0}, 0};
+	int count_length = 0;
+	for(;;)
+	{
+		if(xSemaphoreTake(xSemaphore_rs485, portMAX_DELAY))
+		{
+				  rs485_buf_t buf_t = {{0}, 0};
+				  xQueueReceive(xQueue_rs485_tx_to_device, &buf_t, 10);
+				  buf.lenght = buf_t.lenght;
+				  	if(buf.lenght < RS485_PACKET_SIZE && count_length < RS485_PACKET_SIZE && buf.lenght)
+					{
+						for(int i=0; i<7; i++, count_length++)
+							buf.data[count_length] = buf_t.data[i];
+
+						if(count_length >= buf.lenght)
+						{
+							HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, SET);
+							HAL_UART_Transmit(&huart6, buf.data, buf.lenght, 10);
+							count_length=0;
+							uint8_t can_tx = 1;
+							can_tx_func(&hfdcan2, can_adr + 0x6A0 + 0x100, 1, &can_tx);
+							HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, RESET);
+						}
+					}
+				  /*static char a=1;
+				  LED_VD7(a^=1);//*/
+			  }
+
+	}
+}
+
+void rs485_rx_task(void const * argument)
+{
+  /* USER CODE BEGIN rs485_rx_task */
+	//standart baudrate is 9600
+	uint32_t length = 8;//standart rs485 length. Must be less than 21!!!
+	extern UART_HandleTypeDef huart6;
+	rs485_buf_t buf_rx = {{0}, 0};
+	buf_rx.lenght = 8;
+	uint8_t buf[3] = {0};
+	//HAL_DMA_Start(&hdma_usart6_rx, huart6.pRxBuffPtr, buf_rx.data, length);
+  /* Infinite loop */
+  for(;;)
+  {
+	  if(HAL_UART_Receive(&huart6, buf_rx_dma.data, sizeof(buf_rx.data), 7*9) == HAL_OK){
+		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, SET);
+		  HAL_UART_Transmit(&huart6, buf_rx_dma.data, length, length*9);
+		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, RESET);
+	  }
+	  /*HAL_StatusTypeDef status=HAL_UART_Receive(&huart6, buf_rx.data, length, length*10);//10 мсек - время передачи байта
+	  if(status == HAL_OK)
+	  {
+		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, SET);
+		  HAL_UART_Transmit(&huart6, buf_rx.data, length, length*9);
+		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, RESET);
+
+		  buf_rx.lenght = (uint8_t)length;
+		  xQueueSend(xQueue_rs485_rx_from_device, &buf_rx, 10);
+	  }*/
+  }
+	  //else if(status == HAL_TIMEOUT);
+  /* USER CODE END rs485_rx_task */
+}
+
+void board_com_task(void const * argument)//communicates with CAN-bus
+{
+  /* USER CODE BEGIN board_com_task */
+	FDCAN_RxHeaderTypeDef RxHeader;
+	uint8_t Rx_Can_Data[8] = {0};
+	*Rx_Can_Data = 1;
+
+	rs485_buf_t buf_tx = {{0},0};
+	volatile rs485_buf_t buf_rx = {{0},0};
+	int32_t CAN_ID = check_adr_func();
+	FDCAN_Config(CAN_ID);
+	{
+		char adr_buf = (uint8_t)CAN_ID;
+		uint8_t buf[2] = {adr_buf,'1'};
+		can_tx_func(&hfdcan2, 0, 2, buf);
+	}
+	volatile digital_ports ports;
+
+  /* Infinite loop */
+  for(;;)
+  {
+	  HAL_IWDG_Refresh(&hiwdg1);
+	  osDelay(1);
+	  if(xQueueReceive(xQueue_rs485_rx_from_device, &buf_rx, 5))//Принятие инфы по rs485
+	  {
+		  if(buf_rx.lenght <= 7)
+		  {
+			  can_tx_func(&hfdcan2, 0x7A0+CAN_ID, buf_rx.lenght+1, &buf_rx);
+		  }
+		  else
+		  {
+			  uint8_t tx_data[8] = {0};
+			  uint8_t count_packages = 0, count_zero_points = 0;
+			  count_packages = buf_rx.lenght/7+1;
+			  for(int i = 0; count_packages > 0; i++)
+			  {
+				  if(i%8){
+					  tx_data[i%8] = buf_rx.data[i-count_zero_points];
+				  }
+				  else{
+					  tx_data[i%8] = buf_rx.lenght;
+					  count_zero_points++;
+				  }
+
+				  if((i%8) == 0 && i){
+					  if(count_packages > 1){
+						  can_tx_func(&hfdcan2, 0x7A0+CAN_ID, 8, tx_data);
+						  count_packages--;
+					  }
+					  else if(count_packages == 1){
+						  can_tx_func(&hfdcan2, 0x7A0+CAN_ID, buf_rx.lenght%7+1, tx_data);
+						  count_packages--;
+					  }
+				  }
+			  }
+		  }
+	  }/////////////окончание условия принятия инфы по rs485.
+
+	  if(can_protocol_data_analyzing(&hfdcan2, &RxHeader, Rx_Can_Data))
+	  {
+		  uint32_t address = RxHeader.Identifier;
+		  uint32_t DataLength = RxHeader.DataLength >> 16;
+
+			switch(address & 0x7E0)
+			{
+			case 0x620://Dig pins
+			{
+				if(DataLength)
+				{
+
+					ports.digital_inputs = 0;
+					ports.digital_outputs = Rx_Can_Data[0];
+					xQueueSend(xQueue_digital_ports, &ports, 10);
+					xSemaphoreGive(xSemaphore_dig_pins);
+					uint8_t tx_data[2] = {0};
+					osDelay(15);
+					xQueueReceive(xQueue_digital_ports_fb, &ports, 10);
+					tx_data[0] = ports.digital_outputs;
+					tx_data[1] = ports.digital_inputs;
+					can_tx_func(&hfdcan2, ((address&0x1F)+0x620+0x100), 2, tx_data);
+				}
+				else
+				{
+						uint8_t tx_data[2] = {0};//data0 - digout, data1 - digin pins
+						tx_data[0] = (DIG_OUT4_READ << 3) | (DIG_OUT2_READ << 2)
+									| (DIG_OUT2_READ << 1) | DIG_OUT1_READ;
+
+						tx_data[1] = (DIG_IN8<<7)|(DIG_IN7<<6)|(DIG_IN6<<5)|(DIG_IN5<<4)
+									|(DIG_IN4<<3)|(DIG_IN3<<2)|(DIG_IN2<<1)|(DIG_IN1);
+
+						can_tx_func(&hfdcan2, ((address&0x1F)+0x620+0x100), 2, tx_data);
+				}
+			}
+				break;
+
+			case 0x6A0://rs485
+			{
+				/*buf_tx.lenght = *Rx_Can_Data;
+				for(int i=1; i<DataLength; i++)
+					buf_tx.data[i-1] = Rx_Can_Data[i];
+					xQueueSend(xQueue_rs485_tx_to_device, &buf_t, 10);
+					xSemaphoreGive(xSemaphore_rs485);
+					char a=0;
+					can_tx_func(&hfdcan2, 0x7A0, 1, &a);*/
+			}//case 0x6A0 ends
+			break;
+		}//switch
+
+	  }
+  }
+}
+
+  /* USER CODE END board_com_task */
+
+

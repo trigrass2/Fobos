@@ -1,0 +1,21 @@
+/*
+ * adani_can_medical_protocol.c
+ *
+ *  Created on: 11 дек. 2018 г.
+ *      Author: zilkov
+ */
+
+#include "adani_can_medical_protocol.h"
+
+void can_protocol_data_analyzing(FDCAN_HandleTypeDef *hfdcan, uint32_t RxLocation,
+								FDCAN_RxHeaderTypeDef *pRxHeader, uint8_t *pRxData)
+{
+	if(HAL_FDCAN_IsRxBufferMessageAvailable(hfdcan, FDCAN_RX_BUFFER0)){
+		if(HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_BUFFER0, RxHeader, pRxData) == HAL_OK)
+		{
+			return 0xFF;
+		}
+		else
+			return 0;
+	}
+}

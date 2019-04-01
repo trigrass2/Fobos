@@ -1,0 +1,14 @@
+/*
+ * adani_medical_protocol.h
+ *
+ *  Created on: 10 дек. 2018 г.
+ *      Author: zilkov
+ */
+
+#ifndef ADANI_CAN_MEDICAL_PROTOCOL_H_
+#define ADANI_CAN_MEDICAL_PROTOCOL_H_
+
+//GPIO Output pins switch on/off
+
+
+#endif /* ADANI_CAN_MEDICAL_PROTOCOL_H_ */

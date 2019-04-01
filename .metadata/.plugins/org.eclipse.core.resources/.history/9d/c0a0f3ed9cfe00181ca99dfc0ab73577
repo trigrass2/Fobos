@@ -1,0 +1,42 @@
+/*
+ * StartDefaultTask_FreeRTOS.c
+ *
+ *  Created on: 12 дек. 2018 г.
+ *      Author: zilkov
+ */
+#include "own_defines.h"
+#include "adani_can_medical_protocol.h"
+#include "queue.h"
+/* USER CODE BEGIN Header_StartDefaultTask */
+/**
+  * @brief  Function implementing the defaultTask thread.
+  * @param  argument: Not used
+  * @retval None
+  */
+/* USER CODE END Header_StartDefaultTask */
+void StartDefaultTask(void const * argument)
+{
+  /* init code for USB_DEVICE */
+  MX_USB_DEVICE_Init();
+
+  /* USER CODE BEGIN 5 */
+  /* Infinite loop */
+  for(;;)
+  {
+	  //HAL_IWDG_Refresh(&hiwdg1);
+
+
+	  char lenght = 2;
+	  if(xQueueSend(xQueue1,(void*) &lenght, 301) != 1){
+		  char buf[3] = {"ALERT!\n"};
+		  CDC_Transmit_FS(buf, sizeof(buf)/sizeof(buf[0]));
+	  }
+	  char buf[0] = 0x35;//check_adr_func();
+	  CDC_Transmit_FS(buf, 1);
+	  osDelay(150);
+	  LED_VD7(SET);
+	  osDelay(150);
+	  LED_VD7(RESET);
+  }
+  /* USER CODE END 5 */
+}
