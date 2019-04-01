@@ -21,6 +21,8 @@
 #define	SDO_3BYTES_REQ	0x27
 #define	SDO_4BYTES_REQ	0x23
 
+#define SDO_REQUEST	0x40
+
 uint8_t wiznet820_read_data(SPI_HandleTypeDef *hspi, unsigned short address);
 void wiznet820_send_data(SPI_HandleTypeDef *hspi, unsigned short address, uint8_t data_value);
 void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf);
@@ -32,6 +34,7 @@ void vFobos_Start_Process();
 
 /* USER CODE BEGIN Header_EthernetTask_func */
 extern FDCAN_HandleTypeDef hfdcan2;
+extern IWDG_HandleTypeDef hiwdg1;
 /**
   * @brief  Function implementing the EthTask thread.
   * @param  argument: Not used
@@ -123,14 +126,18 @@ void EthernetTask_func(void const * argument)
 	    FDCAN_RxHeaderTypeDef RxHeader;
 	    canopen_u canopen_rcv;
 	    uint8_t can_data_tx[4] = {0,0,0,0x06};
-	    while(canopen_rcv.values_t.COB_ID != 0x580+1 && canopen_rcv.values_t.index == 0x6040){
-	    		vTaskDelay(10);
+	    while(canopen_rcv.values_t.COB_ID != 0x580+1 && canopen_rcv.values_t.index != 0x6040){
+	    		vTaskDelay(50);
+	    		HAL_IWDG_Refresh(&hiwdg1);
 	    		canopen_req_resp_sdo(0x600+1, 0x2B,0x6040,0,can_data_tx, &canopen_rcv);
 	    	    }
 	    canopen_rcv.values_t.COB_ID = 0;
-	    while(canopen_rcv.values_t.COB_ID != 0x580+1){
-		vTaskDelay(10);
-		canopen_req_resp_sdo(0x600+1, 0x2B,0x6040,0,can_data_tx, &canopen_rcv);
+	    canopen_rcv.values_t.index = 0;
+	    can_data_tx[3] = 7;
+	    while(canopen_rcv.values_t.COB_ID != 0x580+1 && canopen_rcv.values_t.index != 0x6040){
+	    		vTaskDelay(50);
+	    		HAL_IWDG_Refresh(&hiwdg1);
+	    		canopen_req_resp_sdo(0x600+1, 0x2B,0x6040,0,can_data_tx, &canopen_rcv);
 	    }
 	  }
 	}
@@ -201,6 +208,7 @@ void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
   extern FDCAN_HandleTypeDef hfdcan2;
 	switch(fobos_eth_buf->fobos_protocol_buf_t.CMD)
 	{
+	  static uint8_t basing_point = 0;
 	case FOBOS_ETH_ECHO:
 		send(SOCKET0,
 			fobos_eth_buf->data_to_transmit,
@@ -271,9 +279,9 @@ void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
 		break;
 	case FOBOS_SERVOMOTOR_PLACEMENT:
 	  {
-	    uint8_t can_data_buf[8] = {0x40, 0x64, 0x60, 0,0,0,0,0}, temp_lim_switches = 0;
-	    can_tx_func(&hfdcan2, 0x601, 8, can_data_buf);
-	    FDCAN_RxHeaderTypeDef RxHeader;
+	    canopen_u canopen_rcv = {0};
+	    uint8_t can_data_tx[8] = {0}, temp_lim_switches = 0;
+	    canopen_req_resp_sdo(0x600+1, SDO_REQUEST, 0x6064, 0, can_data_tx, &canopen_rcv);
 	    /*can_tx_func(&hfdcan2, 0x620+2, 0, can_data_buf, FDCAN_TX_BUFFER1);
 	    fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
 	    //запрос к двигателю линейного перемещения о положении ->
@@ -291,21 +299,28 @@ void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
 	      temp_lim_switches = can_data_buf[1] & 0b11000011;//S1,S2 ... S4,S3 в соответствии с единицами в байте.
 	    if(temp_lim_switches && temp_lim_switches < 3)
 	      fobos_eth_buf->fobos_protocol_buf_t.data[3] = temp_lim_switches;*/
-	    fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N = 4;
-	    fobos_eth_buf->fobos_protocol_buf_t.data[0] = 0;
-	    while(RxHeader.Identifier != 0x580+1)
-	      can_protocol_data_analyzing(&hfdcan2, &RxHeader, can_data_buf);
+	    fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N = 6;
+	    fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
 
-	    fobos_eth_buf->fobos_protocol_buf_t.data[1] = can_data_buf[4];
-	    fobos_eth_buf->fobos_protocol_buf_t.data[2] = can_data_buf[5];
-	    fobos_eth_buf->fobos_protocol_buf_t.data[3] = can_data_buf[6];
-	    fobos_eth_buf->fobos_protocol_buf_t.data[4] = can_data_buf[7];
-	    fobos_eth_protocol_send(FOBOS_SERVOMOTOR_PLACEMENT, 4, fobos_eth_buf);
+	    fobos_eth_buf->fobos_protocol_buf_t.data[1] = canopen_rcv.values_t.data[3];
+	    fobos_eth_buf->fobos_protocol_buf_t.data[2] = canopen_rcv.values_t.data[2];
+	    fobos_eth_buf->fobos_protocol_buf_t.data[3] = canopen_rcv.values_t.data[1];
+	    fobos_eth_buf->fobos_protocol_buf_t.data[4] = canopen_rcv.values_t.data[0];
+
+	    uint32_t encoder_val;//um
+	    encoder_val = (fobos_eth_buf->fobos_protocol_buf_t.data[1]<<24) | (fobos_eth_buf->fobos_protocol_buf_t.data[2]<<16)
+			| (fobos_eth_buf->fobos_protocol_buf_t.data[3]<<8) | fobos_eth_buf->fobos_protocol_buf_t.data[4];
+
+	    fobos_eth_buf->fobos_protocol_buf_t.data[5] = basing_point;
+
+	    fobos_eth_protocol_send(FOBOS_SERVOMOTOR_PLACEMENT,
+				    fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N,
+				    fobos_eth_buf);
 	  }
 		break;
 	case FOBOS_STATEMENT:
 	  fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
-	  fobos_eth_buf->fobos_protocol_buf_t.data[1] = 0;			//не готово устройство
+	  fobos_eth_buf->fobos_protocol_buf_t.data[1] = basing_point;			//не готово устройство
 	  fobos_eth_protocol_send(FOBOS_STATEMENT, 2, fobos_eth_buf);
 		break;
 	case FOBOS_CMD_BASING:
@@ -319,35 +334,67 @@ void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
 	      can_protocol_data_analyzing(&hfdcan2, &RxHeader, can_data_buf);*/
 	    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	    //запрос к линейному приводу о положении
-	    uint8_t can_data_tx[4] = {0,0,0,7};
+	    uint8_t can_data_tx[4] = {0,0,0,6};
 	    canopen_u canopen_rcv = {0};
-	    while(canopen_rcv.values_t.control_field != 0x4B && canopen_rcv.values_t.COB_ID != (0x580+1)
-	    		  && canopen_rcv.values_t.data[0])
+
+	    canopen_rcv.values_t.data[0]=0xFF;
+	    while(canopen_rcv.values_t.data[0] != 0)
+	      {
+		canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);
+		vTaskDelay(10);
+	      }
+
+	    while(canopen_rcv.values_t.control_field != 0x4B
+		&& canopen_rcv.values_t.COB_ID != (0x580+1)
+	    	&& canopen_rcv.values_t.data[0]!=0xB1)
 	    {
 		canopen_req_resp_sdo(0x600+1, 0x40,0x6041,0,can_data_tx, &canopen_rcv);
-		vTaskDelay(20);
+		vTaskDelay(10);
 	    }
-	    while(canopen_rcv.values_t.control_field != 0x4F && canopen_rcv.values_t.COB_ID != (0x580+1))
+
+	    can_data_tx[3] = 0x06;
+	    while(canopen_rcv.values_t.data[0] != can_data_tx[3])
 	    {
-	      canopen_req_resp_sdo(0x600+1, 0x40,0x6061,0,can_data_tx, &canopen_rcv);
-	      vTaskDelay(20);
-	    }
-	    while(canopen_rcv.values_t.data[0] != 0x06)
-	    {
-	      can_data_tx[3] = 0x06;
+		vTaskDelay(5);
 	      canopen_req_resp_sdo(0x600+1, 0x2F,0x6060,0,can_data_tx, &canopen_rcv);
+	      canopen_req_resp_sdo(0x600+1, 0x40,0x6061,0,can_data_tx, &canopen_rcv);
+	    }
+	    HAL_IWDG_Refresh(&hiwdg1);
+	    can_data_tx[3] = 0x07;
+	    while(canopen_rcv.values_t.data[0] != 0xB3){
+		canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);
+		canopen_req_resp_sdo(0x600+1, 0x40,0x6041,0,can_data_tx, &canopen_rcv);
 	    }
 
 	      can_data_tx[3] = 0x0F;
-	      canopen_transmit(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx);vTaskDelay(150);
+	      while(canopen_rcv.values_t.data[0] != 0xB7)
+		{
+		  HAL_IWDG_Refresh(&hiwdg1);
+		  canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);
+		  vTaskDelay(10);
+		  canopen_req_resp_sdo(0x600+1, 0x40,0x6041,0,can_data_tx, &canopen_rcv);
+		}
+
 	      can_data_tx[3] = 0x1F;
-	      canopen_transmit(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx);
+	      while(canopen_rcv.values_t.data[0] != 0)
+		{
+		  canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);
+		}
+	      while(canopen_rcv.values_t.control_field != 0x4B
+	      		&& canopen_rcv.values_t.COB_ID != (0x580+1)
+	      	    	&& canopen_rcv.values_t.data[1] != 0x16)
+	      {
+		  vTaskDelay(50);
+		  canopen_req_resp_sdo(0x600+1, 0x40,0x6041,0,can_data_tx, &canopen_rcv);
+	      }
+	      	 basing_point = 0xFF;
 
 	    fobos_eth_buf->fobos_protocol_buf_t.data[0] = 0;
 	    fobos_eth_protocol_send(FOBOS_CMD_BASING, 1, fobos_eth_buf);
 	  }
 		break;
 	case FOBOS_CMD_WORK:
+#define CMD_WORK
 	  {
 	    uint8_t temp_lim_switches = 0,
 		can_data_buf[16] = {0x08, 0x05, 0x4B, 0x08, 0x00, 0x03, 0xDE, 0x00, 0x08, 0xC7, 0,0,0,0,0,0};
@@ -578,25 +625,39 @@ FDCAN_RxHeaderTypeDef RxHeader;
       if(xQueueReceive(xQueue_Scanning_start, &scan_types, 10)){
 	      canopen_u canopen_rcv = {0};
 	      uint8_t can_data_tx[4] = {0,0,0,7};
-	      canopen_req_resp_sdo(0x600+1, 0x2B,0x6040,0,can_data_tx, &canopen_rcv);
+	      canopen_req_resp_sdo(0x600+1, 0x40,0x6061,0,can_data_tx, &canopen_rcv);
+	    if(canopen_rcv.values_t.data[0] != 0x01)
+	    {
 	      while(canopen_rcv.values_t.control_field != 0x4F
-		  && canopen_rcv.values_t.COB_ID != (0x580+1)
-		  && canopen_rcv.values_t.index == 0x6061){
-		canopen_req_resp_sdo(0x600+1, 0x40,0x6061,0,can_data_tx, &canopen_rcv);
-		vTaskDelay(10);
-	      }
-	      if(canopen_rcv.values_t.data[0] != 0x01){
-		can_data_tx[3] = 0x01;
-		canopen_req_resp_sdo(0x600+1, 0x2F,0x6060,0,can_data_tx, &canopen_rcv);
-	      }
+		    && canopen_rcv.values_t.COB_ID != (0x580+1)
+		    && canopen_rcv.values_t.index != 0x6041
+		    && canopen_rcv.values_t.data[0] != 0xB1)
+		{
+		  canopen_req_resp_sdo(0x600+1, 0x2B,0x6040,0,can_data_tx, &canopen_rcv);
+		  vTaskDelay(5);
+		  canopen_req_resp_sdo(0x600+1, 0x40,0x6041,0,can_data_tx, &canopen_rcv);
+		}
+		  can_data_tx[3] = 0x01;
+		  while(canopen_rcv.values_t.data[0] != 0x01)
+		  {
+		    canopen_req_resp_sdo(0x600+1, 0x2F,0x6060,0,can_data_tx, &canopen_rcv);
+		    vTaskDelay(5);
+		    canopen_req_resp_sdo(0x600+1, 0x40,0x6061,0,can_data_tx, &canopen_rcv);
+		  }
+	    }
 	      if(scan_types == 1)
 	       {
 		  scan_types = 0;
 
 		  can_data_tx[3] = 0x0F;
-		  canopen_req_resp_sdo(0x600+1, 0x2B,0x6040,0,can_data_tx, &canopen_rcv);//vTaskDelay(50);
+		  while(canopen_rcv.values_t.data[0] != 0xB7)
+		  {
+		    canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);
+		    canopen_req_resp_sdo(0x600+1, 0x40,0x6041,0,can_data_tx, &canopen_rcv);
+		  }
 		  can_data_tx[3] = 0x02;
-		  canopen_req_resp_sdo(0x600+1, 0x2B,0x2080,0,can_data_tx, &canopen_rcv);//vTaskDelay(50);
+		  canopen_req_resp_sdo(0x600+1, 0x2B,0x2080,0,can_data_tx, &canopen_rcv);
+
 		  can_data_tx[3] = 0x3F;
 		  canopen_req_resp_sdo(0x600+1, 0x2B,0x6040,0,can_data_tx, &canopen_rcv);
 	       }
@@ -605,33 +666,47 @@ FDCAN_RxHeaderTypeDef RxHeader;
 		  scan_types = 0;
 
 		  can_data_tx[3] = 0x0F;
-		  canopen_req_resp_sdo(0x600+1, 0x2B,0x6040,0,can_data_tx, &canopen_rcv);//vTaskDelay(50);
+		  while(canopen_rcv.values_t.data[0] != 0xB7)
+		  {
+		    canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);
+		    canopen_req_resp_sdo(0x600+1, 0x40,0x6041,0,can_data_tx, &canopen_rcv);
+		  }
 		  can_data_tx[3] = 0x03;
-		  canopen_req_resp_sdo(0x600+1, 0x2B,0x2080,0,can_data_tx, &canopen_rcv);// vTaskDelay(50);
+		  canopen_req_resp_sdo(0x600+1, 0x2B,0x2080,0,can_data_tx, &canopen_rcv);
+
 		  can_data_tx[3] = 0x3F;
 		  canopen_req_resp_sdo(0x600+1, 0x2B,0x6040,0,can_data_tx, &canopen_rcv);
 	      }
 	      else if(scan_types == 3){
 		  scan_types = 0;
 		  canopen_u canopen_rcv = {0};
-
 		  can_data_tx[3] = 0x0F;
-		  canopen_transmit(0x600+1, 0x2B,0x6040,0,can_data_tx);
+		  while(canopen_rcv.values_t.data[0] != 0xB7)
+		  {
+		    canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);
+		    canopen_req_resp_sdo(0x600+1, 0x40,0x6041,0,can_data_tx, &canopen_rcv);
+		  }
 		  can_data_tx[3] = 0x02;
-		  canopen_transmit(0x600+1, 0x2B,0x2080,0,can_data_tx);vTaskDelay(100);
+		  canopen_req_resp_sdo(0x600+1, 0x2B,0x2080,0,can_data_tx, &canopen_rcv);
+
 		  can_data_tx[3] = 0x3F;
-		  canopen_transmit(0x600+1, 0x2B,0x6040,0,can_data_tx);
+		  canopen_req_resp_sdo(0x600+1, 0x2B,0x6040,0,can_data_tx, &canopen_rcv);
 		  while(canopen_rcv.values_t.data[1] != 0x16){
 			      LED_VD5(RESET);
 			      vTaskDelay(100);
 			      canopen_req_resp_sdo(0x600+1, 0x40, 0x6041, 0, can_data_tx, &canopen_rcv);
 			  }
 		  can_data_tx[3] = 0x0F;
-		  canopen_transmit(0x600+1, 0x2B,0x6040,0,can_data_tx);
+		  while(canopen_rcv.values_t.data[0] != 0xB7)
+		  {
+		    canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);
+		    canopen_req_resp_sdo(0x600+1, 0x40,0x6041,0,can_data_tx, &canopen_rcv);
+		  }
 		  can_data_tx[3] = 0x03;
-		  canopen_transmit(0x600+1, 0x2B,0x2080,0,can_data_tx);vTaskDelay(100);
+		  canopen_req_resp_sdo(0x600+1, 0x2B,0x2080,0,can_data_tx, &canopen_rcv);
+
 		  can_data_tx[3] = 0x3F;
-		  canopen_transmit(0x600+1, 0x2B,0x6040,0,can_data_tx);
+		  canopen_req_resp_sdo(0x600+1, 0x2B,0x6040,0,can_data_tx, &canopen_rcv);
 		  while(canopen_rcv.values_t.data[1] != 0x16){
 				LED_VD5(RESET);
 				vTaskDelay(100);
@@ -705,7 +780,7 @@ void wiznet820_send_data(SPI_HandleTypeDef *hspi, unsigned short address, uint8_
 }
 
 void vTimerCallback(TimerHandle_t Timer){
-  	extern IWDG_HandleTypeDef hiwdg1;
+
 	HAL_IWDG_Refresh(&hiwdg1);
 	uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
 	extern FDCAN_HandleTypeDef hfdcan2;
