@@ -88,10 +88,10 @@ void StartDefaultTask(void const * argument)
 				checking_digIn_fb[i] = 0;
 				checking_digOut_fb[i] = 0;
 				ports.digital_outputs = (DIG_OUT4_READ << 3) | (DIG_OUT3_READ << 2)
-										| (DIG_OUT2_READ << 1) | DIG_OUT1_READ;
+						      | (DIG_OUT2_READ << 1) | DIG_OUT1_READ;
 
 				ports.digital_inputs = (DIG_IN8<<7)|(DIG_IN7<<6)|(DIG_IN6<<5)|(DIG_IN5<<4)
-										|(DIG_IN4<<3)|(DIG_IN3<<2)|(DIG_IN2<<1)|(DIG_IN1);
+						      |(DIG_IN4<<3)|(DIG_IN3<<2)|(DIG_IN2<<1)|(DIG_IN1);
 
 				checking_digOut_fb[i] |= ports.digital_outputs;
 				checking_digIn_fb[i]  |= ports.digital_inputs;
