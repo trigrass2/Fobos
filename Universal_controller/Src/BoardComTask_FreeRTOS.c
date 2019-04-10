@@ -280,6 +280,8 @@ extern UART_HandleTypeDef huart6;
 					else if(Rx_Can_Data[0] == 0xEE){
 					    buf_tx.lenght = 0;
 					    cnt_bytes = 0;
+					    uint8_t tx_data[2] = {0xE0,0};
+					    can_tx_func(&hfdcan2, ((address&0x1F)+0x640+0x100), 2, tx_data, FDCAN_TX_BUFFER4);
 					}
 					else if(buf_tx.lenght <= 7)
 					{
