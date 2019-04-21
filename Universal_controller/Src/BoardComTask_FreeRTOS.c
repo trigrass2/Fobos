@@ -103,7 +103,7 @@ void rs485_tx_task(void const * argument){
 				buf_tx.data[0] = 0xFF;
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, RESET);
 			taskEXIT_CRITICAL();
-			can_tx_func(&hfdcan2, CAN_ID + 0x100 + 0x660, 1, buf_tx.data, FDCAN_TX_BUFFER0);
+			can_tx_func(&hfdcan2, CAN_ID + 0x100 + 0x640, 1, buf_tx.data, FDCAN_TX_BUFFER0);
 			for(int i=0; i<buf_tx.lenght; i++)
 			buf_tx.data[i] = 0;
 			buf_tx.lenght = 0;
@@ -136,7 +136,6 @@ void rs485_rx_task(void const * argument)
 	  {
 		  {static a=0;
 		  LED_VD7(a^=1);}
-
 		  {
 		  		  if(buf_rx.lenght <= 7 && buf_rx.lenght > 0)
 		  		  {
@@ -281,6 +280,8 @@ extern UART_HandleTypeDef huart6;
 					else if(Rx_Can_Data[0] == 0xEE){
 					    buf_tx.lenght = 0;
 					    cnt_bytes = 0;
+					    uint8_t tx_data[2] = {0xE0,0};
+					    can_tx_func(&hfdcan2, ((address&0x1F)+0x640+0x100), 2, tx_data, FDCAN_TX_BUFFER4);
 					}
 					else if(buf_tx.lenght <= 7)
 					{
@@ -310,8 +311,12 @@ extern UART_HandleTypeDef huart6;
 
 			case 0x720:
 			{
-				ports.digital_inputs = Rx_Can_Data[1];
-				xQueueSend(xQueue_digital_ports_2, &ports, 10);
+			  uint8_t tx_data[2];
+			  tx_data[1] = (DIG_IN8<<7)|(DIG_IN7<<6)|(DIG_IN6<<5)|(DIG_IN5<<4)
+				      |(DIG_IN4<<3)|(DIG_IN3<<2)|(DIG_IN2<<1)|(DIG_IN1);
+			  tx_data[0] = (DIG_OUT4_READ << 3) | (DIG_OUT3_READ << 2)
+				      | (DIG_OUT2_READ << 1) | DIG_OUT1_READ;
+				can_tx_func(&hfdcan2,0x720+CAN_ID, 2, tx_data, FDCAN_TX_BUFFER4);
 			}//0x720
 			break;
 		}//switch

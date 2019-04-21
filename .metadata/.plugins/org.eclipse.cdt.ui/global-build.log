@@ -1,527 +1,207 @@
-15:54:53 **** Incremental Build of configuration Debug for project Fobos_master_brd ****
+15:32:31 **** Rebuild of configuration Debug for project Universal_controller ****
 Info: Internal Builder is used for build
-arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\fobos_eth.o ..\Src\fobos_eth.c 
-..\Src\fobos_eth.c: In function 'EthernetTask_func':
-..\Src\fobos_eth.c:87:5: warning: implicit declaration of function 'Error_Handler' [-Wimplicit-function-declaration]
-     Error_Handler();
-     ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:92:2: warning: implicit declaration of function 'memcpy' [-Wimplicit-function-declaration]
-  memcpy(wiz_NetData.sn, subnet_mask_adr, 4);
-  ^~~~~~
-..\Src\fobos_eth.c:92:2: warning: incompatible implicit declaration of built-in function 'memcpy'
-..\Src\fobos_eth.c:92:2: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c:122:28: warning: unused variable 'RxHeader' [-Wunused-variable]
-      FDCAN_RxHeaderTypeDef RxHeader;
-                            ^~~~~~~~
-..\Src\fobos_eth.c: In function 'eth_cmds_analysis':
-..\Src\fobos_eth.c:206:6: warning: incompatible implicit declaration of built-in function 'memcpy'
-      memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, mac_adr, 6);
-      ^~~~~~
-..\Src\fobos_eth.c:206:6: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c:265:63: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
-      uint8_t can_data_buf[8] = {0x40, 0x64, 0x60, 0,0,0,0,0}, temp_lim_switches = 0;
-                                                               ^~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:357:6: warning: this 'while' clause does not guard... [-Wmisleading-indentation]
-      while(RxHeader.Identifier != 0x740+2)
-      ^~~~~
-..\Src\fobos_eth.c:359:8: note: ...this statement, but the latter is misleadingly indented as if it is guarded by the 'while'
-        fobos_eth_protocol_send(FOBOS_CMD_WORK, 1, fobos_eth_buf);
-        ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:343:14: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
-      uint8_t temp_lim_switches = 0,
-              ^~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:371:16: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
-   int length = strlen(string_data)+1;
-                ^~~~~~
-..\Src\fobos_eth.c:371:16: warning: incompatible implicit declaration of built-in function 'strlen'
-..\Src\fobos_eth.c:371:16: note: include '<string.h>' or provide a declaration of 'strlen'
-..\Src\fobos_eth.c:374:3: warning: incompatible implicit declaration of built-in function 'memcpy'
-   memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, string_data, length);
-   ^~~~~~
-..\Src\fobos_eth.c:374:3: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c:392:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
-   if(confirmation(fobos_eth_buf, &socket_port))
-                                  ^
-..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint16_t * {aka short unsigned int *}'
- uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
-         ^~~~~~~~~~~~
-..\Src\fobos_eth.c:396:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
-   if(confirmation(fobos_eth_buf, &timeout_period))
-                                  ^
-..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint32_t * {aka long unsigned int *}'
- uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
-         ^~~~~~~~~~~~
-..\Src\fobos_eth.c: In function 'feedback_params':
-..\Src\fobos_eth.c:473:3: warning: incompatible implicit declaration of built-in function 'memcpy'
-   memcpy(&fobos_eth_buf->fobos_protocol_buf_t.data[1], data_for_copy, tx_bytes-1);
-   ^~~~~~
-..\Src\fobos_eth.c:473:3: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c: In function 'confirmation':
-..\Src\fobos_eth.c:482:3: warning: incompatible implicit declaration of built-in function 'memcpy'
-   memcpy(data_for_copy,
-   ^~~~~~
-..\Src\fobos_eth.c:482:3: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c: In function 'vFobos_Start_Process':
-..\Src\fobos_eth.c:566:23: warning: unused variable 'RxHeader' [-Wunused-variable]
- FDCAN_RxHeaderTypeDef RxHeader;
-                       ^~~~~~~~
-..\Src\fobos_eth.c:565:25: warning: variable 'can_data_rx' set but not used [-Wunused-but-set-variable]
- uint8_t scan_types = 0, can_data_rx[8] = {0};
-                         ^~~~~~~~~~~
-..\Src\fobos_eth.c: In function 'can_tx_func':
-..\Src\fobos_eth.c:667:9: warning: type defaults to 'int' in declaration of 'a' [-Wimplicit-int]
-  static a=0;
-         ^
-At top level:
-..\Src\fobos_eth.c:42:16: warning: 'ip_gateway_adr' defined but not used [-Wunused-variable]
- static uint8_t ip_gateway_adr[4] = {192,168,100,2};
-                ^~~~~~~~~~~~~~
-arm-atollic-eabi-gcc -o Fobos_master_brd.elf Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_cortex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_fdcan.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_gpio.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hsem.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_iwdg.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_mdma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart_ex.o Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.o Middlewares\Third_Party\FreeRTOS\Source\croutine.o Middlewares\Third_Party\FreeRTOS\Source\event_groups.o Middlewares\Third_Party\FreeRTOS\Source\list.o Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM7\r0p1\port.o Middlewares\Third_Party\FreeRTOS\Source\portable\MemMang\heap_4.o Middlewares\Third_Party\FreeRTOS\Source\queue.o Middlewares\Third_Party\FreeRTOS\Source\tasks.o Middlewares\Third_Party\FreeRTOS\Source\timers.o Src\adani_can_medical_protocol.o Src\ethernet\socket.o Src\ethernet\w5200.o Src\ethernet\wizchip_conf.o Src\fobos_eth.o Src\freertos.o Src\internet\dhcp.o Src\main.o Src\own_defines.o Src\stm32h7xx_hal_msp.o Src\stm32h7xx_it.o Src\system_stm32h7xx.o startup\startup_stm32h743xx.o -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -T../STM32H743VI_FLASH.ld -specs=nosys.specs -static -Wl,-Map=Fobos_master_brd.map -Wl,--gc-sections -Wl,--defsym=malloc_getpagesize_P=0x80 -Wl,--start-group -lc -lm -Wl,--end-group -specs=nano.specs 
-C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\ide\jre\bin\java -jar C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\Tools\arm-atollic-reports.jar sizeinfo list Fobos_master_brd.elf 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\system_stm32h7xx.o ..\Src\system_stm32h7xx.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Middlewares\Third_Party\FreeRTOS\Source\timers.o ..\Middlewares\Third_Party\FreeRTOS\Source\timers.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\BoardComTask_FreeRTOS.o ..\Src\BoardComTask_FreeRTOS.c 
+..\Src\BoardComTask_FreeRTOS.c: In function 'rs485_rx_task':
+..\Src\BoardComTask_FreeRTOS.c:135:33: warning: passing argument 2 of 'HAL_UART_Receive' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+    if(HAL_UART_Receive(&huart6, buf_rx.data, buf_rx.lenght, 100) == HAL_OK)
+                                 ^~~~~~
+In file included from ../Inc/stm32h7xx_hal_conf.h:376:0,
+                 from ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:46,
+                 from ..\Src\own_defines.h:7,
+                 from ..\Src\BoardComTask_FreeRTOS.h:11,
+                 from ..\Src\BoardComTask_FreeRTOS.c:14:
+../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h:1541:19: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'volatile uint8_t * {aka volatile unsigned char *}'
+ HAL_StatusTypeDef HAL_UART_Receive(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size, uint32_t Timeout);
+                   ^~~~~~~~~~~~~~~~
+..\Src\BoardComTask_FreeRTOS.c:137:13: warning: type defaults to 'int' in declaration of 'a' [-Wimplicit-int]
+     {static a=0;
+             ^
+..\Src\BoardComTask_FreeRTOS.c:172:56: warning: passing argument 4 of 'can_tx_func' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+           can_tx_func(&hfdcan2, 0x6A0+0x100+CAN_ID, 8, can_tx_data[count_pack_num], can_buf_num);
+                                                        ^~~~~~~~~~~
+..\Src\BoardComTask_FreeRTOS.c:16:6: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'volatile uint8_t * {aka volatile unsigned char *}'
+ char can_tx_func(FDCAN_HandleTypeDef *hfdcan, unsigned int ID, uint32_t data_lenght, uint8_t *data, uint32_t can_buf_num)
+      ^~~~~~~~~~~
+In file included from ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h:104:0,
+                 from ..\Src\BoardComTask_FreeRTOS.h:13,
+                 from ..\Src\BoardComTask_FreeRTOS.c:14:
+..\Src\BoardComTask_FreeRTOS.c: In function 'board_com_task':
+../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:355:97: warning: passing argument 2 of 'xQueueGenericSend' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+ #define xQueueSendToFront( xQueue, pvItemToQueue, xTicksToWait ) xQueueGenericSend( ( xQueue ), ( pvItemToQueue ), ( xTicksToWait ), queueSEND_TO_FRONT )
+                                                                                                 ^
+..\Src\BoardComTask_FreeRTOS.c:243:6: note: in expansion of macro 'xQueueSendToFront'
+      xQueueSendToFront(xQueue_digital_ports, &ports, 5);
+      ^~~~~~~~~~~~~~~~~
+../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:692:32: note: expected 'const void * const' but argument is of type 'volatile digital_ports * {aka volatile struct digIO *}'
+ PRIVILEGED_FUNCTION BaseType_t xQueueGenericSend( QueueHandle_t xQueue, const void * const pvItemToQueue, TickType_t xTicksToWait, const BaseType_t xCopyPosition );
+                                ^~~~~~~~~~~~~~~~~
+..\Src\BoardComTask_FreeRTOS.c:287:7: warning: implicit declaration of function 'memcpy' [-Wimplicit-function-declaration]
+       memcpy(buf_tx.data, &Rx_Can_Data[1], buf_tx.lenght);
+       ^~~~~~
+..\Src\BoardComTask_FreeRTOS.c:287:7: warning: incompatible implicit declaration of built-in function 'memcpy'
+..\Src\BoardComTask_FreeRTOS.c:287:7: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\BoardComTask_FreeRTOS.c:292:7: warning: incompatible implicit declaration of built-in function 'memcpy'
+       memcpy(&buf_tx.data[cnt_bytes*7], &Rx_Can_Data[1], 7);
+       ^~~~~~
+..\Src\BoardComTask_FreeRTOS.c:292:7: note: include '<string.h>' or provide a declaration of 'memcpy'
+In file included from ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h:104:0,
+                 from ..\Src\BoardComTask_FreeRTOS.h:13,
+                 from ..\Src\BoardComTask_FreeRTOS.c:14:
+../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:521:90: warning: passing argument 2 of 'xQueueGenericSend' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+ #define xQueueSend( xQueue, pvItemToQueue, xTicksToWait ) xQueueGenericSend( ( xQueue ), ( pvItemToQueue ), ( xTicksToWait ), queueSEND_TO_BACK )
+                                                                                          ^
+..\Src\BoardComTask_FreeRTOS.c:314:5: note: in expansion of macro 'xQueueSend'
+     xQueueSend(xQueue_digital_ports_2, &ports, 10);
+     ^~~~~~~~~~
+../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:692:32: note: expected 'const void * const' but argument is of type 'volatile digital_ports * {aka volatile struct digIO *}'
+ PRIVILEGED_FUNCTION BaseType_t xQueueGenericSend( QueueHandle_t xQueue, const void * const pvItemToQueue, TickType_t xTicksToWait, const BaseType_t xCopyPosition );
+                                ^~~~~~~~~~~~~~~~~
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Middlewares\ST\STM32_USB_Device_Library\Core\Src\usbd_ctlreq.o ..\Middlewares\ST\STM32_USB_Device_Library\Core\Src\usbd_ctlreq.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\usb_device.o ..\Src\usb_device.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Middlewares\ST\STM32_USB_Device_Library\Core\Src\usbd_ioreq.o ..\Middlewares\ST\STM32_USB_Device_Library\Core\Src\usbd_ioreq.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Middlewares\Third_Party\FreeRTOS\Source\list.o ..\Middlewares\Third_Party\FreeRTOS\Source\list.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.o ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\adani_can_medical_protocol.o ..\Src\adani_can_medical_protocol.c 
+..\Src\adani_can_medical_protocol.c: In function 'can_protocol_data_analyzing':
+..\Src\adani_can_medical_protocol.c:18:12: warning: variable 'address' set but not used [-Wunused-but-set-variable]
+   uint32_t address;
+            ^~~~~~~
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Middlewares\Third_Party\FreeRTOS\Source\queue.o ..\Middlewares\Third_Party\FreeRTOS\Source\queue.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Middlewares\Third_Party\FreeRTOS\Source\event_groups.o ..\Middlewares\Third_Party\FreeRTOS\Source\event_groups.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pcd_ex.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pcd_ex.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\own_defines.o ..\Src\own_defines.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\usbd_cdc_if.o ..\Src\usbd_cdc_if.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_gpio.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_gpio.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\stm32h7xx_hal_msp.o ..\Src\stm32h7xx_hal_msp.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\stm32h7xx_it.o ..\Src\stm32h7xx_it.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Middlewares\Third_Party\FreeRTOS\Source\portable\MemMang\heap_4.o ..\Middlewares\Third_Party\FreeRTOS\Source\portable\MemMang\heap_4.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi_ex.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi_ex.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_ll_usb.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_ll_usb.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\usbd_conf.o ..\Src\usbd_conf.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\freertos.o ..\Src\freertos.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hsem.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hsem.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart_ex.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart_ex.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc_ex.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc_ex.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Middlewares\Third_Party\FreeRTOS\Source\tasks.o ..\Middlewares\Third_Party\FreeRTOS\Source\tasks.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma_ex.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma_ex.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr_ex.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr_ex.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pcd.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pcd.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\StartDefaultTask_FreeRTOS.o ..\Src\StartDefaultTask_FreeRTOS.c 
+..\Src\StartDefaultTask_FreeRTOS.c: In function 'adc_measure':
+..\Src\StartDefaultTask_FreeRTOS.c:24:24: warning: unused variable 'adc_buf_result' [-Wunused-variable]
+  uint16_t adc_buf = 0, adc_buf_result = 0;
+                        ^~~~~~~~~~~~~~
+..\Src\StartDefaultTask_FreeRTOS.c:24:11: warning: unused variable 'adc_buf' [-Wunused-variable]
+  uint16_t adc_buf = 0, adc_buf_result = 0;
+           ^~~~~~~
+..\Src\StartDefaultTask_FreeRTOS.c: In function 'ADC_Task':
+..\Src\StartDefaultTask_FreeRTOS.c:41:10: warning: unused variable 'adc_buf' [-Wunused-variable]
+  uint8_t adc_buf[3] = {0};
+          ^~~~~~~
+In file included from ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h:104:0,
+                 from ..\Src\StartDefaultTask_FreeRTOS.h:13,
+                 from ..\Src\StartDefaultTask_FreeRTOS.c:9:
+..\Src\StartDefaultTask_FreeRTOS.c: In function 'StartDefaultTask':
+../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:914:91: warning: passing argument 2 of 'xQueueGenericReceive' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+ #define xQueueReceive( xQueue, pvBuffer, xTicksToWait ) xQueueGenericReceive( ( xQueue ), ( pvBuffer ), ( xTicksToWait ), pdFALSE )
+                                                                                           ^
+..\Src\StartDefaultTask_FreeRTOS.c:75:7: note: in expansion of macro 'xQueueReceive'
+    if(xQueueReceive(xQueue_digital_ports, &ports, portMAX_DELAY))
+       ^~~~~~~~~~~~~
+../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:1013:32: note: expected 'void * const' but argument is of type 'volatile digital_ports * {aka volatile struct digIO *}'
+ PRIVILEGED_FUNCTION BaseType_t xQueueGenericReceive( QueueHandle_t xQueue, void * const pvBuffer, TickType_t xTicksToWait, const BaseType_t xJustPeek );
+                                ^~~~~~~~~~~~~~~~~~~~
+..\Src\StartDefaultTask_FreeRTOS.c:69:43: warning: unused variable 'spi_receive' [-Wunused-variable]
+   uint8_t spi_transmit[2] = {0x08, 0x01}, spi_receive[3] = {0};
+                                           ^~~~~~~~~~~
+..\Src\StartDefaultTask_FreeRTOS.c:69:11: warning: unused variable 'spi_transmit' [-Wunused-variable]
+   uint8_t spi_transmit[2] = {0x08, 0x01}, spi_receive[3] = {0};
+           ^~~~~~~~~~~~
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Middlewares\ST\STM32_USB_Device_Library\Class\CDC\Src\usbd_cdc.o ..\Middlewares\ST\STM32_USB_Device_Library\Class\CDC\Src\usbd_cdc.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c 
+..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c: In function 'HAL_SPI_Transmit':
+..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c:591:11: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+           *((__IO uint16_t *)&hspi->Instance->TXDR) = *((uint16_t *)hspi->pTxBuffPtr);
+           ^
+..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c:630:11: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+           *((__IO uint16_t *)&hspi->Instance->TXDR) = *((uint16_t *)hspi->pTxBuffPtr);
+           ^
+..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c: In function 'HAL_SPI_Receive':
+..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c:805:11: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+           *((uint16_t *)hspi->pRxBuffPtr) = *((__IO uint16_t *)&hspi->Instance->RXDR);
+           ^
+..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c:845:11: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+           *((uint16_t *)hspi->pRxBuffPtr) = *((__IO uint16_t *)&hspi->Instance->RXDR);
+           ^
+..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c: In function 'HAL_SPI_TransmitReceive':
+..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c:1022:11: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+           *((__IO uint16_t *)&hspi->Instance->TXDR) = *((uint16_t *)hspi->pTxBuffPtr);
+           ^
+..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c:1039:11: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+           *((uint16_t *)hspi->pRxBuffPtr) = *((__IO uint16_t *)&hspi->Instance->RXDR);
+           ^
+..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c:1075:11: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+           *((__IO uint16_t *)&hspi->Instance->TXDR) = *((uint16_t *)hspi->pTxBuffPtr);
+           ^
+..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c:1098:11: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+           *((uint16_t *)hspi->pRxBuffPtr) = *((__IO uint16_t *)&hspi->Instance->RXDR);
+           ^
+..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c: In function 'HAL_SPI_IRQHandler':
+..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c:2184:13: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+             *((uint16_t *)hspi->pRxBuffPtr) = *((__IO uint16_t *)&hspi->Instance->RXDR);
+             ^
+..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c: In function 'SPI_2linesRxISR_16BIT':
+..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c:2741:3: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+   *((uint16_t *)hspi->pRxBuffPtr) = *((__IO uint16_t *)&hspi->Instance->RXDR);
+   ^
+..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c: In function 'SPI_2linesTxISR_16BIT':
+..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c:2807:3: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+   *((__IO uint16_t *)&hspi->Instance->TXDR) = *((uint16_t *)hspi->pTxBuffPtr);
+   ^
+..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c: In function 'SPI_RxISR_16BIT':
+..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c:2871:3: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+   *((uint16_t *)hspi->pRxBuffPtr) = (*(__IO uint16_t *)&hspi->Instance->RXDR);
+   ^
+..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c: In function 'SPI_TxISR_16BIT':
+..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c:2934:3: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+   *((__IO uint16_t *)&hspi->Instance->TXDR) = *((uint16_t *)hspi->pTxBuffPtr);
+   ^
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\usbd_desc.o ..\Src\usbd_desc.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -g -Wa,--no-warn -x assembler-with-cpp -specs=nano.specs -o startup\startup_stm32h743xx.o ..\startup\startup_stm32h743xx.s 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash_ex.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash_ex.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_fdcan.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_fdcan.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_cortex.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_cortex.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Middlewares\ST\STM32_USB_Device_Library\Core\Src\usbd_core.o ..\Middlewares\ST\STM32_USB_Device_Library\Core\Src\usbd_core.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c_ex.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c_ex.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Middlewares\Third_Party\FreeRTOS\Source\croutine.o ..\Middlewares\Third_Party\FreeRTOS\Source\croutine.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_iwdg.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_iwdg.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_mdma.o ..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_mdma.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\main.o ..\Src\main.c 
+..\Src\main.c: In function 'MX_MDMA_Init':
+..\Src\main.c:681:28: warning: variable 'nodeConfig' set but not used [-Wunused-but-set-variable]
+   MDMA_LinkNodeConfTypeDef nodeConfig;
+                            ^~~~~~~~~~
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM7\r0p1\port.o ..\Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM7\r0p1\port.c 
+arm-atollic-eabi-gcc -o Universal_controller.elf Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_cortex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_fdcan.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_gpio.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hsem.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_iwdg.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_mdma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pcd.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pcd_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_ll_usb.o Middlewares\ST\STM32_USB_Device_Library\Class\CDC\Src\usbd_cdc.o Middlewares\ST\STM32_USB_Device_Library\Core\Src\usbd_core.o Middlewares\ST\STM32_USB_Device_Library\Core\Src\usbd_ctlreq.o Middlewares\ST\STM32_USB_Device_Library\Core\Src\usbd_ioreq.o Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.o Middlewares\Third_Party\FreeRTOS\Source\croutine.o Middlewares\Third_Party\FreeRTOS\Source\event_groups.o Middlewares\Third_Party\FreeRTOS\Source\list.o Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM7\r0p1\port.o Middlewares\Third_Party\FreeRTOS\Source\portable\MemMang\heap_4.o Middlewares\Third_Party\FreeRTOS\Source\queue.o Middlewares\Third_Party\FreeRTOS\Source\tasks.o Middlewares\Third_Party\FreeRTOS\Source\timers.o Src\BoardComTask_FreeRTOS.o Src\StartDefaultTask_FreeRTOS.o Src\adani_can_medical_protocol.o Src\freertos.o Src\main.o Src\own_defines.o Src\stm32h7xx_hal_msp.o Src\stm32h7xx_it.o Src\system_stm32h7xx.o Src\usb_device.o Src\usbd_cdc_if.o Src\usbd_conf.o Src\usbd_desc.o startup\startup_stm32h743xx.o -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -T../STM32H743VI_FLASH.ld -specs=nosys.specs -static -Wl,-Map=Universal_controller.map -Wl,--gc-sections -Wl,--defsym=malloc_getpagesize_P=0x80 -Wl,--start-group -lc -lm -Wl,--end-group -specs=nano.specs 
+C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\ide\jre\bin\java -jar C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\Tools\arm-atollic-reports.jar sizeinfo list Universal_controller.elf 
 Generate build reports...
 Print size information
    text	   data	    bss	    dec	    hex	filename
-  31728	     92	  18108	  49928	   c308	Fobos_master_brd.elf
+  39912	    476	  20308	  60696	   ed18	Universal_controller.elf
 Print size information done
 Generate listing file
-Output sent to: Fobos_master_brd.list
+Output sent to: Universal_controller.list
 Generate listing file done
 Generate build reports done
-arm-atollic-eabi-objcopy.exe -O ihex Fobos_master_brd.elf Fobos_master_brd.hex 
-Info: Nothing to build for Fobos_master_brd
-15:58:36 **** Incremental Build of configuration Debug for project Fobos_master_brd ****
-Info: Internal Builder is used for build
-arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\fobos_eth.o ..\Src\fobos_eth.c 
-..\Src\fobos_eth.c: In function 'EthernetTask_func':
-..\Src\fobos_eth.c:87:5: warning: implicit declaration of function 'Error_Handler' [-Wimplicit-function-declaration]
-     Error_Handler();
-     ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:92:2: warning: implicit declaration of function 'memcpy' [-Wimplicit-function-declaration]
-  memcpy(wiz_NetData.sn, subnet_mask_adr, 4);
-  ^~~~~~
-..\Src\fobos_eth.c:92:2: warning: incompatible implicit declaration of built-in function 'memcpy'
-..\Src\fobos_eth.c:92:2: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c:122:28: warning: unused variable 'RxHeader' [-Wunused-variable]
-      FDCAN_RxHeaderTypeDef RxHeader;
-                            ^~~~~~~~
-..\Src\fobos_eth.c: In function 'eth_cmds_analysis':
-..\Src\fobos_eth.c:206:6: warning: incompatible implicit declaration of built-in function 'memcpy'
-      memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, mac_adr, 6);
-      ^~~~~~
-..\Src\fobos_eth.c:206:6: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c:265:63: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
-      uint8_t can_data_buf[8] = {0x40, 0x64, 0x60, 0,0,0,0,0}, temp_lim_switches = 0;
-                                                               ^~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:332:8: error: 'buf' undeclared (first use in this function)
-        buf[3] = 0x0F;
-        ^~~
-..\Src\fobos_eth.c:332:8: note: each undeclared identifier is reported only once for each function it appears in
-..\Src\fobos_eth.c:357:6: warning: this 'while' clause does not guard... [-Wmisleading-indentation]
-      while(RxHeader.Identifier != 0x740+2)
-      ^~~~~
-..\Src\fobos_eth.c:359:8: note: ...this statement, but the latter is misleadingly indented as if it is guarded by the 'while'
-        fobos_eth_protocol_send(FOBOS_CMD_WORK, 1, fobos_eth_buf);
-        ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:343:14: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
-      uint8_t temp_lim_switches = 0,
-              ^~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:371:16: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
-   int length = strlen(string_data)+1;
-                ^~~~~~
-..\Src\fobos_eth.c:371:16: warning: incompatible implicit declaration of built-in function 'strlen'
-..\Src\fobos_eth.c:371:16: note: include '<string.h>' or provide a declaration of 'strlen'
-..\Src\fobos_eth.c:374:3: warning: incompatible implicit declaration of built-in function 'memcpy'
-   memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, string_data, length);
-   ^~~~~~
-..\Src\fobos_eth.c:374:3: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c:392:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
-   if(confirmation(fobos_eth_buf, &socket_port))
-                                  ^
-..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint16_t * {aka short unsigned int *}'
- uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
-         ^~~~~~~~~~~~
-..\Src\fobos_eth.c:396:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
-   if(confirmation(fobos_eth_buf, &timeout_period))
-                                  ^
-..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint32_t * {aka long unsigned int *}'
- uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
-         ^~~~~~~~~~~~
-..\Src\fobos_eth.c: In function 'feedback_params':
-..\Src\fobos_eth.c:473:3: warning: incompatible implicit declaration of built-in function 'memcpy'
-   memcpy(&fobos_eth_buf->fobos_protocol_buf_t.data[1], data_for_copy, tx_bytes-1);
-   ^~~~~~
-..\Src\fobos_eth.c:473:3: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c: In function 'confirmation':
-..\Src\fobos_eth.c:482:3: warning: incompatible implicit declaration of built-in function 'memcpy'
-   memcpy(data_for_copy,
-   ^~~~~~
-..\Src\fobos_eth.c:482:3: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c: In function 'vFobos_Start_Process':
-..\Src\fobos_eth.c:566:23: warning: unused variable 'RxHeader' [-Wunused-variable]
- FDCAN_RxHeaderTypeDef RxHeader;
-                       ^~~~~~~~
-..\Src\fobos_eth.c:565:25: warning: variable 'can_data_rx' set but not used [-Wunused-but-set-variable]
- uint8_t scan_types = 0, can_data_rx[8] = {0};
-                         ^~~~~~~~~~~
-..\Src\fobos_eth.c: In function 'can_tx_func':
-..\Src\fobos_eth.c:667:9: warning: type defaults to 'int' in declaration of 'a' [-Wimplicit-int]
-  static a=0;
-         ^
-At top level:
-..\Src\fobos_eth.c:42:16: warning: 'ip_gateway_adr' defined but not used [-Wunused-variable]
- static uint8_t ip_gateway_adr[4] = {192,168,100,2};
-                ^~~~~~~~~~~~~~
-15:59:06 **** Incremental Build of configuration Debug for project Fobos_master_brd ****
-Info: Internal Builder is used for build
-arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\fobos_eth.o ..\Src\fobos_eth.c 
-..\Src\fobos_eth.c: In function 'EthernetTask_func':
-..\Src\fobos_eth.c:87:5: warning: implicit declaration of function 'Error_Handler' [-Wimplicit-function-declaration]
-     Error_Handler();
-     ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:92:2: warning: implicit declaration of function 'memcpy' [-Wimplicit-function-declaration]
-  memcpy(wiz_NetData.sn, subnet_mask_adr, 4);
-  ^~~~~~
-..\Src\fobos_eth.c:92:2: warning: incompatible implicit declaration of built-in function 'memcpy'
-..\Src\fobos_eth.c:92:2: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c:122:28: warning: unused variable 'RxHeader' [-Wunused-variable]
-      FDCAN_RxHeaderTypeDef RxHeader;
-                            ^~~~~~~~
-..\Src\fobos_eth.c: In function 'eth_cmds_analysis':
-..\Src\fobos_eth.c:206:6: warning: incompatible implicit declaration of built-in function 'memcpy'
-      memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, mac_adr, 6);
-      ^~~~~~
-..\Src\fobos_eth.c:206:6: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c:265:63: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
-      uint8_t can_data_buf[8] = {0x40, 0x64, 0x60, 0,0,0,0,0}, temp_lim_switches = 0;
-                                                               ^~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:357:6: warning: this 'while' clause does not guard... [-Wmisleading-indentation]
-      while(RxHeader.Identifier != 0x740+2)
-      ^~~~~
-..\Src\fobos_eth.c:359:8: note: ...this statement, but the latter is misleadingly indented as if it is guarded by the 'while'
-        fobos_eth_protocol_send(FOBOS_CMD_WORK, 1, fobos_eth_buf);
-        ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:343:14: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
-      uint8_t temp_lim_switches = 0,
-              ^~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:371:16: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
-   int length = strlen(string_data)+1;
-                ^~~~~~
-..\Src\fobos_eth.c:371:16: warning: incompatible implicit declaration of built-in function 'strlen'
-..\Src\fobos_eth.c:371:16: note: include '<string.h>' or provide a declaration of 'strlen'
-..\Src\fobos_eth.c:374:3: warning: incompatible implicit declaration of built-in function 'memcpy'
-   memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, string_data, length);
-   ^~~~~~
-..\Src\fobos_eth.c:374:3: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c:392:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
-   if(confirmation(fobos_eth_buf, &socket_port))
-                                  ^
-..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint16_t * {aka short unsigned int *}'
- uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
-         ^~~~~~~~~~~~
-..\Src\fobos_eth.c:396:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
-   if(confirmation(fobos_eth_buf, &timeout_period))
-                                  ^
-..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint32_t * {aka long unsigned int *}'
- uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
-         ^~~~~~~~~~~~
-..\Src\fobos_eth.c: In function 'feedback_params':
-..\Src\fobos_eth.c:473:3: warning: incompatible implicit declaration of built-in function 'memcpy'
-   memcpy(&fobos_eth_buf->fobos_protocol_buf_t.data[1], data_for_copy, tx_bytes-1);
-   ^~~~~~
-..\Src\fobos_eth.c:473:3: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c: In function 'confirmation':
-..\Src\fobos_eth.c:482:3: warning: incompatible implicit declaration of built-in function 'memcpy'
-   memcpy(data_for_copy,
-   ^~~~~~
-..\Src\fobos_eth.c:482:3: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c: In function 'vFobos_Start_Process':
-..\Src\fobos_eth.c:566:23: warning: unused variable 'RxHeader' [-Wunused-variable]
- FDCAN_RxHeaderTypeDef RxHeader;
-                       ^~~~~~~~
-..\Src\fobos_eth.c:565:25: warning: variable 'can_data_rx' set but not used [-Wunused-but-set-variable]
- uint8_t scan_types = 0, can_data_rx[8] = {0};
-                         ^~~~~~~~~~~
-..\Src\fobos_eth.c: In function 'can_tx_func':
-..\Src\fobos_eth.c:667:9: warning: type defaults to 'int' in declaration of 'a' [-Wimplicit-int]
-  static a=0;
-         ^
-At top level:
-..\Src\fobos_eth.c:42:16: warning: 'ip_gateway_adr' defined but not used [-Wunused-variable]
- static uint8_t ip_gateway_adr[4] = {192,168,100,2};
-                ^~~~~~~~~~~~~~
-arm-atollic-eabi-gcc -o Fobos_master_brd.elf Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_cortex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_fdcan.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_gpio.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hsem.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_iwdg.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_mdma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart_ex.o Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.o Middlewares\Third_Party\FreeRTOS\Source\croutine.o Middlewares\Third_Party\FreeRTOS\Source\event_groups.o Middlewares\Third_Party\FreeRTOS\Source\list.o Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM7\r0p1\port.o Middlewares\Third_Party\FreeRTOS\Source\portable\MemMang\heap_4.o Middlewares\Third_Party\FreeRTOS\Source\queue.o Middlewares\Third_Party\FreeRTOS\Source\tasks.o Middlewares\Third_Party\FreeRTOS\Source\timers.o Src\adani_can_medical_protocol.o Src\ethernet\socket.o Src\ethernet\w5200.o Src\ethernet\wizchip_conf.o Src\fobos_eth.o Src\freertos.o Src\internet\dhcp.o Src\main.o Src\own_defines.o Src\stm32h7xx_hal_msp.o Src\stm32h7xx_it.o Src\system_stm32h7xx.o startup\startup_stm32h743xx.o -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -T../STM32H743VI_FLASH.ld -specs=nosys.specs -static -Wl,-Map=Fobos_master_brd.map -Wl,--gc-sections -Wl,--defsym=malloc_getpagesize_P=0x80 -Wl,--start-group -lc -lm -Wl,--end-group -specs=nano.specs 
-C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\ide\jre\bin\java -jar C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\Tools\arm-atollic-reports.jar sizeinfo list Fobos_master_brd.elf 
-Generate build reports...
-Print size information
-   text	   data	    bss	    dec	    hex	filename
-  31688	     92	  18108	  49888	   c2e0	Fobos_master_brd.elf
-Print size information done
-Generate listing file
-Output sent to: Fobos_master_brd.list
-Generate listing file done
-Generate build reports done
-arm-atollic-eabi-objcopy.exe -O ihex Fobos_master_brd.elf Fobos_master_brd.hex 
-16:02:09 **** Incremental Build of configuration Debug for project Fobos_master_brd ****
-Info: Internal Builder is used for build
-arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\fobos_eth.o ..\Src\fobos_eth.c 
-..\Src\fobos_eth.c: In function 'EthernetTask_func':
-..\Src\fobos_eth.c:87:5: warning: implicit declaration of function 'Error_Handler' [-Wimplicit-function-declaration]
-     Error_Handler();
-     ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:92:2: warning: implicit declaration of function 'memcpy' [-Wimplicit-function-declaration]
-  memcpy(wiz_NetData.sn, subnet_mask_adr, 4);
-  ^~~~~~
-..\Src\fobos_eth.c:92:2: warning: incompatible implicit declaration of built-in function 'memcpy'
-..\Src\fobos_eth.c:92:2: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c: In function 'eth_cmds_analysis':
-..\Src\fobos_eth.c:207:6: warning: incompatible implicit declaration of built-in function 'memcpy'
-      memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, mac_adr, 6);
-      ^~~~~~
-..\Src\fobos_eth.c:207:6: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c:266:63: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
-      uint8_t can_data_buf[8] = {0x40, 0x64, 0x60, 0,0,0,0,0}, temp_lim_switches = 0;
-                                                               ^~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:358:6: warning: this 'while' clause does not guard... [-Wmisleading-indentation]
-      while(RxHeader.Identifier != 0x740+2)
-      ^~~~~
-..\Src\fobos_eth.c:360:8: note: ...this statement, but the latter is misleadingly indented as if it is guarded by the 'while'
-        fobos_eth_protocol_send(FOBOS_CMD_WORK, 1, fobos_eth_buf);
-        ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:344:14: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
-      uint8_t temp_lim_switches = 0,
-              ^~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:372:16: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
-   int length = strlen(string_data)+1;
-                ^~~~~~
-..\Src\fobos_eth.c:372:16: warning: incompatible implicit declaration of built-in function 'strlen'
-..\Src\fobos_eth.c:372:16: note: include '<string.h>' or provide a declaration of 'strlen'
-..\Src\fobos_eth.c:375:3: warning: incompatible implicit declaration of built-in function 'memcpy'
-   memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, string_data, length);
-   ^~~~~~
-..\Src\fobos_eth.c:375:3: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c:393:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
-   if(confirmation(fobos_eth_buf, &socket_port))
-                                  ^
-..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint16_t * {aka short unsigned int *}'
- uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
-         ^~~~~~~~~~~~
-..\Src\fobos_eth.c:397:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
-   if(confirmation(fobos_eth_buf, &timeout_period))
-                                  ^
-..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint32_t * {aka long unsigned int *}'
- uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
-         ^~~~~~~~~~~~
-..\Src\fobos_eth.c: In function 'feedback_params':
-..\Src\fobos_eth.c:474:3: warning: incompatible implicit declaration of built-in function 'memcpy'
-   memcpy(&fobos_eth_buf->fobos_protocol_buf_t.data[1], data_for_copy, tx_bytes-1);
-   ^~~~~~
-..\Src\fobos_eth.c:474:3: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c: In function 'confirmation':
-..\Src\fobos_eth.c:483:3: warning: incompatible implicit declaration of built-in function 'memcpy'
-   memcpy(data_for_copy,
-   ^~~~~~
-..\Src\fobos_eth.c:483:3: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c: In function 'vFobos_Start_Process':
-..\Src\fobos_eth.c:567:23: warning: unused variable 'RxHeader' [-Wunused-variable]
- FDCAN_RxHeaderTypeDef RxHeader;
-                       ^~~~~~~~
-..\Src\fobos_eth.c:566:25: warning: variable 'can_data_rx' set but not used [-Wunused-but-set-variable]
- uint8_t scan_types = 0, can_data_rx[8] = {0};
-                         ^~~~~~~~~~~
-..\Src\fobos_eth.c: In function 'can_tx_func':
-..\Src\fobos_eth.c:668:9: warning: type defaults to 'int' in declaration of 'a' [-Wimplicit-int]
-  static a=0;
-         ^
-At top level:
-..\Src\fobos_eth.c:42:16: warning: 'ip_gateway_adr' defined but not used [-Wunused-variable]
- static uint8_t ip_gateway_adr[4] = {192,168,100,2};
-                ^~~~~~~~~~~~~~
-arm-atollic-eabi-gcc -o Fobos_master_brd.elf Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_cortex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_fdcan.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_gpio.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hsem.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_iwdg.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_mdma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart_ex.o Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.o Middlewares\Third_Party\FreeRTOS\Source\croutine.o Middlewares\Third_Party\FreeRTOS\Source\event_groups.o Middlewares\Third_Party\FreeRTOS\Source\list.o Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM7\r0p1\port.o Middlewares\Third_Party\FreeRTOS\Source\portable\MemMang\heap_4.o Middlewares\Third_Party\FreeRTOS\Source\queue.o Middlewares\Third_Party\FreeRTOS\Source\tasks.o Middlewares\Third_Party\FreeRTOS\Source\timers.o Src\adani_can_medical_protocol.o Src\ethernet\socket.o Src\ethernet\w5200.o Src\ethernet\wizchip_conf.o Src\fobos_eth.o Src\freertos.o Src\internet\dhcp.o Src\main.o Src\own_defines.o Src\stm32h7xx_hal_msp.o Src\stm32h7xx_it.o Src\system_stm32h7xx.o startup\startup_stm32h743xx.o -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -T../STM32H743VI_FLASH.ld -specs=nosys.specs -static -Wl,-Map=Fobos_master_brd.map -Wl,--gc-sections -Wl,--defsym=malloc_getpagesize_P=0x80 -Wl,--start-group -lc -lm -Wl,--end-group -specs=nano.specs 
-C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\ide\jre\bin\java -jar C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\Tools\arm-atollic-reports.jar sizeinfo list Fobos_master_brd.elf 
-Generate build reports...
-Print size information
-   text	   data	    bss	    dec	    hex	filename
-  31712	     92	  18108	  49912	   c2f8	Fobos_master_brd.elf
-Print size information done
-Generate listing file
-Output sent to: Fobos_master_brd.list
-Generate listing file done
-Generate build reports done
-arm-atollic-eabi-objcopy.exe -O ihex Fobos_master_brd.elf Fobos_master_brd.hex 
-16:04:12 **** Incremental Build of configuration Debug for project Fobos_master_brd ****
-Info: Internal Builder is used for build
-arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\fobos_eth.o ..\Src\fobos_eth.c 
-..\Src\fobos_eth.c: In function 'EthernetTask_func':
-..\Src\fobos_eth.c:87:5: warning: implicit declaration of function 'Error_Handler' [-Wimplicit-function-declaration]
-     Error_Handler();
-     ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:92:2: warning: implicit declaration of function 'memcpy' [-Wimplicit-function-declaration]
-  memcpy(wiz_NetData.sn, subnet_mask_adr, 4);
-  ^~~~~~
-..\Src\fobos_eth.c:92:2: warning: incompatible implicit declaration of built-in function 'memcpy'
-..\Src\fobos_eth.c:92:2: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c: In function 'eth_cmds_analysis':
-..\Src\fobos_eth.c:209:6: warning: incompatible implicit declaration of built-in function 'memcpy'
-      memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, mac_adr, 6);
-      ^~~~~~
-..\Src\fobos_eth.c:209:6: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c:268:63: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
-      uint8_t can_data_buf[8] = {0x40, 0x64, 0x60, 0,0,0,0,0}, temp_lim_switches = 0;
-                                                               ^~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:360:6: warning: this 'while' clause does not guard... [-Wmisleading-indentation]
-      while(RxHeader.Identifier != 0x740+2)
-      ^~~~~
-..\Src\fobos_eth.c:362:8: note: ...this statement, but the latter is misleadingly indented as if it is guarded by the 'while'
-        fobos_eth_protocol_send(FOBOS_CMD_WORK, 1, fobos_eth_buf);
-        ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:346:14: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
-      uint8_t temp_lim_switches = 0,
-              ^~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:374:16: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
-   int length = strlen(string_data)+1;
-                ^~~~~~
-..\Src\fobos_eth.c:374:16: warning: incompatible implicit declaration of built-in function 'strlen'
-..\Src\fobos_eth.c:374:16: note: include '<string.h>' or provide a declaration of 'strlen'
-..\Src\fobos_eth.c:377:3: warning: incompatible implicit declaration of built-in function 'memcpy'
-   memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, string_data, length);
-   ^~~~~~
-..\Src\fobos_eth.c:377:3: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c:395:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
-   if(confirmation(fobos_eth_buf, &socket_port))
-                                  ^
-..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint16_t * {aka short unsigned int *}'
- uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
-         ^~~~~~~~~~~~
-..\Src\fobos_eth.c:399:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
-   if(confirmation(fobos_eth_buf, &timeout_period))
-                                  ^
-..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint32_t * {aka long unsigned int *}'
- uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
-         ^~~~~~~~~~~~
-..\Src\fobos_eth.c: In function 'feedback_params':
-..\Src\fobos_eth.c:476:3: warning: incompatible implicit declaration of built-in function 'memcpy'
-   memcpy(&fobos_eth_buf->fobos_protocol_buf_t.data[1], data_for_copy, tx_bytes-1);
-   ^~~~~~
-..\Src\fobos_eth.c:476:3: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c: In function 'confirmation':
-..\Src\fobos_eth.c:485:3: warning: incompatible implicit declaration of built-in function 'memcpy'
-   memcpy(data_for_copy,
-   ^~~~~~
-..\Src\fobos_eth.c:485:3: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c: In function 'vFobos_Start_Process':
-..\Src\fobos_eth.c:569:23: warning: unused variable 'RxHeader' [-Wunused-variable]
- FDCAN_RxHeaderTypeDef RxHeader;
-                       ^~~~~~~~
-..\Src\fobos_eth.c:568:25: warning: variable 'can_data_rx' set but not used [-Wunused-but-set-variable]
- uint8_t scan_types = 0, can_data_rx[8] = {0};
-                         ^~~~~~~~~~~
-..\Src\fobos_eth.c: In function 'can_tx_func':
-..\Src\fobos_eth.c:670:9: warning: type defaults to 'int' in declaration of 'a' [-Wimplicit-int]
-  static a=0;
-         ^
-At top level:
-..\Src\fobos_eth.c:42:16: warning: 'ip_gateway_adr' defined but not used [-Wunused-variable]
- static uint8_t ip_gateway_adr[4] = {192,168,100,2};
-                ^~~~~~~~~~~~~~
-arm-atollic-eabi-gcc -o Fobos_master_brd.elf Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_cortex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_fdcan.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_gpio.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hsem.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_iwdg.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_mdma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart_ex.o Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.o Middlewares\Third_Party\FreeRTOS\Source\croutine.o Middlewares\Third_Party\FreeRTOS\Source\event_groups.o Middlewares\Third_Party\FreeRTOS\Source\list.o Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM7\r0p1\port.o Middlewares\Third_Party\FreeRTOS\Source\portable\MemMang\heap_4.o Middlewares\Third_Party\FreeRTOS\Source\queue.o Middlewares\Third_Party\FreeRTOS\Source\tasks.o Middlewares\Third_Party\FreeRTOS\Source\timers.o Src\adani_can_medical_protocol.o Src\ethernet\socket.o Src\ethernet\w5200.o Src\ethernet\wizchip_conf.o Src\fobos_eth.o Src\freertos.o Src\internet\dhcp.o Src\main.o Src\own_defines.o Src\stm32h7xx_hal_msp.o Src\stm32h7xx_it.o Src\system_stm32h7xx.o startup\startup_stm32h743xx.o -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -T../STM32H743VI_FLASH.ld -specs=nosys.specs -static -Wl,-Map=Fobos_master_brd.map -Wl,--gc-sections -Wl,--defsym=malloc_getpagesize_P=0x80 -Wl,--start-group -lc -lm -Wl,--end-group -specs=nano.specs 
-C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\ide\jre\bin\java -jar C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\Tools\arm-atollic-reports.jar sizeinfo list Fobos_master_brd.elf 
-Generate build reports...
-Print size information
-   text	   data	    bss	    dec	    hex	filename
-  31716	     92	  18108	  49916	   c2fc	Fobos_master_brd.elf
-Print size information done
-Generate listing file
-Output sent to: Fobos_master_brd.list
-Generate listing file done
-Generate build reports done
-arm-atollic-eabi-objcopy.exe -O ihex Fobos_master_brd.elf Fobos_master_brd.hex 
-16:05:43 **** Incremental Build of configuration Debug for project Fobos_master_brd ****
-Info: Internal Builder is used for build
-arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\fobos_eth.o ..\Src\fobos_eth.c 
-..\Src\fobos_eth.c: In function 'EthernetTask_func':
-..\Src\fobos_eth.c:87:5: warning: implicit declaration of function 'Error_Handler' [-Wimplicit-function-declaration]
-     Error_Handler();
-     ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:92:2: warning: implicit declaration of function 'memcpy' [-Wimplicit-function-declaration]
-  memcpy(wiz_NetData.sn, subnet_mask_adr, 4);
-  ^~~~~~
-..\Src\fobos_eth.c:92:2: warning: incompatible implicit declaration of built-in function 'memcpy'
-..\Src\fobos_eth.c:92:2: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c:123:28: warning: unused variable 'RxHeader' [-Wunused-variable]
-      FDCAN_RxHeaderTypeDef RxHeader;
-                            ^~~~~~~~
-..\Src\fobos_eth.c: In function 'eth_cmds_analysis':
-..\Src\fobos_eth.c:210:6: warning: incompatible implicit declaration of built-in function 'memcpy'
-      memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, mac_adr, 6);
-      ^~~~~~
-..\Src\fobos_eth.c:210:6: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c:269:63: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
-      uint8_t can_data_buf[8] = {0x40, 0x64, 0x60, 0,0,0,0,0}, temp_lim_switches = 0;
-                                                               ^~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:361:6: warning: this 'while' clause does not guard... [-Wmisleading-indentation]
-      while(RxHeader.Identifier != 0x740+2)
-      ^~~~~
-..\Src\fobos_eth.c:363:8: note: ...this statement, but the latter is misleadingly indented as if it is guarded by the 'while'
-        fobos_eth_protocol_send(FOBOS_CMD_WORK, 1, fobos_eth_buf);
-        ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:347:14: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
-      uint8_t temp_lim_switches = 0,
-              ^~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:375:16: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
-   int length = strlen(string_data)+1;
-                ^~~~~~
-..\Src\fobos_eth.c:375:16: warning: incompatible implicit declaration of built-in function 'strlen'
-..\Src\fobos_eth.c:375:16: note: include '<string.h>' or provide a declaration of 'strlen'
-..\Src\fobos_eth.c:378:3: warning: incompatible implicit declaration of built-in function 'memcpy'
-   memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, string_data, length);
-   ^~~~~~
-..\Src\fobos_eth.c:378:3: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c:396:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
-   if(confirmation(fobos_eth_buf, &socket_port))
-                                  ^
-..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint16_t * {aka short unsigned int *}'
- uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
-         ^~~~~~~~~~~~
-..\Src\fobos_eth.c:400:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
-   if(confirmation(fobos_eth_buf, &timeout_period))
-                                  ^
-..\Src\fobos_eth.c:29:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint32_t * {aka long unsigned int *}'
- uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
-         ^~~~~~~~~~~~
-..\Src\fobos_eth.c: In function 'feedback_params':
-..\Src\fobos_eth.c:477:3: warning: incompatible implicit declaration of built-in function 'memcpy'
-   memcpy(&fobos_eth_buf->fobos_protocol_buf_t.data[1], data_for_copy, tx_bytes-1);
-   ^~~~~~
-..\Src\fobos_eth.c:477:3: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c: In function 'confirmation':
-..\Src\fobos_eth.c:486:3: warning: incompatible implicit declaration of built-in function 'memcpy'
-   memcpy(data_for_copy,
-   ^~~~~~
-..\Src\fobos_eth.c:486:3: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c: In function 'vFobos_Start_Process':
-..\Src\fobos_eth.c:570:23: warning: unused variable 'RxHeader' [-Wunused-variable]
- FDCAN_RxHeaderTypeDef RxHeader;
-                       ^~~~~~~~
-..\Src\fobos_eth.c:569:25: warning: variable 'can_data_rx' set but not used [-Wunused-but-set-variable]
- uint8_t scan_types = 0, can_data_rx[8] = {0};
-                         ^~~~~~~~~~~
-..\Src\fobos_eth.c: In function 'can_tx_func':
-..\Src\fobos_eth.c:671:9: warning: type defaults to 'int' in declaration of 'a' [-Wimplicit-int]
-  static a=0;
-         ^
-At top level:
-..\Src\fobos_eth.c:42:16: warning: 'ip_gateway_adr' defined but not used [-Wunused-variable]
- static uint8_t ip_gateway_adr[4] = {192,168,100,2};
-                ^~~~~~~~~~~~~~
-arm-atollic-eabi-gcc -o Fobos_master_brd.elf Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_cortex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_fdcan.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_gpio.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hsem.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_iwdg.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_mdma.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart.o Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart_ex.o Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.o Middlewares\Third_Party\FreeRTOS\Source\croutine.o Middlewares\Third_Party\FreeRTOS\Source\event_groups.o Middlewares\Third_Party\FreeRTOS\Source\list.o Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM7\r0p1\port.o Middlewares\Third_Party\FreeRTOS\Source\portable\MemMang\heap_4.o Middlewares\Third_Party\FreeRTOS\Source\queue.o Middlewares\Third_Party\FreeRTOS\Source\tasks.o Middlewares\Third_Party\FreeRTOS\Source\timers.o Src\adani_can_medical_protocol.o Src\ethernet\socket.o Src\ethernet\w5200.o Src\ethernet\wizchip_conf.o Src\fobos_eth.o Src\freertos.o Src\internet\dhcp.o Src\main.o Src\own_defines.o Src\stm32h7xx_hal_msp.o Src\stm32h7xx_it.o Src\system_stm32h7xx.o startup\startup_stm32h743xx.o -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -T../STM32H743VI_FLASH.ld -specs=nosys.specs -static -Wl,-Map=Fobos_master_brd.map -Wl,--gc-sections -Wl,--defsym=malloc_getpagesize_P=0x80 -Wl,--start-group -lc -lm -Wl,--end-group -specs=nano.specs 
-C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\ide\jre\bin\java -jar C:\Program Files (x86)\Atollic\TrueSTUDIO for STM32 9.0.1\Tools\arm-atollic-reports.jar sizeinfo list Fobos_master_brd.elf 
-Generate build reports...
-Print size information
-   text	   data	    bss	    dec	    hex	filename
-  31700	     92	  18108	  49900	   c2ec	Fobos_master_brd.elf
-Print size information done
-Generate listing file
-Output sent to: Fobos_master_brd.list
-Generate listing file done
-Generate build reports done
-arm-atollic-eabi-objcopy.exe -O ihex Fobos_master_brd.elf Fobos_master_brd.hex 
+arm-atollic-eabi-objcopy.exe -O ihex Universal_controller.elf Universal_controller.hex 
