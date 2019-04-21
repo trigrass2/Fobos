@@ -174,7 +174,7 @@ int main(void)
   MX_SPI4_Init();
   MX_FDCAN2_Init();
   MX_IWDG1_Init();
-  MX_TIM1_Init();
+  //MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
   LED_VD5(SET);//IO ports
   LED_VD6(SET);//can transmit-receiving
@@ -767,9 +767,9 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8|GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : PE3 PE4 PE8 PE10 
+  /*Configure GPIO pins : PE3 PE4 PE8 PE9 PE10 
                            PE11 PE0 PE1 */
-  GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_8|GPIO_PIN_10 
+  GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10 
                           |GPIO_PIN_11|GPIO_PIN_0|GPIO_PIN_1;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
