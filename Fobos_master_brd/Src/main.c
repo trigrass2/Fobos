@@ -759,8 +759,8 @@ void DigIOTask_func(void const * argument)
 		  prev_btn_state = 0;
 	  }
 
-	  if(INTERLOCKS_STATE == 0)
-		  XRAY_GEN_START(RESET);
+	  /*if(INTERLOCKS_STATE == 0)
+		  XRAY_GEN_START(RESET);*/
 
 	  vTaskDelay(3);
      /* static uint8_t a=1;
