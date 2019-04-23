@@ -7,7 +7,7 @@
 
 #include "adani_can_medical_protocol.h"
 #include "own_defines.h"
-
+extern uint8_t motor_emergency;
 uint8_t can_protocol_data_analyzing(FDCAN_HandleTypeDef *hfdcan,
 				FDCAN_RxHeaderTypeDef *pRxHeader, uint8_t *pRxData)
 {
@@ -17,7 +17,8 @@ uint8_t can_protocol_data_analyzing(FDCAN_HandleTypeDef *hfdcan,
 	{
 		uint32_t address;
 		address = pRxHeader->Identifier;
-
+		if(address == 0x81)
+		  motor_emergency = 0x0F;
 		static char a=0;
 		  LED_VD6(a^=1);
 		return 0xFF;

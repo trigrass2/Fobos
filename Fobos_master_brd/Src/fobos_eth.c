@@ -111,6 +111,7 @@ void EthernetTask_func(void const * argument)
 	TimerHandle_t xTimer_period_reset;
 	xTimer_period_reset = xTimerCreate("Period timer", 200, pdTRUE, (void*)0, vTimerCallback);
 	xTimerStart(xTimer_period_reset, 0);
+
 	  {
 	      uint8_t nmt_msg[2] = {0x81, 1};
 	      can_tx_func(&hfdcan2, 0, 2, nmt_msg);
@@ -119,7 +120,8 @@ void EthernetTask_func(void const * argument)
 	{
 	  uint8_t can_data_rx1[8] = {0};
 	  FDCAN_RxHeaderTypeDef RxHeader;
-	  while(RxHeader.Identifier != 0x701){
+	  while(RxHeader.Identifier != 0x701)
+	    {
 	      can_protocol_data_analyzing(&hfdcan2, &RxHeader, can_data_rx1);
 	  HAL_IWDG_Refresh(&hiwdg1);
 	  }
@@ -127,7 +129,8 @@ void EthernetTask_func(void const * argument)
 	  {
 	    canopen_u canopen_rcv;
 	    uint8_t can_data_tx[4] = {6,0,0,0};
-	    while(canopen_rcv.values_t.COB_ID != 0x580+1 && canopen_rcv.values_t.index != 0x6040){
+	    while(canopen_rcv.values_t.COB_ID != 0x580+1 && canopen_rcv.values_t.index != 0x6040)
+	      {
 	    		vTaskDelay(50);
 	    		HAL_IWDG_Refresh(&hiwdg1);
 	    		canopen_req_resp_sdo(0x600+1, 0x2B,0x6040,0,can_data_tx, &canopen_rcv);
@@ -195,7 +198,7 @@ void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_proto
 	send(SOCKET0,fobos_eth_buf->data_to_transmit,bytes_in_packet_N+2);
 }
 
-
+uint8_t motor_emergency = 0;
 void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
   extern FDCAN_HandleTypeDef hfdcan2;
 	switch(fobos_eth_buf->fobos_protocol_buf_t.CMD)
@@ -233,7 +236,6 @@ void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
 			uint8_t sensors_state = 0, temp_lim_switches = 0;
 			can_tx_func(&hfdcan2, 0x620+2, 0, &sensors_state);
 			uint8_t can_data_buf[8] = {0};
-			fobos_eth_buf->fobos_protocol_buf_t.data[2] = temp_lim_switches;//DATA2?
 			FDCAN_RxHeaderTypeDef RxHeader;
 			fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
 			if(TABLE_LOCK_SENSOR_LEFT)
@@ -244,19 +246,21 @@ void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
 				sensors_state |= 0x04;
 			if(TABLE_LOCK_SENSOR_RIGHT)
 				sensors_state |= 0x08;
-			fobos_eth_buf->fobos_protocol_buf_t.data[3] = sensors_state;
+
+			if(motor_emergency)
+			fobos_eth_buf->fobos_protocol_buf_t.data[2] |= 0b00000110;
 
 			while(RxHeader.Identifier != 0x722)
 			  can_protocol_data_analyzing(&hfdcan2, &RxHeader, can_data_buf);
 			if(can_data_buf[1] & 0b11000011)
 			  temp_lim_switches = can_data_buf[1] & 0b11000011;//S1,S2 ... S4,S3 в соответствии с единицами в байте.
 			fobos_eth_buf->fobos_protocol_buf_t.data[1] = temp_lim_switches;
-			fobos_eth_protocol_send(FOBOS_SENSORS_STATE, 4, fobos_eth_buf);
+			fobos_eth_protocol_send(FOBOS_SENSORS_STATE, 3, fobos_eth_buf);
 		}
 		else{
 		      fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_PA;
 		      fobos_eth_buf->fobos_protocol_buf_t.data[1] = 0;
-		      fobos_eth_protocol_send(FOBOS_CMD_BASING_STATEMENT, 2, fobos_eth_buf);
+		      fobos_eth_protocol_send(FOBOS_CMD_BASING_STATEMENT, 1, fobos_eth_buf);
 		    }
 		break;
 	case FOBOS_GENERATOR_STATE:
@@ -688,6 +692,7 @@ FDCAN_RxHeaderTypeDef RxHeader;
       if(xQueueReceive(xQueue_Scanning_start, &scan_types, 10)){
 	  position_mode_process(scan_types);
       }
+      vTaskDelay(50);
   }
 }
 

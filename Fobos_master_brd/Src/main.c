@@ -185,7 +185,7 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  if(xTaskCreate(vFobos_Start_Process, "Fobos_start_scan", 256, (void*)1, osPriorityAboveNormal, xFobos_scan_Handle) != pdPASS)
+  /*if(xTaskCreate(vFobos_Start_Process, "Fobos_start_scan", 256, (void*)1, osPriorityAboveNormal, xFobos_scan_Handle) != pdPASS)
     Error_Handler();
   /* USER CODE END RTOS_THREADS */
 
@@ -306,49 +306,49 @@ static void MX_FDCAN2_Init(void)
 
   /* USER CODE END FDCAN2_Init 1 */
   hfdcan2.Instance = FDCAN2;
-  hfdcan2.Init.FrameFormat = FDCAN_FRAME_CLASSIC;
-  hfdcan2.Init.Mode = FDCAN_MODE_NORMAL;
-  hfdcan2.Init.AutoRetransmission = ENABLE;
-  hfdcan2.Init.TransmitPause = DISABLE;
-  hfdcan2.Init.NominalPrescaler = 4;
-  hfdcan2.Init.NominalSyncJumpWidth = 1;
-  hfdcan2.Init.NominalTimeSeg1 = 13;
-  hfdcan2.Init.NominalTimeSeg2 = 2;
-  hfdcan2.Init.DataPrescaler = 1;
-  hfdcan2.Init.DataSyncJumpWidth = 1;
-  hfdcan2.Init.DataTimeSeg1 = 1;
-  hfdcan2.Init.DataTimeSeg2 = 1;
-  hfdcan2.Init.MessageRAMOffset = 0;
-  hfdcan2.Init.StdFiltersNbr = 3;
-  hfdcan2.Init.ExtFiltersNbr = 0;
-  hfdcan2.Init.RxFifo0ElmtsNbr = 4;
-  hfdcan2.Init.RxFifo0ElmtSize = FDCAN_DATA_BYTES_8;
-  hfdcan2.Init.RxFifo1ElmtsNbr = 1;
-  hfdcan2.Init.RxFifo1ElmtSize = FDCAN_DATA_BYTES_8;
-  hfdcan2.Init.RxBuffersNbr = 0;
-  hfdcan2.Init.RxBufferSize = FDCAN_DATA_BYTES_8;
-  hfdcan2.Init.TxEventsNbr = 0;
-  hfdcan2.Init.TxBuffersNbr = 5;
-  hfdcan2.Init.TxFifoQueueElmtsNbr = 0;
-  hfdcan2.Init.TxFifoQueueMode = FDCAN_TX_QUEUE_OPERATION;
-  hfdcan2.Init.TxElmtSize = FDCAN_DATA_BYTES_8;
-  hfdcan2.msgRam.StandardFilterSA = 0;
-  hfdcan2.msgRam.ExtendedFilterSA = 0;
-  hfdcan2.msgRam.RxFIFO0SA = 0;
-  hfdcan2.msgRam.RxFIFO1SA = 0;
-  hfdcan2.msgRam.RxBufferSA = 0;
-  hfdcan2.msgRam.TxEventFIFOSA = 0;
-  hfdcan2.msgRam.TxBufferSA = 0;
-  hfdcan2.msgRam.TxFIFOQSA = 0;
-  hfdcan2.msgRam.TTMemorySA = 0;
-  hfdcan2.msgRam.EndAddress = 0;
-  hfdcan2.ErrorCode = 0;
-  if (HAL_FDCAN_Init(&hfdcan2) != HAL_OK)
-  {
-    Error_Handler();
-  }
+   hfdcan2.Init.FrameFormat = FDCAN_FRAME_CLASSIC;
+   hfdcan2.Init.Mode = FDCAN_MODE_NORMAL;
+   hfdcan2.Init.AutoRetransmission = ENABLE;
+   hfdcan2.Init.TransmitPause = DISABLE;
+   hfdcan2.Init.NominalPrescaler = 4;
+   hfdcan2.Init.NominalSyncJumpWidth = 1;
+   hfdcan2.Init.NominalTimeSeg1 = 13;
+   hfdcan2.Init.NominalTimeSeg2 = 2;
+   hfdcan2.Init.DataPrescaler = 1;
+   hfdcan2.Init.DataSyncJumpWidth = 1;
+   hfdcan2.Init.DataTimeSeg1 = 1;
+   hfdcan2.Init.DataTimeSeg2 = 1;
+   hfdcan2.Init.MessageRAMOffset = 0;
+   hfdcan2.Init.StdFiltersNbr = 3;
+   hfdcan2.Init.ExtFiltersNbr = 0;
+   hfdcan2.Init.RxFifo0ElmtsNbr = 4;
+   hfdcan2.Init.RxFifo0ElmtSize = FDCAN_DATA_BYTES_8;
+   hfdcan2.Init.RxFifo1ElmtsNbr = 1;
+   hfdcan2.Init.RxFifo1ElmtSize = FDCAN_DATA_BYTES_8;
+   hfdcan2.Init.RxBuffersNbr = 0;
+   hfdcan2.Init.RxBufferSize = FDCAN_DATA_BYTES_8;
+   hfdcan2.Init.TxEventsNbr = 0;
+   hfdcan2.Init.TxBuffersNbr = 5;
+   hfdcan2.Init.TxFifoQueueElmtsNbr = 0;
+   hfdcan2.Init.TxFifoQueueMode = FDCAN_TX_QUEUE_OPERATION;
+   hfdcan2.Init.TxElmtSize = FDCAN_DATA_BYTES_8;
+   hfdcan2.msgRam.StandardFilterSA = 0;
+   hfdcan2.msgRam.ExtendedFilterSA = 0;
+   hfdcan2.msgRam.RxFIFO0SA = 0;
+   hfdcan2.msgRam.RxFIFO1SA = 0;
+   hfdcan2.msgRam.RxBufferSA = 0;
+   hfdcan2.msgRam.TxEventFIFOSA = 0;
+   hfdcan2.msgRam.TxBufferSA = 0;
+   hfdcan2.msgRam.TxFIFOQSA = 0;
+   hfdcan2.msgRam.TTMemorySA = 0;
+   hfdcan2.msgRam.EndAddress = 0;
+   hfdcan2.ErrorCode = 0;
+   if (HAL_FDCAN_Init(&hfdcan2) != HAL_OK)
+   {
+     Error_Handler();
+   }
   /* USER CODE BEGIN FDCAN2_Init 2 */
-
+  FDCAN_Config(0);
   /* USER CODE END FDCAN2_Init 2 */
 
 }
@@ -719,8 +719,8 @@ void DigIOTask_func(void const * argument)
 	XRAY_GEN_START(RESET);
 	MOTOR_STO_EN(SET);
 	TABLE_MAGNETS(RESET);
+	vTaskDelay(150);
 	int CAN_id = check_adr_func();
-	FDCAN_Config(CAN_id);
 	{
 		uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
 		buf[3] = (uint8_t)CAN_id;
