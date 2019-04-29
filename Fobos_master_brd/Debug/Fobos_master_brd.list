@@ -23,23 +23,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
   9 .ARM.attributes 0000002e  00000000  00000000  00020050  2**0
                   CONTENTS, READONLY
- 10 .debug_info   00036de4  00000000  00000000  0002007e  2**0
+ 10 .debug_info   00036df1  00000000  00000000  0002007e  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_abbrev 00005cbf  00000000  00000000  00056e62  2**0
+ 11 .debug_abbrev 00005cbf  00000000  00000000  00056e6f  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_loc    00014379  00000000  00000000  0005cb21  2**0
+ 12 .debug_loc    00014379  00000000  00000000  0005cb2e  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_aranges 00001718  00000000  00000000  00070ea0  2**3
+ 13 .debug_aranges 00001718  00000000  00000000  00070ea8  2**3
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_ranges 000021b0  00000000  00000000  000725b8  2**3
+ 14 .debug_ranges 000021b0  00000000  00000000  000725c0  2**3
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_line   0000d40a  00000000  00000000  00074768  2**0
+ 15 .debug_line   0000d40a  00000000  00000000  00074770  2**0
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_str    0000a7d4  00000000  00000000  00081b72  2**0
+ 16 .debug_str    0000a7d4  00000000  00000000  00081b7a  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .comment      0000007c  00000000  00000000  0008c346  2**0
+ 17 .comment      0000007c  00000000  00000000  0008c34e  2**0
                   CONTENTS, READONLY
- 18 .debug_frame  000044d4  00000000  00000000  0008c3c4  2**2
+ 18 .debug_frame  000044d4  00000000  00000000  0008c3cc  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -17001,7 +17001,7 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
  80075b2:	f240 7401 	movw	r4, #1793	; 0x701
  80075b6:	9b09      	ldr	r3, [sp, #36]	; 0x24
  80075b8:	42a3      	cmp	r3, r4
- 80075ba:	d144      	bne.n	8007646 <EthernetTask_func+0x152>
+ 80075ba:	d141      	bne.n	8007640 <EthernetTask_func+0x14c>
 	    uint8_t can_data_tx[4] = {6,0,0,0};
  80075bc:	ac03      	add	r4, sp, #12
  80075be:	2306      	movs	r3, #6
@@ -17023,7 +17023,7 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
  80075da:	88ab      	ldrh	r3, [r5, #4]
  80075dc:	f246 0640 	movw	r6, #24640	; 0x6040
  80075e0:	42b3      	cmp	r3, r6
- 80075e2:	d139      	bne.n	8007658 <EthernetTask_func+0x164>
+ 80075e2:	d136      	bne.n	8007652 <EthernetTask_func+0x15e>
 	  if(!PIN_nINT)
  80075e4:	4e49      	ldr	r6, [pc, #292]	; (800770c <EthernetTask_func+0x218>)
 	LED_VD1(SET);
@@ -17032,8 +17032,8 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
  80075e8:	f8df 8124 	ldr.w	r8, [pc, #292]	; 8007710 <EthernetTask_func+0x21c>
 	LED_VD1(SET);
  80075ec:	2180      	movs	r1, #128	; 0x80
-		  uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
- 80075ee:	f8df 9154 	ldr.w	r9, [pc, #340]	; 8007744 <EthernetTask_func+0x250>
+		  HAL_IWDG_Refresh(&hiwdg1);
+ 80075ee:	f8df 9138 	ldr.w	r9, [pc, #312]	; 8007728 <EthernetTask_func+0x234>
 	LED_VD1(SET);
  80075f2:	4847      	ldr	r0, [pc, #284]	; (8007710 <EthernetTask_func+0x21c>)
  80075f4:	f7f9 ffd4 	bl	80015a0 <HAL_GPIO_WritePin>
@@ -17061,118 +17061,120 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
  8007626:	f244 0003 	movw	r0, #16387	; 0x4003
  800762a:	f7fe fd63 	bl	80060f4 <WIZCHIP_READ>
  800762e:	2813      	cmp	r0, #19
- 8007630:	d068      	beq.n	8007704 <EthernetTask_func+0x210>
- 8007632:	d821      	bhi.n	8007678 <EthernetTask_func+0x184>
+ 8007630:	d067      	beq.n	8007702 <EthernetTask_func+0x20e>
+ 8007632:	d81e      	bhi.n	8007672 <EthernetTask_func+0x17e>
  8007634:	2800      	cmp	r0, #0
- 8007636:	d05e      	beq.n	80076f6 <EthernetTask_func+0x202>
-	  HAL_IWDG_Refresh(&hiwdg1);
- 8007638:	483b      	ldr	r0, [pc, #236]	; (8007728 <EthernetTask_func+0x234>)
- 800763a:	f7f9 fff6 	bl	800162a <HAL_IWDG_Refresh>
+ 8007636:	d05d      	beq.n	80076f4 <EthernetTask_func+0x200>
 	  vTaskDelay(150);
- 800763e:	2096      	movs	r0, #150	; 0x96
- 8007640:	f7fd fe3c 	bl	80052bc <vTaskDelay>
+ 8007638:	2096      	movs	r0, #150	; 0x96
+ 800763a:	f7fd fe3f 	bl	80052bc <vTaskDelay>
 	  if(!PIN_nINT)
- 8007644:	e7d8      	b.n	80075f8 <EthernetTask_func+0x104>
+ 800763e:	e7db      	b.n	80075f8 <EthernetTask_func+0x104>
 	      can_protocol_data_analyzing(&hfdcan2, &RxHeader, can_data_rx1);
- 8007646:	aa04      	add	r2, sp, #16
- 8007648:	a909      	add	r1, sp, #36	; 0x24
- 800764a:	4628      	mov	r0, r5
- 800764c:	f7fe ffe6 	bl	800661c <can_protocol_data_analyzing>
+ 8007640:	aa04      	add	r2, sp, #16
+ 8007642:	a909      	add	r1, sp, #36	; 0x24
+ 8007644:	4628      	mov	r0, r5
+ 8007646:	f7fe ffe9 	bl	800661c <can_protocol_data_analyzing>
 	  HAL_IWDG_Refresh(&hiwdg1);
- 8007650:	4630      	mov	r0, r6
- 8007652:	f7f9 ffea 	bl	800162a <HAL_IWDG_Refresh>
- 8007656:	e7ae      	b.n	80075b6 <EthernetTask_func+0xc2>
+ 800764a:	4630      	mov	r0, r6
+ 800764c:	f7f9 ffed 	bl	800162a <HAL_IWDG_Refresh>
+ 8007650:	e7b1      	b.n	80075b6 <EthernetTask_func+0xc2>
 	    		vTaskDelay(50);
- 8007658:	2032      	movs	r0, #50	; 0x32
- 800765a:	f7fd fe2f 	bl	80052bc <vTaskDelay>
+ 8007652:	2032      	movs	r0, #50	; 0x32
+ 8007654:	f7fd fe32 	bl	80052bc <vTaskDelay>
 	    		HAL_IWDG_Refresh(&hiwdg1);
- 800765e:	4640      	mov	r0, r8
- 8007660:	f7f9 ffe3 	bl	800162a <HAL_IWDG_Refresh>
+ 8007658:	4640      	mov	r0, r8
+ 800765a:	f7f9 ffe6 	bl	800162a <HAL_IWDG_Refresh>
 	    		canopen_req_resp_sdo(0x600+1, 0x2B,0x6040,0,can_data_tx, &canopen_rcv);
- 8007664:	2300      	movs	r3, #0
- 8007666:	4632      	mov	r2, r6
- 8007668:	212b      	movs	r1, #43	; 0x2b
- 800766a:	f240 6001 	movw	r0, #1537	; 0x601
- 800766e:	e88d 0030 	stmia.w	sp, {r4, r5}
- 8007672:	f7ff f839 	bl	80066e8 <canopen_req_resp_sdo>
- 8007676:	e7ab      	b.n	80075d0 <EthernetTask_func+0xdc>
+ 800765e:	2300      	movs	r3, #0
+ 8007660:	4632      	mov	r2, r6
+ 8007662:	212b      	movs	r1, #43	; 0x2b
+ 8007664:	f240 6001 	movw	r0, #1537	; 0x601
+ 8007668:	e88d 0030 	stmia.w	sp, {r4, r5}
+ 800766c:	f7ff f83c 	bl	80066e8 <canopen_req_resp_sdo>
+ 8007670:	e7ae      	b.n	80075d0 <EthernetTask_func+0xdc>
 	  switch (getSn_SR(SOCKET0)){
- 8007678:	2817      	cmp	r0, #23
- 800767a:	d008      	beq.n	800768e <EthernetTask_func+0x19a>
- 800767c:	281c      	cmp	r0, #28
- 800767e:	d1db      	bne.n	8007638 <EthernetTask_func+0x144>
+ 8007672:	2817      	cmp	r0, #23
+ 8007674:	d008      	beq.n	8007688 <EthernetTask_func+0x194>
+ 8007676:	281c      	cmp	r0, #28
+ 8007678:	d1de      	bne.n	8007638 <EthernetTask_func+0x144>
 		  disconnect(SOCKET0);
- 8007680:	2000      	movs	r0, #0
- 8007682:	f7fe fb45 	bl	8005d10 <disconnect>
+ 800767a:	2000      	movs	r0, #0
+ 800767c:	f7fe fb48 	bl	8005d10 <disconnect>
 	    LED_VD2(RESET);
- 8007686:	2200      	movs	r2, #0
- 8007688:	2102      	movs	r1, #2
- 800768a:	4630      	mov	r0, r6
- 800768c:	e030      	b.n	80076f0 <EthernetTask_func+0x1fc>
+ 8007680:	2200      	movs	r2, #0
+ 8007682:	2102      	movs	r1, #2
+ 8007684:	4630      	mov	r0, r6
+ 8007686:	e032      	b.n	80076ee <EthernetTask_func+0x1fa>
 	    if(xTimerIsTimerActive(xTimer_period_reset) != pdFALSE)
- 800768e:	4638      	mov	r0, r7
- 8007690:	f7fe fa2e 	bl	8005af0 <xTimerIsTimerActive>
- 8007694:	b130      	cbz	r0, 80076a4 <EthernetTask_func+0x1b0>
+ 8007688:	4638      	mov	r0, r7
+ 800768a:	f7fe fa31 	bl	8005af0 <xTimerIsTimerActive>
+ 800768e:	b130      	cbz	r0, 800769e <EthernetTask_func+0x1aa>
 	    xTimerStop(xTimer_period_reset, 0);
- 8007696:	2300      	movs	r3, #0
- 8007698:	2103      	movs	r1, #3
- 800769a:	4638      	mov	r0, r7
- 800769c:	9300      	str	r3, [sp, #0]
- 800769e:	461a      	mov	r2, r3
- 80076a0:	f7fe f8ca 	bl	8005838 <xTimerGenericCommand>
+ 8007690:	2300      	movs	r3, #0
+ 8007692:	2103      	movs	r1, #3
+ 8007694:	4638      	mov	r0, r7
+ 8007696:	9300      	str	r3, [sp, #0]
+ 8007698:	461a      	mov	r2, r3
+ 800769a:	f7fe f8cd 	bl	8005838 <xTimerGenericCommand>
 		  LED_VD2(SET);
- 80076a4:	2201      	movs	r2, #1
- 80076a6:	2102      	movs	r1, #2
- 80076a8:	4630      	mov	r0, r6
- 80076aa:	f7f9 ff79 	bl	80015a0 <HAL_GPIO_WritePin>
+ 800769e:	2201      	movs	r2, #1
+ 80076a0:	2102      	movs	r1, #2
+ 80076a2:	4630      	mov	r0, r6
+ 80076a4:	f7f9 ff7c 	bl	80015a0 <HAL_GPIO_WritePin>
 		  LED_VD1(SET);
- 80076ae:	2201      	movs	r2, #1
- 80076b0:	2180      	movs	r1, #128	; 0x80
- 80076b2:	4640      	mov	r0, r8
- 80076b4:	f7f9 ff74 	bl	80015a0 <HAL_GPIO_WritePin>
+ 80076a8:	2201      	movs	r2, #1
+ 80076aa:	2180      	movs	r1, #128	; 0x80
+ 80076ac:	4640      	mov	r0, r8
+ 80076ae:	f7f9 ff77 	bl	80015a0 <HAL_GPIO_WritePin>
+		  HAL_IWDG_Refresh(&hiwdg1);
+ 80076b2:	4648      	mov	r0, r9
+ 80076b4:	f7f9 ffb9 	bl	800162a <HAL_IWDG_Refresh>
 		  uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
- 80076b8:	f8d9 0000 	ldr.w	r0, [r9]
- 80076bc:	f8d9 1004 	ldr.w	r1, [r9, #4]
- 80076c0:	462b      	mov	r3, r5
+ 80076b8:	4a22      	ldr	r2, [pc, #136]	; (8007744 <EthernetTask_func+0x250>)
+ 80076ba:	462b      	mov	r3, r5
+ 80076bc:	6810      	ldr	r0, [r2, #0]
+ 80076be:	6851      	ldr	r1, [r2, #4]
 		  can_tx_func(&hfdcan2, 0x622, 0, buf);
- 80076c2:	462a      	mov	r2, r5
+ 80076c0:	462a      	mov	r2, r5
 		  uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
- 80076c4:	c303      	stmia	r3!, {r0, r1}
+ 80076c2:	c303      	stmia	r3!, {r0, r1}
 		  can_tx_func(&hfdcan2, 0x622, 0, buf);
- 80076c6:	2100      	movs	r1, #0
- 80076c8:	f240 6022 	movw	r0, #1570	; 0x622
- 80076cc:	f7fe fef8 	bl	80064c0 <can_tx_func.constprop.2>
+ 80076c4:	2100      	movs	r1, #0
+ 80076c6:	f240 6022 	movw	r0, #1570	; 0x622
+ 80076ca:	f7fe fef9 	bl	80064c0 <can_tx_func.constprop.2>
 		  taskENTER_CRITICAL();
- 80076d0:	f7fc fdd0 	bl	8004274 <vPortEnterCritical>
+ 80076ce:	f7fc fdd1 	bl	8004274 <vPortEnterCritical>
 		  recv(SOCKET0,fobos_eth_buf.data_to_transmit, 258);
- 80076d4:	f44f 7281 	mov.w	r2, #258	; 0x102
- 80076d8:	a909      	add	r1, sp, #36	; 0x24
- 80076da:	2000      	movs	r0, #0
- 80076dc:	f7fe fc14 	bl	8005f08 <recv>
+ 80076d2:	f44f 7281 	mov.w	r2, #258	; 0x102
+ 80076d6:	a909      	add	r1, sp, #36	; 0x24
+ 80076d8:	2000      	movs	r0, #0
+ 80076da:	f7fe fc15 	bl	8005f08 <recv>
 		  taskEXIT_CRITICAL();
- 80076e0:	f7fc fdee 	bl	80042c0 <vPortExitCritical>
+ 80076de:	f7fc fdef 	bl	80042c0 <vPortExitCritical>
 		  eth_cmds_analysis(&fobos_eth_buf);
- 80076e4:	a809      	add	r0, sp, #36	; 0x24
- 80076e6:	f7ff fb95 	bl	8006e14 <eth_cmds_analysis>
+ 80076e2:	a809      	add	r0, sp, #36	; 0x24
+ 80076e4:	f7ff fb96 	bl	8006e14 <eth_cmds_analysis>
 		  LED_VD1(RESET);
- 80076ea:	2200      	movs	r2, #0
- 80076ec:	2180      	movs	r1, #128	; 0x80
- 80076ee:	4640      	mov	r0, r8
+ 80076e8:	2200      	movs	r2, #0
+ 80076ea:	2180      	movs	r1, #128	; 0x80
+ 80076ec:	4640      	mov	r0, r8
 	    LED_VD2(RESET);
- 80076f0:	f7f9 ff56 	bl	80015a0 <HAL_GPIO_WritePin>
+ 80076ee:	f7f9 ff57 	bl	80015a0 <HAL_GPIO_WritePin>
 		  break;
- 80076f4:	e7a0      	b.n	8007638 <EthernetTask_func+0x144>
+ 80076f2:	e7a1      	b.n	8007638 <EthernetTask_func+0x144>
 	    socket(SOCKET0,Sn_MR_TCP,socket_port,0x00);
- 80076f6:	4a0e      	ldr	r2, [pc, #56]	; (8007730 <EthernetTask_func+0x23c>)
- 80076f8:	4603      	mov	r3, r0
- 80076fa:	2101      	movs	r1, #1
- 80076fc:	8812      	ldrh	r2, [r2, #0]
- 80076fe:	f7fe fa49 	bl	8005b94 <socket>
- 8007702:	e7c0      	b.n	8007686 <EthernetTask_func+0x192>
+ 80076f4:	4a0e      	ldr	r2, [pc, #56]	; (8007730 <EthernetTask_func+0x23c>)
+ 80076f6:	4603      	mov	r3, r0
+ 80076f8:	2101      	movs	r1, #1
+ 80076fa:	8812      	ldrh	r2, [r2, #0]
+ 80076fc:	f7fe fa4a 	bl	8005b94 <socket>
+ 8007700:	e7be      	b.n	8007680 <EthernetTask_func+0x18c>
 	    listen(SOCKET0);
- 8007704:	2000      	movs	r0, #0
- 8007706:	f7fe facf 	bl	8005ca8 <listen>
- 800770a:	e7bc      	b.n	8007686 <EthernetTask_func+0x192>
+ 8007702:	2000      	movs	r0, #0
+ 8007704:	f7fe fad0 	bl	8005ca8 <listen>
+ 8007708:	e7ba      	b.n	8007680 <EthernetTask_func+0x18c>
+ 800770a:	bf00      	nop
  800770c:	58020c00 	.word	0x58020c00
  8007710:	58020400 	.word	0x58020400
  8007714:	20003e5c 	.word	0x20003e5c

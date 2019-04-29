@@ -161,10 +161,8 @@ void EthernetTask_func(void const * argument)
 	  {
 	    if(xTimerIsTimerActive(xTimer_period_reset) != pdFALSE)
 	    xTimerStop(xTimer_period_reset, 0);
-
 		  LED_VD2(SET);
 		  LED_VD1(SET);
-		  HAL_IWDG_Refresh(&hiwdg1);
 		  uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
 		  can_tx_func(&hfdcan2, 0x622, 0, buf);
 		  volatile fobos_protocol_buf_u fobos_eth_buf;

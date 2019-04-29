@@ -1,4 +1,4 @@
-15:32:03 **** Incremental Build of configuration Debug for project Fobos_master_brd ****
+17:24:00 **** Incremental Build of configuration Debug for project Fobos_master_brd ****
 Info: Internal Builder is used for build
 arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32H743xx -I../Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Src\fobos_eth.o ..\Src\fobos_eth.c 
 ..\Src\fobos_eth.c: In function 'EthernetTask_func':
@@ -10,7 +10,7 @@ arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 
   ^~~~~~
 ..\Src\fobos_eth.c:100:2: warning: incompatible implicit declaration of built-in function 'memcpy'
 ..\Src\fobos_eth.c:100:2: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c:170:18: warning: passing argument 2 of 'recv' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:172:18: warning: passing argument 2 of 'recv' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
      recv(SOCKET0,fobos_eth_buf.data_to_transmit, 258);
                   ^~~~~~~~~~~~~
 In file included from ..\Src\fobos_eth.c:9:0:
@@ -18,350 +18,350 @@ In file included from ..\Src\fobos_eth.c:9:0:
  int32_t recv(uint8_t sn, uint8_t * buf, uint16_t len);
          ^~~~
 ..\Src\fobos_eth.c: At top level:
-..\Src\fobos_eth.c:205:22: warning: initialization makes integer from pointer without a cast [-Wint-conversion]
+..\Src\fobos_eth.c:206:22: warning: initialization makes integer from pointer without a cast [-Wint-conversion]
  BaseType_t xHoming = NULL, xPosition_func = NULL;
                       ^~~~
-..\Src\fobos_eth.c:205:45: warning: initialization makes integer from pointer without a cast [-Wint-conversion]
+..\Src\fobos_eth.c:206:45: warning: initialization makes integer from pointer without a cast [-Wint-conversion]
  BaseType_t xHoming = NULL, xPosition_func = NULL;
                                              ^~~~
 ..\Src\fobos_eth.c: In function 'eth_cmds_analysis':
-..\Src\fobos_eth.c:220:4: warning: passing argument 2 of 'send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:221:4: warning: passing argument 2 of 'send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
     fobos_eth_buf->data_to_transmit,
     ^~~~~~~~~~~~~
 In file included from ..\Src\fobos_eth.c:9:0:
 ..\Src\ethernet/socket.h:250:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'volatile uint8_t * {aka volatile unsigned char *}'
  int32_t send(uint8_t sn, uint8_t * buf, uint16_t len);
          ^~~~
-..\Src\fobos_eth.c:230:6: warning: incompatible implicit declaration of built-in function 'memcpy'
+..\Src\fobos_eth.c:231:6: warning: incompatible implicit declaration of built-in function 'memcpy'
       memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, mac_adr, 6);
       ^~~~~~
-..\Src\fobos_eth.c:230:6: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c:230:13: warning: passing argument 1 of 'memcpy' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:231:6: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c:231:13: warning: passing argument 1 of 'memcpy' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
       memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, mac_adr, 6);
              ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:230:13: note: expected 'void *' but argument is of type 'volatile uint8_t * {aka volatile unsigned char *}'
-..\Src\fobos_eth.c:232:104: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:231:13: note: expected 'void *' but argument is of type 'volatile uint8_t * {aka volatile unsigned char *}'
+..\Src\fobos_eth.c:233:104: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
       fobos_eth_protocol_send(FOBOS_ETH_GET_MAC, fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N, fobos_eth_buf);
                                                                                                         ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:237:58: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:238:58: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
    fobos_eth_protocol_send(FOBOS_CMD_BASING_STATEMENT, 2, fobos_eth_buf);
                                                           ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:242:45: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:243:45: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
    fobos_eth_protocol_send(FOBOS_ETH_RST, 1, fobos_eth_buf);
                                              ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:280:52: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:282:52: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
     fobos_eth_protocol_send(FOBOS_SENSORS_STATE, 3, fobos_eth_buf);
                                                     ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:256:12: warning: unused variable 'can_rx_data' [-Wunused-variable]
+..\Src\fobos_eth.c:257:12: warning: unused variable 'can_rx_data' [-Wunused-variable]
     uint8_t can_rx_data[8] = {0};
             ^~~~~~~~~~~
-..\Src\fobos_eth.c:255:31: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
+..\Src\fobos_eth.c:256:31: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
     uint8_t sensors_state = 0, temp_lim_switches = 0;
                                ^~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:250:35: warning: variable 'RxHeader' set but not used [-Wunused-but-set-variable]
+..\Src\fobos_eth.c:251:35: warning: variable 'RxHeader' set but not used [-Wunused-but-set-variable]
     volatile FDCAN_RxHeaderTypeDef RxHeader;
                                    ^~~~~~~~
-..\Src\fobos_eth.c:285:64: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:287:64: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
          fobos_eth_protocol_send(FOBOS_CMD_BASING_STATEMENT, 1, fobos_eth_buf);
                                                                 ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:308:56: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:310:56: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
       fobos_eth_protocol_send(FOBOS_GENERATOR_STATE, 2, fobos_eth_buf);
                                                         ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:313:58: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:315:58: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
    fobos_eth_protocol_send(FOBOS_CMD_BASING_STATEMENT, 2, fobos_eth_buf);
                                                           ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:338:9: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:340:9: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
          fobos_eth_buf);
          ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:330:15: warning: unused variable 'encoder_val' [-Wunused-variable]
+..\Src\fobos_eth.c:332:15: warning: unused variable 'encoder_val' [-Wunused-variable]
       uint32_t encoder_val;//um
                ^~~~~~~~~~~
-..\Src\fobos_eth.c:320:36: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
+..\Src\fobos_eth.c:322:36: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
       uint8_t can_data_tx[8] = {0}, temp_lim_switches = 0;
                                     ^~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:343:58: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:345:58: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
    fobos_eth_protocol_send(FOBOS_CMD_BASING_STATEMENT, 2, fobos_eth_buf);
                                                           ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:351:52: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:353:52: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
         fobos_eth_protocol_send(FOBOS_STATEMENT, 2, fobos_eth_buf);
                                                     ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:356:58: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:358:58: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
    fobos_eth_protocol_send(FOBOS_CMD_BASING_STATEMENT, 2, fobos_eth_buf);
                                                           ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:373:19: warning: comparison between pointer and integer
+..\Src\fobos_eth.c:375:19: warning: comparison between pointer and integer
         if(xHoming == NULL)
                    ^~
-..\Src\fobos_eth.c:376:53: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:378:53: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
         fobos_eth_protocol_send(FOBOS_CMD_BASING, 1, fobos_eth_buf);
                                                      ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:381:53: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:383:53: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
         fobos_eth_protocol_send(FOBOS_CMD_BASING, 1, fobos_eth_buf);
                                                      ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:404:99: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:406:99: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
     fobos_eth_protocol_send(FOBOS_CMD_WORK, fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N, fobos_eth_buf);
                                                                                                    ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:408:52: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:410:52: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
          fobos_eth_protocol_send(FOBOS_CMD_WORK, 1, fobos_eth_buf);
                                                     ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:390:29: warning: unused variable 'RxHeader' [-Wunused-variable]
+..\Src\fobos_eth.c:392:29: warning: unused variable 'RxHeader' [-Wunused-variable]
        FDCAN_RxHeaderTypeDef RxHeader;
                              ^~~~~~~~
-..\Src\fobos_eth.c:389:15: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
+..\Src\fobos_eth.c:391:15: warning: unused variable 'temp_lim_switches' [-Wunused-variable]
        uint8_t temp_lim_switches = 0;
                ^~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:413:49: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:415:49: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
       fobos_eth_protocol_send(FOBOS_CMD_WORK, 1, fobos_eth_buf);
                                                  ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:433:48: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:435:48: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
      fobos_eth_protocol_send(FOBOS_CMD_LAMP, 1, fobos_eth_buf);
                                                 ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:468:59: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:470:59: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
     fobos_eth_protocol_send(FOBOS_CMD_BASING_STATEMENT, 2, fobos_eth_buf);
                                                            ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:481:25: warning: comparison between pointer and integer
+..\Src\fobos_eth.c:483:25: warning: comparison between pointer and integer
        if(xPosition_func == NULL)
                          ^~
-..\Src\fobos_eth.c:487:25: warning: comparison between pointer and integer
+..\Src\fobos_eth.c:489:25: warning: comparison between pointer and integer
        if(xPosition_func == NULL)
                          ^~
-..\Src\fobos_eth.c:499:102: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:501:102: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
       fobos_eth_protocol_send(FOBOS_CMD_START, fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N, fobos_eth_buf);
                                                                                                       ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:524:62: warning: suggest parentheses around '-' in operand of '&' [-Wparentheses]
+..\Src\fobos_eth.c:526:62: warning: suggest parentheses around '-' in operand of '&' [-Wparentheses]
            fobos_eth_buf->fobos_protocol_buf_t.data[2] = 0x03 - can_data_rcv[1] & 0x03;
                                                          ~~~~~^~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:532:107: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:534:107: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
     fobos_eth_protocol_send(FOBOS_CMD_START_STATUS, fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N, fobos_eth_buf);
                                                                                                            ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:541:49: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:543:49: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
       fobos_eth_protocol_send(FOBOS_CMD_STOP, 1, fobos_eth_buf);
                                                  ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:548:16: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
+..\Src\fobos_eth.c:550:16: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
    int length = strlen(string_data)+1;
                 ^~~~~~
-..\Src\fobos_eth.c:548:16: warning: incompatible implicit declaration of built-in function 'strlen'
-..\Src\fobos_eth.c:548:16: note: include '<string.h>' or provide a declaration of 'strlen'
-..\Src\fobos_eth.c:551:3: warning: incompatible implicit declaration of built-in function 'memcpy'
+..\Src\fobos_eth.c:550:16: warning: incompatible implicit declaration of built-in function 'strlen'
+..\Src\fobos_eth.c:550:16: note: include '<string.h>' or provide a declaration of 'strlen'
+..\Src\fobos_eth.c:553:3: warning: incompatible implicit declaration of built-in function 'memcpy'
    memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, string_data, length);
    ^~~~~~
-..\Src\fobos_eth.c:551:3: note: include '<string.h>' or provide a declaration of 'memcpy'
-..\Src\fobos_eth.c:551:10: warning: passing argument 1 of 'memcpy' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:553:3: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c:553:10: warning: passing argument 1 of 'memcpy' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
    memcpy(fobos_eth_buf->fobos_protocol_buf_t.data+1, string_data, length);
           ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:551:10: note: expected 'void *' but argument is of type 'volatile uint8_t * {aka volatile unsigned char *}'
-..\Src\fobos_eth.c:553:16: warning: passing argument 2 of 'send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:553:10: note: expected 'void *' but argument is of type 'volatile uint8_t * {aka volatile unsigned char *}'
+..\Src\fobos_eth.c:555:16: warning: passing argument 2 of 'send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
    send(SOCKET0,fobos_eth_buf->data_to_transmit,length+2);
                 ^~~~~~~~~~~~~
 In file included from ..\Src\fobos_eth.c:9:0:
 ..\Src\ethernet/socket.h:250:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'volatile uint8_t * {aka volatile unsigned char *}'
  int32_t send(uint8_t sn, uint8_t * buf, uint16_t len);
          ^~~~
-..\Src\fobos_eth.c:560:19: warning: passing argument 1 of 'confirmation' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:562:19: warning: passing argument 1 of 'confirmation' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
    if(confirmation(fobos_eth_buf, ip_source_adr))
                    ^~~~~~~~~~~~~
 ..\Src\fobos_eth.c:31:9: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
          ^~~~~~~~~~~~
-..\Src\fobos_eth.c:564:19: warning: passing argument 1 of 'confirmation' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:566:19: warning: passing argument 1 of 'confirmation' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
    if(confirmation(fobos_eth_buf, subnet_mask_adr))
                    ^~~~~~~~~~~~~
 ..\Src\fobos_eth.c:31:9: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
          ^~~~~~~~~~~~
-..\Src\fobos_eth.c:570:19: warning: passing argument 1 of 'confirmation' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:572:19: warning: passing argument 1 of 'confirmation' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
    if(confirmation(fobos_eth_buf, &socket_port))
                    ^~~~~~~~~~~~~
 ..\Src\fobos_eth.c:31:9: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
          ^~~~~~~~~~~~
-..\Src\fobos_eth.c:570:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
+..\Src\fobos_eth.c:572:34: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
    if(confirmation(fobos_eth_buf, &socket_port))
                                   ^
 ..\Src\fobos_eth.c:31:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint16_t * {aka short unsigned int *}'
  uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
          ^~~~~~~~~~~~
-..\Src\fobos_eth.c:577:20: warning: passing argument 1 of 'confirmation' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:579:20: warning: passing argument 1 of 'confirmation' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
        confirmation(fobos_eth_buf, &socket_port);
                     ^~~~~~~~~~~~~
 ..\Src\fobos_eth.c:31:9: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
          ^~~~~~~~~~~~
-..\Src\fobos_eth.c:577:35: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
+..\Src\fobos_eth.c:579:35: warning: passing argument 2 of 'confirmation' from incompatible pointer type [-Wincompatible-pointer-types]
        confirmation(fobos_eth_buf, &socket_port);
                                    ^
 ..\Src\fobos_eth.c:31:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint16_t * {aka short unsigned int *}'
  uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
          ^~~~~~~~~~~~
-..\Src\fobos_eth.c:584:19: warning: passing argument 1 of 'confirmation' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:586:19: warning: passing argument 1 of 'confirmation' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
    if(confirmation(fobos_eth_buf, (void*)0))
                    ^~~~~~~~~~~~~
 ..\Src\fobos_eth.c:31:9: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
          ^~~~~~~~~~~~
-..\Src\fobos_eth.c:589:21: warning: passing argument 1 of 'confirmation' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:591:21: warning: passing argument 1 of 'confirmation' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
         confirmation(fobos_eth_buf, (void*)0);
                      ^~~~~~~~~~~~~
 ..\Src\fobos_eth.c:31:9: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
          ^~~~~~~~~~~~
-..\Src\fobos_eth.c:600:22: warning: passing argument 1 of 'feedback_params' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:602:22: warning: passing argument 1 of 'feedback_params' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
       feedback_params(fobos_eth_buf, ip, 4+1);
                       ^~~~~~~~~~~~~
 ..\Src\fobos_eth.c:30:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void feedback_params(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy, uint8_t tx_bytes);
       ^~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:610:19: warning: passing argument 1 of 'feedback_params' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:612:19: warning: passing argument 1 of 'feedback_params' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
    feedback_params(fobos_eth_buf, &dhcp_state, 1+1);
                    ^~~~~~~~~~~~~
 ..\Src\fobos_eth.c:30:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void feedback_params(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy, uint8_t tx_bytes);
       ^~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:616:16: warning: passing argument 2 of 'send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:618:16: warning: passing argument 2 of 'send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
    send(SOCKET0,fobos_eth_buf->data_to_transmit,fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N+2);
                 ^~~~~~~~~~~~~
 In file included from ..\Src\fobos_eth.c:9:0:
 ..\Src\ethernet/socket.h:250:9: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'volatile uint8_t * {aka volatile unsigned char *}'
  int32_t send(uint8_t sn, uint8_t * buf, uint16_t len);
          ^~~~
-..\Src\fobos_eth.c:625:22: warning: passing argument 1 of 'feedback_params' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:627:22: warning: passing argument 1 of 'feedback_params' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
       feedback_params(fobos_eth_buf, mask, 4+1);
                       ^~~~~~~~~~~~~
 ..\Src\fobos_eth.c:30:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void feedback_params(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy, uint8_t tx_bytes);
       ^~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:635:23: warning: passing argument 1 of 'feedback_params' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:637:23: warning: passing argument 1 of 'feedback_params' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
        feedback_params(fobos_eth_buf, port, 2+1);
                        ^~~~~~~~~~~~~
 ..\Src\fobos_eth.c:30:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void feedback_params(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy, uint8_t tx_bytes);
       ^~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:646:23: warning: passing argument 1 of 'feedback_params' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:648:23: warning: passing argument 1 of 'feedback_params' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
        feedback_params(fobos_eth_buf, timeout, 2+1);
                        ^~~~~~~~~~~~~
 ..\Src\fobos_eth.c:30:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void feedback_params(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy, uint8_t tx_bytes);
       ^~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:654:22: warning: passing argument 1 of 'feedback_params' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:656:22: warning: passing argument 1 of 'feedback_params' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
       feedback_params(fobos_eth_buf, &dhcp_state, 1+1);
                       ^~~~~~~~~~~~~
 ..\Src\fobos_eth.c:30:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void feedback_params(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy, uint8_t tx_bytes);
       ^~~~~~~~~~~~~~~
-..\Src\fobos_eth.c:660:72: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+..\Src\fobos_eth.c:662:72: warning: passing argument 3 of 'fobos_eth_protocol_send' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
     fobos_eth_protocol_send(fobos_eth_buf->fobos_protocol_buf_t.CMD, 1, fobos_eth_buf);
                                                                         ^~~~~~~~~~~~~
-..\Src\fobos_eth.c:199:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
+..\Src\fobos_eth.c:200:6: note: expected 'fobos_protocol_buf_u * {aka union <anonymous> *}' but argument is of type 'volatile fobos_protocol_buf_u * {aka volatile union <anonymous> *}'
  void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf){
       ^~~~~~~~~~~~~~~~~~~~~~~
 ..\Src\fobos_eth.c: In function 'feedback_params':
-..\Src\fobos_eth.c:667:3: warning: incompatible implicit declaration of built-in function 'memcpy'
+..\Src\fobos_eth.c:669:3: warning: incompatible implicit declaration of built-in function 'memcpy'
    memcpy(&fobos_eth_buf->fobos_protocol_buf_t.data[1], data_for_copy, tx_bytes-1);
    ^~~~~~
-..\Src\fobos_eth.c:667:3: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c:669:3: note: include '<string.h>' or provide a declaration of 'memcpy'
 ..\Src\fobos_eth.c: In function 'confirmation':
-..\Src\fobos_eth.c:676:3: warning: incompatible implicit declaration of built-in function 'memcpy'
+..\Src\fobos_eth.c:678:3: warning: incompatible implicit declaration of built-in function 'memcpy'
    memcpy(data_for_copy,
    ^~~~~~
-..\Src\fobos_eth.c:676:3: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c:678:3: note: include '<string.h>' or provide a declaration of 'memcpy'
 ..\Src\fobos_eth.c: In function 'canopen_receive':
-..\Src\fobos_eth.c:732:11: warning: unused variable 'subindex' [-Wunused-variable]
+..\Src\fobos_eth.c:734:11: warning: unused variable 'subindex' [-Wunused-variable]
    uint8_t subindex = canopen_rcv->values_t.subindex;
            ^~~~~~~~
 ..\Src\fobos_eth.c: In function 'vFobos_Start_Process':
-..\Src\fobos_eth.c:767:23: warning: unused variable 'RxHeader' [-Wunused-variable]
+..\Src\fobos_eth.c:769:23: warning: unused variable 'RxHeader' [-Wunused-variable]
  FDCAN_RxHeaderTypeDef RxHeader;
                        ^~~~~~~~
-..\Src\fobos_eth.c:766:25: warning: variable 'can_data_rx' set but not used [-Wunused-but-set-variable]
+..\Src\fobos_eth.c:768:25: warning: variable 'can_data_rx' set but not used [-Wunused-but-set-variable]
  uint8_t scan_types = 0, can_data_rx[8] = {0};
                          ^~~~~~~~~~~
 ..\Src\fobos_eth.c: In function 'can_tx_func':
-..\Src\fobos_eth.c:806:9: warning: type defaults to 'int' in declaration of 'a' [-Wimplicit-int]
+..\Src\fobos_eth.c:808:9: warning: type defaults to 'int' in declaration of 'a' [-Wimplicit-int]
   static a=0;
          ^
 ..\Src\fobos_eth.c: In function 'position_mode_process_right':
-..\Src\fobos_eth.c:900:22: warning: assignment makes integer from pointer without a cast [-Wint-conversion]
+..\Src\fobos_eth.c:902:22: warning: assignment makes integer from pointer without a cast [-Wint-conversion]
        xPosition_func = NULL;
                       ^
 ..\Src\fobos_eth.c: In function 'position_mode_process_left':
-..\Src\fobos_eth.c:957:22: warning: assignment makes integer from pointer without a cast [-Wint-conversion]
+..\Src\fobos_eth.c:959:22: warning: assignment makes integer from pointer without a cast [-Wint-conversion]
        xPosition_func = NULL;
                       ^
 ..\Src\fobos_eth.c: In function 'position_mode_process':
-..\Src\fobos_eth.c:1025:36: warning: suggest parentheses around comparison in operand of '&' [-Wparentheses]
+..\Src\fobos_eth.c:1027:36: warning: suggest parentheses around comparison in operand of '&' [-Wparentheses]
   while(canopen_rcv.values_t.data[0]&0b00000111 != 0x07)
                                     ^
 ..\Src\fobos_eth.c: In function 'homing_process':
-..\Src\fobos_eth.c:1159:11: warning: assignment makes integer from pointer without a cast [-Wint-conversion]
+..\Src\fobos_eth.c:1161:11: warning: assignment makes integer from pointer without a cast [-Wint-conversion]
    xHoming = NULL;
            ^
 ..\Src\fobos_eth.c: In function 'can_protocol_data_analyzing':
-..\Src\fobos_eth.c:1175:7: warning: incompatible implicit declaration of built-in function 'memcpy'
+..\Src\fobos_eth.c:1177:7: warning: incompatible implicit declaration of built-in function 'memcpy'
        memcpy(buf,pRxData,2);
        ^~~~~~
-..\Src\fobos_eth.c:1175:7: note: include '<string.h>' or provide a declaration of 'memcpy'
+..\Src\fobos_eth.c:1177:7: note: include '<string.h>' or provide a declaration of 'memcpy'
 At top level:
 ..\Src\fobos_eth.c:54:16: warning: 'ip_destination_adr' defined but not used [-Wunused-variable]
  static uint8_t ip_destination_adr[4] = {192,168,100,2};
@@ -382,5 +382,5 @@ Generate listing file done
 Generate build reports done
 arm-atollic-eabi-objcopy.exe -O ihex Fobos_master_brd.elf Fobos_master_brd.hex 
 
-15:32:06 Build Finished (took 3s.68ms)
+17:24:04 Build Finished (took 3s.334ms)
 
