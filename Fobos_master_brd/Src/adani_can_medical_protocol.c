@@ -7,8 +7,7 @@
 
 #include "adani_can_medical_protocol.h"
 #include "own_defines.h"
-extern uint8_t motor_emergency;
-uint8_t can_protocol_data_analyzing(FDCAN_HandleTypeDef *hfdcan,
+/*uint8_t can_protocol_data_analyzing(FDCAN_HandleTypeDef *hfdcan,
 				FDCAN_RxHeaderTypeDef *pRxHeader, uint8_t *pRxData)
 {
 	//uint32_t level = HAL_FDCAN_GetRxFifoFillLevel(hfdcan, FDCAN_RX_FIFO0);
@@ -25,4 +24,4 @@ uint8_t can_protocol_data_analyzing(FDCAN_HandleTypeDef *hfdcan,
 	}
 	else
 		return 0;
-}
+}*/
