@@ -26,13 +26,15 @@
 uint8_t wiznet820_read_data(SPI_HandleTypeDef *hspi, unsigned short address);
 void wiznet820_send_data(SPI_HandleTypeDef *hspi, unsigned short address, uint8_t data_value);
 void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_protocol_buf_u *fobos_eth_buf);
-void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf);
+void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf);
 void feedback_params(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy, uint8_t tx_bytes);
 uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
 void vTimerCallback(TimerHandle_t);
 void vFobos_Start_Process();
 static void homing_process();
 static void position_mode_process(uint8_t );
+uint8_t can_protocol_data_analyzing(FDCAN_HandleTypeDef *hfdcan,
+				FDCAN_RxHeaderTypeDef *pRxHeader, uint8_t *pRxData);
 
 /* USER CODE BEGIN Header_EthernetTask_func */
 extern FDCAN_HandleTypeDef hfdcan2;
@@ -52,6 +54,7 @@ static uint8_t ip_source_adr[4] = {192,168,184,1};
 static uint8_t ip_destination_adr[4] = {192,168,100,2};
 static uint32_t timeout_period = 1000;
 static wiz_NetInfo wiz_NetData;
+volatile static uint8_t C_rack_statement;//положение С-рамы
 uint8_t canopen_transmit(uint16_t COB_ID, uint8_t control_field, uint16_t index, uint8_t subindex, uint8_t *data);
 static char can_tx_func(FDCAN_HandleTypeDef *hfdcan, unsigned int ID, uint32_t data_lenght, uint8_t *data);
 typedef void * TimerHandle_t;
@@ -137,6 +140,7 @@ void EthernetTask_func(void const * argument)
 	    	    }
 	  }
 	}
+	LED_VD1(SET);
   /* Infinite loop */
   for(;;)
   {
@@ -146,7 +150,6 @@ void EthernetTask_func(void const * argument)
 	    LED_VD5(RESET);
 	  taskEXIT_CRITICAL();
 	  //DHCP===*/
-	  LED_VD1(SET);
 	  if(!PIN_nINT)
 	    {
 		  LED_VD1(SET);
@@ -160,13 +163,13 @@ void EthernetTask_func(void const * argument)
 	    if(xTimerIsTimerActive(xTimer_period_reset) != pdFALSE)
 	    xTimerStop(xTimer_period_reset, 0);
 		  LED_VD2(SET);
-		  fobos_protocol_buf_u fobos_eth_buf;
+		  volatile fobos_protocol_buf_u fobos_eth_buf;
 		  recv(SOCKET0,fobos_eth_buf.data_to_transmit, 258);
 		  LED_VD1(SET);
 		  eth_cmds_analysis(&fobos_eth_buf);
 
 		  uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
-		  can_tx_func(&hfdcan2, 0x80, 8, buf);
+		  can_tx_func(&hfdcan2, 0x622, 0, buf);
 		  LED_VD1(RESET);
 	  }
 		  break;
@@ -206,7 +209,7 @@ uint8_t motor_emergency = 0;
 static void position_mode_process_left();
 static void position_mode_process_right();
 
-void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
+void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
   extern FDCAN_HandleTypeDef hfdcan2;
 	switch(fobos_eth_buf->fobos_protocol_buf_t.CMD)
 	{
@@ -243,11 +246,24 @@ void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
 #define SENSOR_STATE
 	  if(fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N == 0)
 		{
-			uint8_t sensors_state = 0, temp_lim_switches = 0;
-			can_tx_func(&hfdcan2, 0x620+2, 0, &sensors_state);
-			uint8_t can_data_buf[8] = {0};
-			FDCAN_RxHeaderTypeDef RxHeader;
+			volatile FDCAN_RxHeaderTypeDef RxHeader;
+			RxHeader.Identifier = 0;
 			fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
+			fobos_eth_buf->fobos_protocol_buf_t.data[1] = 0;
+			fobos_eth_buf->fobos_protocol_buf_t.data[2] = 0;
+			uint8_t sensors_state = 0, temp_lim_switches = 0;
+			uint8_t can_rx_data[8] = {0};
+			can_tx_func(&hfdcan2, 0x622, 0, can_rx_data);
+			vTaskDelay(3);
+			can_protocol_data_analyzing(&hfdcan2, &RxHeader, can_rx_data);
+			while(RxHeader.Identifier != 0x722)
+			{
+			    vTaskDelay(30);//было 5мс
+			    can_protocol_data_analyzing(&hfdcan2, &RxHeader, can_rx_data);
+			    can_tx_func(&hfdcan2, 0x622, 0, can_rx_data);
+			}
+
+			fobos_eth_buf->fobos_protocol_buf_t.data[1] = can_rx_data[1] & 0xC3;//S1,S2 ... S4,S3 в соответствии с единицами в байте.
 			if(TABLE_LOCK_SENSOR_LEFT)
 				sensors_state |= 0x01;
 			if(EMERGENCY_LIMIT_SW1)
@@ -257,14 +273,9 @@ void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
 			if(TABLE_LOCK_SENSOR_RIGHT)
 				sensors_state |= 0x08;
 
-			if(motor_emergency)
+			if(motor_emergency == 0x0F)
 			fobos_eth_buf->fobos_protocol_buf_t.data[2] |= 0b00000110;
 
-			while(RxHeader.Identifier != 0x722)
-			  can_protocol_data_analyzing(&hfdcan2, &RxHeader, can_data_buf);
-			if(can_data_buf[1] & 0b11000011)
-			  temp_lim_switches = can_data_buf[1] & 0b11000011;//S1,S2 ... S4,S3 в соответствии с единицами в байте.
-			fobos_eth_buf->fobos_protocol_buf_t.data[1] = temp_lim_switches;
 			fobos_eth_protocol_send(FOBOS_SENSORS_STATE, 3, fobos_eth_buf);
 		}
 		else{
@@ -307,23 +318,6 @@ void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
 	    canopen_u canopen_rcv = {0};
 	    uint8_t can_data_tx[8] = {0}, temp_lim_switches = 0;
 	    canopen_req_resp_sdo(0x600+1, SDO_REQUEST, 0x6064, 0, can_data_tx, &canopen_rcv);
-	    /*can_tx_func(&hfdcan2, 0x620+2, 0, can_data_buf, FDCAN_TX_BUFFER1);
-	    fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
-	    //запрос к двигателю линейного перемещения о положении ->
-	    int servo_pos = 1619;//запрос к двигателю о его положении
-	    fobos_eth_buf->fobos_protocol_buf_t.data[1] = servo_pos>>8;
-	    fobos_eth_buf->fobos_protocol_buf_t.data[2] = servo_pos;
-	    if(servo_pos > 100)
-	      fobos_eth_buf->fobos_protocol_buf_t.data[3] = 0;
-	    else
-	      fobos_eth_buf->fobos_protocol_buf_t.data[3] = 0xFF;
-
-	    while(RxHeader.Identifier != 0x720+2)
-	      can_protocol_data_analyzing(&hfdcan2, &RxHeader, can_data_buf);
-	    if(can_data_buf[1] & 0b11000011)
-	      temp_lim_switches = can_data_buf[1] & 0b11000011;//S1,S2 ... S4,S3 в соответствии с единицами в байте.
-	    if(temp_lim_switches && temp_lim_switches < 3)
-	      fobos_eth_buf->fobos_protocol_buf_t.data[3] = temp_lim_switches;*/
 	    fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N = 5;
 	    fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
 
@@ -373,6 +367,8 @@ void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
 	      can_protocol_data_analyzing(&hfdcan2, &RxHeader, can_data_buf);*/
 	    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	    //запрос к линейному приводу о положении
+	      uint8_t can_data_buf[8] = {0x10,0};
+	      can_tx_func(&hfdcan2, 0x620+2, 2, can_data_buf);
 	      if(xHoming == NULL)
 	    xHoming = xTaskCreate(homing_process, "homing", 128, (void*)0, tskIDLE_PRIORITY, &xHoming_Handle);
 	      fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
@@ -454,14 +450,13 @@ void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
 		}
 		else{
 		    fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
-		    fobos_eth_buf->fobos_protocol_buf_t.data[1] = 0;
-		    basing_point = 0;
+		    fobos_eth_buf->fobos_protocol_buf_t.data[1] = basing_point;
 		}
 	    }
 	    else
 	      {
-		fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_CMD;
-		fobos_eth_buf->fobos_protocol_buf_t.data[1] = 0;
+		fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
+		fobos_eth_buf->fobos_protocol_buf_t.data[1] = basing_point;
 	      }
 	  }
 	  else{
@@ -841,9 +836,11 @@ void wiznet820_send_data(SPI_HandleTypeDef *hspi, unsigned short address, uint8_
 void vTimerCallback(TimerHandle_t Timer){
 
 	HAL_IWDG_Refresh(&hiwdg1);
-	uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
 	extern FDCAN_HandleTypeDef hfdcan2;
-	can_tx_func(&hfdcan2, 0x80, 8, buf);
+	//uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
+	//can_tx_func(&hfdcan2, 0x80, 8, buf);
+	uint8_t buf[8];
+	can_tx_func(&hfdcan2, 0x622, 0, buf);
 }
 
 static void position_mode_process_right(){
@@ -1160,4 +1157,23 @@ static void homing_process(){
   	      }
   xHoming = NULL;
   vTaskDelete(xHoming_Handle);
+}
+
+uint8_t can_protocol_data_analyzing(FDCAN_HandleTypeDef *hfdcan,
+				FDCAN_RxHeaderTypeDef *pRxHeader, uint8_t *pRxData)
+{
+	//uint32_t level = HAL_FDCAN_GetRxFifoFillLevel(hfdcan, FDCAN_RX_FIFO0);
+	if(HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, pRxHeader, pRxData) == HAL_OK)
+	//if(HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_BUFFER0, pRxHeader, pRxData) == HAL_OK)
+	{
+		volatile uint32_t address = pRxHeader->Identifier;
+		if(address == 0x81)
+		  motor_emergency = 0x0F;
+
+		static char a=0;
+		  LED_VD6(a^=1);
+		return 0xFF;
+	}
+	else
+		return 0;
 }
