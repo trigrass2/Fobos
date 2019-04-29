@@ -243,6 +243,11 @@ void eth_cmds_analysis(fobos_protocol_buf_u *fobos_eth_buf){
 #define SENSOR_STATE
 	  if(fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N == 0)
 		{
+			volatile FDCAN_RxHeaderTypeDef RxHeader;
+			RxHeader.Identifier = 0;
+			fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
+			fobos_eth_buf->fobos_protocol_buf_t.data[1] = 0;
+			fobos_eth_buf->fobos_protocol_buf_t.data[2] = 0;
 			uint8_t sensors_state = 0, temp_lim_switches = 0;
 			can_tx_func(&hfdcan2, 0x620+2, 0, &sensors_state);
 			uint8_t can_data_buf[8] = {0};
