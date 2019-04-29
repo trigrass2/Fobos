@@ -114,7 +114,6 @@ void EthernetTask_func(void const * argument)
 	TimerHandle_t xTimer_period_reset;
 	xTimer_period_reset = xTimerCreate("Period timer", 200, pdTRUE, (void*)0, vTimerCallback);
 	xTimerStart(xTimer_period_reset, 0);
-
 	  {
 	      uint8_t nmt_msg[2] = {0x81, 1};
 	      can_tx_func(&hfdcan2, 0, 2, nmt_msg);
@@ -163,18 +162,20 @@ void EthernetTask_func(void const * argument)
 	    if(xTimerIsTimerActive(xTimer_period_reset) != pdFALSE)
 	    xTimerStop(xTimer_period_reset, 0);
 		  LED_VD2(SET);
-		  volatile fobos_protocol_buf_u fobos_eth_buf;
-		  recv(SOCKET0,fobos_eth_buf.data_to_transmit, 258);
 		  LED_VD1(SET);
-		  eth_cmds_analysis(&fobos_eth_buf);
-
 		  uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
 		  can_tx_func(&hfdcan2, 0x622, 0, buf);
+		  volatile fobos_protocol_buf_u fobos_eth_buf;
+		  taskENTER_CRITICAL();
+		  recv(SOCKET0,fobos_eth_buf.data_to_transmit, 258);
+		  taskEXIT_CRITICAL();
+		  eth_cmds_analysis(&fobos_eth_buf);
+
 		  LED_VD1(RESET);
 	  }
 		  break;
 	  case SOCK_CLOSE_WAIT:
-		  xTimerStart(xTimer_period_reset, 0);
+		  //xTimerStart(xTimer_period_reset, 0);
 		  disconnect(SOCKET0);
 		  LED_VD2(RESET);
 		  break;
@@ -204,7 +205,7 @@ void fobos_eth_protocol_send(uint8_t CMD, uint8_t bytes_in_packet_N, fobos_proto
 BaseType_t xHoming = NULL, xPosition_func = NULL;
 TaskHandle_t xHoming_Handle = NULL, xPosition_Handle = NULL;
 
-uint8_t motor_emergency = 0;
+volatile uint8_t motor_emergency = 0, terminals_statements = 0;
 
 static void position_mode_process_left();
 static void position_mode_process_right();
@@ -253,7 +254,7 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 			fobos_eth_buf->fobos_protocol_buf_t.data[2] = 0;
 			uint8_t sensors_state = 0, temp_lim_switches = 0;
 			uint8_t can_rx_data[8] = {0};
-			can_tx_func(&hfdcan2, 0x622, 0, can_rx_data);
+			/*can_tx_func(&hfdcan2, 0x622, 0, can_rx_data);
 			vTaskDelay(3);
 			can_protocol_data_analyzing(&hfdcan2, &RxHeader, can_rx_data);
 			while(RxHeader.Identifier != 0x722)
@@ -261,9 +262,9 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 			    vTaskDelay(30);//было 5мс
 			    can_protocol_data_analyzing(&hfdcan2, &RxHeader, can_rx_data);
 			    can_tx_func(&hfdcan2, 0x622, 0, can_rx_data);
-			}
+			}*/
 
-			fobos_eth_buf->fobos_protocol_buf_t.data[1] = can_rx_data[1] & 0xC3;//S1,S2 ... S4,S3 в соответствии с единицами в байте.
+			fobos_eth_buf->fobos_protocol_buf_t.data[1] = terminals_statements & 0xC3;//S1,S2 ... S4,S3 в соответствии с единицами в байте.
 			if(TABLE_LOCK_SENSOR_LEFT)
 				sensors_state |= 0x01;
 			if(EMERGENCY_LIMIT_SW1)
@@ -1167,9 +1168,13 @@ uint8_t can_protocol_data_analyzing(FDCAN_HandleTypeDef *hfdcan,
 	//if(HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_BUFFER0, pRxHeader, pRxData) == HAL_OK)
 	{
 		volatile uint32_t address = pRxHeader->Identifier;
-		if(address == 0x81)
-		  motor_emergency = 0x0F;
-
+		/*if(address == 0x81)
+		  motor_emergency = 0x0F;*/
+		if(address == 0x722){
+		    uint8_t buf[8];
+		    memcpy(buf,pRxData,2);
+		    terminals_statements = buf[1];
+		}
 		static char a=0;
 		  LED_VD6(a^=1);
 		return 0xFF;
