@@ -1,0 +1,11 @@
+/*
+ * adani_can_medical_protocol.c
+ *
+ *  Created on: 11 дек. 2018 г.
+ *      Author: zilkov
+ */
+
+#include "adani_can_medical_protocol.h"
+#include "own_defines.h"
+extern uint8_t motor_emergency;
+

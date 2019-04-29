@@ -12829,3 +12829,9 @@ java.lang.Exception
 	at org.eclipse.core.internal.resources.Workspace.endOperation(Workspace.java:1469)
 	at org.eclipse.core.internal.resources.InternalWorkspaceJob.run(InternalWorkspaceJob.java:46)
 	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY com.atollic.truestudio.debug 4 0 2019-04-29 13:20:42.232
+!MESSAGE Error - No active DSF-Session. tmpSessionId = 30 (contextManager row 121)
+
+!ENTRY com.atollic.truestudio.debug 4 0 2019-04-29 13:20:42.233
+!MESSAGE Existing sessions are:
