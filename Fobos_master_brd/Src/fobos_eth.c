@@ -89,7 +89,7 @@ void EthernetTask_func(void const * argument)
   PIN_PWDN(RESET);
   PIN_nRESET(SET);
   PIN_nCS1(SET);
-
+  DIG_OUT4(SET);
   xQueue_Scanning_start = xQueueCreate(1, sizeof(uint8_t));
   if(xQueue_Scanning_start == NULL)
     Error_Handler();
@@ -161,10 +161,8 @@ void EthernetTask_func(void const * argument)
 	  {
 	    if(xTimerIsTimerActive(xTimer_period_reset) != pdFALSE)
 	    xTimerStop(xTimer_period_reset, 0);
-
 		  LED_VD2(SET);
 		  LED_VD1(SET);
-		  HAL_IWDG_Refresh(&hiwdg1);
 		  uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
 		  can_tx_func(&hfdcan2, 0x622, 0, buf);
 		  volatile fobos_protocol_buf_u fobos_eth_buf;
@@ -172,6 +170,7 @@ void EthernetTask_func(void const * argument)
 		  recv(SOCKET0,fobos_eth_buf.data_to_transmit, 258);
 		  taskEXIT_CRITICAL();
 		  eth_cmds_analysis(&fobos_eth_buf);
+
 		  LED_VD1(RESET);
 	  }
 		  break;
@@ -191,7 +190,7 @@ void EthernetTask_func(void const * argument)
 	    LED_VD2(RESET);
 		  break;
 	  }
-	  //HAL_IWDG_Refresh(&hiwdg1);
+	  HAL_IWDG_Refresh(&hiwdg1);
 	  vTaskDelay(150);
   /* USER CODE END 5 */
 }
@@ -266,7 +265,6 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 			}*/
 
 			fobos_eth_buf->fobos_protocol_buf_t.data[1] = terminals_statements & 0xC3;//S1,S2 ... S4,S3 в соответствии с единицами в байте.
-
 			if(TABLE_LOCK_SENSOR_LEFT)
 				sensors_state |= 0x01;
 			if(EMERGENCY_LIMIT_SW1)
@@ -375,6 +373,7 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 	      if(xHoming == NULL)
 	    xHoming = xTaskCreate(homing_process, "homing", 128, (void*)0, tskIDLE_PRIORITY, &xHoming_Handle);
 	      fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
+	      vTaskDelay(100);
 	      fobos_eth_protocol_send(FOBOS_CMD_BASING, 1, fobos_eth_buf);
 
 	  }
@@ -384,7 +383,7 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 	  }
 		break;
 
-	case FOBOS_CMD_WORK://21
+	case FOBOS_CMD_WORK://21 rotation
 	#define CMD_WORK
 		  if(fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N == 1)
 		  {
@@ -453,13 +452,13 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 		}
 		else{
 		    fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
-		    fobos_eth_buf->fobos_protocol_buf_t.data[1] = basing_point;
+		    fobos_eth_buf->fobos_protocol_buf_t.data[1] = 0;
 		}
 	    }
 	    else
 	      {
 		fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
-		fobos_eth_buf->fobos_protocol_buf_t.data[1] = basing_point;
+		fobos_eth_buf->fobos_protocol_buf_t.data[1] = 0;
 	      }
 	  }
 	  else{
