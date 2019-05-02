@@ -56,6 +56,7 @@
 /* USER CODE BEGIN Includes */
 #include "fobos_eth.h"
 #include "own_defines.h"
+#include "can_bus_operations.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -155,7 +156,7 @@ int main(void)
   MX_TIM7_Init();
   MX_SPI3_Init();
   MX_FDCAN2_Init();
-  MX_IWDG1_Init();
+  //MX_IWDG1_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -176,7 +177,7 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of EthTask */
-  osThreadDef(EthTask, EthernetTask_func, osPriorityNormal, 0, 2048);
+  /*osThreadDef(EthTask, EthernetTask_func, osPriorityNormal, 0, 2048);
   EthTaskHandle = osThreadCreate(osThread(EthTask), NULL);
 
   /* definition and creation of DigIOTask */
@@ -185,6 +186,7 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
+  //xTaskCreate()
   /*if(xTaskCreate(vFobos_Start_Process, "Fobos_start_scan", 256, (void*)1, osPriorityAboveNormal, xFobos_scan_Handle) != pdPASS)
     Error_Handler();
   /* USER CODE END RTOS_THREADS */
@@ -321,16 +323,16 @@ static void MX_FDCAN2_Init(void)
    hfdcan2.Init.MessageRAMOffset = 0;
    hfdcan2.Init.StdFiltersNbr = 3;
    hfdcan2.Init.ExtFiltersNbr = 0;
-   hfdcan2.Init.RxFifo0ElmtsNbr = 4;
+   hfdcan2.Init.RxFifo0ElmtsNbr = 5;
    hfdcan2.Init.RxFifo0ElmtSize = FDCAN_DATA_BYTES_8;
-   hfdcan2.Init.RxFifo1ElmtsNbr = 1;
+   hfdcan2.Init.RxFifo1ElmtsNbr = 5;
    hfdcan2.Init.RxFifo1ElmtSize = FDCAN_DATA_BYTES_8;
    hfdcan2.Init.RxBuffersNbr = 0;
    hfdcan2.Init.RxBufferSize = FDCAN_DATA_BYTES_8;
    hfdcan2.Init.TxEventsNbr = 0;
-   hfdcan2.Init.TxBuffersNbr = 5;
-   hfdcan2.Init.TxFifoQueueElmtsNbr = 0;
-   hfdcan2.Init.TxFifoQueueMode = FDCAN_TX_QUEUE_OPERATION;
+   hfdcan2.Init.TxBuffersNbr = 0;
+   hfdcan2.Init.TxFifoQueueElmtsNbr = 5;
+   hfdcan2.Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
    hfdcan2.Init.TxElmtSize = FDCAN_DATA_BYTES_8;
    hfdcan2.msgRam.StandardFilterSA = 0;
    hfdcan2.msgRam.ExtendedFilterSA = 0;
@@ -716,53 +718,18 @@ extern uint8_t canopen_transmit(uint16_t COB_ID, uint8_t control_field, uint16_t
 void DigIOTask_func(void const * argument)
 {
   /* USER CODE BEGIN DigIOTask_func */
-	XRAY_GEN_START(RESET);
-	MOTOR_STO_EN(SET);
-	TABLE_MAGNETS(RESET);
-	vTaskDelay(150);
-	int CAN_id = check_adr_func();
-	{
-		uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
-		buf[3] = (uint8_t)CAN_id;
-		vTaskDelay(100);
-		can_tx_func(&hfdcan2, 0x80, 8, buf, FDCAN_TX_BUFFER0);
-		vTaskDelay(100);
-		can_tx_func(&hfdcan2, 0x80, 8, buf, FDCAN_TX_BUFFER0);
-	}
 	LED_VD5(SET);
 	LED_VD6(SET);
 	LED_VD7(SET);
-
-
 	//timer creating
 	uint8_t prev_btn_state = 0, btn_press_val = 0;
 
   /* Infinite loop */
   for(;;)
   {
-      if(0)
-	  if(BTN_STATE)
-	  {
-		  btn_press_val <<= 1;
-		  btn_press_val |= 1;
-		  if(btn_press_val == 0xFF && BTN_STATE != prev_btn_state && BTN_STATE - prev_btn_state > 0)
-		  {
-			  xTimerStart(xTimer_btn_timer, 0);
-			  DIG_OUT3(SET);
-			  LED_VD7(RESET);
-			  prev_btn_state = BTN_STATE;
-		  }
-	  }
-	  else
-	  {
-		  btn_press_val = 0;
-		  prev_btn_state = 0;
-	  }
-
-	  /*if(INTERLOCKS_STATE == 0)
-		  XRAY_GEN_START(RESET);*/
-
-	  vTaskDelay(3);
+      uint8_t buf[8] = {1,2,3,4,5,6,7,8};
+      can_bus_tx(0x123,8,buf);
+      vTaskDelay(200);
      /* static uint8_t a=1;
             vTaskDelay(800);
             LED_VD7(a^=1);

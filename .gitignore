@@ -6,6 +6,6 @@
 *.exe
 *.o
 *.so
-
+.metadata/
 Fobos_master_brd/[Dd]ebug
 Universal_controller/[Dd]ebug
