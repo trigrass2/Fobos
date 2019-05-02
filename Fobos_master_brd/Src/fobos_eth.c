@@ -149,6 +149,8 @@ void EthernetTask_func(void const * argument)
 	    LED_VD5(RESET);
 	  taskEXIT_CRITICAL();
 	  //DHCP===*/
+      FDCAN_RxHeaderTypeDef rxHeader;
+      uint8_t temp_data[8];
 	  if(!PIN_nINT)
 	    {
 		  LED_VD1(SET);
@@ -161,6 +163,8 @@ void EthernetTask_func(void const * argument)
 	  {
 	    if(xTimerIsTimerActive(xTimer_period_reset) != pdFALSE)
 	    xTimerStop(xTimer_period_reset, 0);
+
+	    HAL_IWDG_Refresh(&hiwdg1);
 		  LED_VD2(SET);
 		  LED_VD1(SET);
 		  uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
@@ -170,7 +174,6 @@ void EthernetTask_func(void const * argument)
 		  recv(SOCKET0,fobos_eth_buf.data_to_transmit, 258);
 		  taskEXIT_CRITICAL();
 		  eth_cmds_analysis(&fobos_eth_buf);
-
 		  LED_VD1(RESET);
 	  }
 		  break;
@@ -190,8 +193,8 @@ void EthernetTask_func(void const * argument)
 	    LED_VD2(RESET);
 		  break;
 	  }
-	  HAL_IWDG_Refresh(&hiwdg1);
-	  vTaskDelay(150);
+	  vTaskDelay(80);
+	  can_protocol_data_analyzing(&hfdcan2, &rxHeader, temp_data);
   /* USER CODE END 5 */
 }
 }
@@ -360,12 +363,6 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 #define CMD_HOMING
 	  if(fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N == 0)
 	  {
-	    //поворот в обратную сторону (к нижнему концевику)
-	    //uint8_t can_data_buf[16] = {0x08, 0x05, 0x4B, 0x08, 0x00, 0x83, 0xDE, 0x00, 0x08, 0x47}, temp_lim_switches = 0;
-	    /*can_tx_func(&hfdcan2, 0x640+2, 8, &can_data_buf[0], FDCAN_TX_BUFFER1);
-	    can_tx_func(&hfdcan2, 0x640+2, 8, &can_data_buf[8], FDCAN_TX_BUFFER2);
-	    while(RxHeader.Identifier != 0x740+2)
-	      can_protocol_data_analyzing(&hfdcan2, &RxHeader, can_data_buf);*/
 	    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	    //запрос к линейному приводу о положении
 	      uint8_t can_data_buf[8] = {0x10,0};
@@ -373,9 +370,7 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 	      if(xHoming == NULL)
 	    xHoming = xTaskCreate(homing_process, "homing", 128, (void*)0, tskIDLE_PRIORITY, &xHoming_Handle);
 	      fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
-	      vTaskDelay(100);
 	      fobos_eth_protocol_send(FOBOS_CMD_BASING, 1, fobos_eth_buf);
-
 	  }
 	  else{
 	      fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_PA;
