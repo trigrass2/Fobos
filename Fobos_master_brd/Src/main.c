@@ -113,7 +113,7 @@ void vTimerCallback1(TimerHandle_t);
 void vFobos_Start_Process();
 
 /* USER CODE BEGIN PFP */
-
+QueueHandle_t xQueue_brd = NULL;
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -186,7 +186,9 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  //xTaskCreate()
+  BaseType_t xCAN_bus_rcv = NULL;
+  TaskHandle_t xCAN_bus_rcvHanle = NULL;
+  xCAN_bus_rcv = xTaskCreate(can_bus_rcv_task, "can_bus_rcv", 256, (void*)1, 0, &xCAN_bus_rcvHanle);
   /*if(xTaskCreate(vFobos_Start_Process, "Fobos_start_scan", 256, (void*)1, osPriorityAboveNormal, xFobos_scan_Handle) != pdPASS)
     Error_Handler();
   /* USER CODE END RTOS_THREADS */
@@ -194,6 +196,9 @@ int main(void)
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
 
+  xQueue_brd = xQueueCreate(10, 1);
+  if(xQueue_brd == NULL)
+    Error_Handler();
   /* USER CODE END RTOS_QUEUES */
  
 
@@ -323,7 +328,7 @@ static void MX_FDCAN2_Init(void)
    hfdcan2.Init.MessageRAMOffset = 0;
    hfdcan2.Init.StdFiltersNbr = 3;
    hfdcan2.Init.ExtFiltersNbr = 0;
-   hfdcan2.Init.RxFifo0ElmtsNbr = 5;
+   hfdcan2.Init.RxFifo0ElmtsNbr = 10;
    hfdcan2.Init.RxFifo0ElmtSize = FDCAN_DATA_BYTES_8;
    hfdcan2.Init.RxFifo1ElmtsNbr = 5;
    hfdcan2.Init.RxFifo1ElmtSize = FDCAN_DATA_BYTES_8;
@@ -331,7 +336,7 @@ static void MX_FDCAN2_Init(void)
    hfdcan2.Init.RxBufferSize = FDCAN_DATA_BYTES_8;
    hfdcan2.Init.TxEventsNbr = 0;
    hfdcan2.Init.TxBuffersNbr = 0;
-   hfdcan2.Init.TxFifoQueueElmtsNbr = 5;
+   hfdcan2.Init.TxFifoQueueElmtsNbr = 10;
    hfdcan2.Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
    hfdcan2.Init.TxElmtSize = FDCAN_DATA_BYTES_8;
    hfdcan2.msgRam.StandardFilterSA = 0;
@@ -727,9 +732,12 @@ void DigIOTask_func(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-      uint8_t buf[8] = {1,2,3,4,5,6,7,8};
-      can_bus_tx(0x123,8,buf);
-      vTaskDelay(200);
+      uint8_t buf[8] = {1,2,3,4,5,6,7,8}, i=0;
+      while(i<10){
+      can_bus_tx(0x120+i,8,buf);
+      i++;
+      }
+      vTaskDelay(300);
      /* static uint8_t a=1;
             vTaskDelay(800);
             LED_VD7(a^=1);
