@@ -49,7 +49,7 @@ static uint16_t socket_port = 15000;
 static uint8_t ip_gateway_adr[4] = {192,168,100,2};
 static uint8_t subnet_mask_adr[4] = {255,255,255,0};
 static uint8_t source_hardware_adr[6] = {0x00,0x08,0xDC,0x0F,0x00,0x01};
-static uint8_t ip_source_adr[4] = {192,168,184,1};
+static uint8_t ip_source_adr[4] = {192,168,100,1};
 //static uint8_t ip_source_adr[4] = {192,168,101,170};
 static uint8_t ip_destination_adr[4] = {192,168,100,2};
 static uint32_t timeout_period = 1000;
@@ -59,7 +59,7 @@ uint8_t canopen_transmit(uint16_t COB_ID, uint8_t control_field, uint16_t index,
 static char can_tx_func(FDCAN_HandleTypeDef *hfdcan, unsigned int ID, uint32_t data_lenght, uint8_t *data);
 typedef void * TimerHandle_t;
 uint8_t dhcp_buf[580] = {0};
-
+static uint8_t homing_checking = 0;
 typedef union canopen{
   struct{
     uint8_t COB_ID_high;
@@ -89,7 +89,7 @@ void EthernetTask_func(void const * argument)
   PIN_PWDN(RESET);
   PIN_nRESET(SET);
   PIN_nCS1(SET);
-  DIG_OUT4(SET);
+
   xQueue_Scanning_start = xQueueCreate(1, sizeof(uint8_t));
   if(xQueue_Scanning_start == NULL)
     Error_Handler();
@@ -139,6 +139,7 @@ void EthernetTask_func(void const * argument)
 	    	    }
 	  }
 	}
+	DIG_OUT4(SET);//interlock
 	LED_VD1(SET);
   /* Infinite loop */
   for(;;)
@@ -212,6 +213,7 @@ volatile uint8_t motor_emergency = 0, terminals_statements = 0;
 
 static void position_mode_process_left();
 static void position_mode_process_right();
+static void position_mode_process_calibration();
 
 void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
   extern FDCAN_HandleTypeDef hfdcan2;
@@ -363,14 +365,22 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 #define CMD_HOMING
 	  if(fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N == 0)
 	  {
+	      uint8_t can_data_buf[8] = {0x10,0};
+		can_tx_func(&hfdcan2, 0x620+2, 2, can_data_buf);//C rack homing
+	      if(homing_checking){
+		  if(xPosition_func == NULL)
+		    xPosition_func = xTaskCreate(position_mode_process_right, "MotorRIGHT", 128,(void*)0, 0, &xPosition_Handle);
+		  fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
+		  fobos_eth_protocol_send(FOBOS_CMD_BASING, 1, fobos_eth_buf);
+	      }
 	    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	    //запрос к линейному приводу о положении
-	      uint8_t can_data_buf[8] = {0x10,0};
-	      can_tx_func(&hfdcan2, 0x620+2, 2, can_data_buf);
-	      if(xHoming == NULL)
-	    xHoming = xTaskCreate(homing_process, "homing", 128, (void*)0, tskIDLE_PRIORITY, &xHoming_Handle);
-	      fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
-	      fobos_eth_protocol_send(FOBOS_CMD_BASING, 1, fobos_eth_buf);
+	      else{
+		if(xHoming == NULL)
+	      xHoming = xTaskCreate(homing_process, "homing", 128, (void*)0, tskIDLE_PRIORITY, &xHoming_Handle);
+		fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
+		fobos_eth_protocol_send(FOBOS_CMD_BASING, 1, fobos_eth_buf);
+	      }
 	  }
 	  else{
 	      fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_PA;
@@ -378,8 +388,8 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 	  }
 		break;
 
-	case FOBOS_CMD_WORK://21 rotation
-	#define CMD_WORK
+	case FOBOS_CMD_ROTATION://21 rotation
+	#define CMD_ROTATION
 		  if(fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N == 1)
 		  {
 		    uint8_t temp_lim_switches = 0;
@@ -397,7 +407,7 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 			    can_tx_func(&hfdcan2, 0x620+2,2,data);
 			}
 			fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
-			fobos_eth_protocol_send(FOBOS_CMD_WORK, fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N, fobos_eth_buf);
+			fobos_eth_protocol_send(FOBOS_CMD_ROTATION, fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N, fobos_eth_buf);
 		    }
 		    else{
 		      fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_PA;
@@ -444,6 +454,7 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 		    fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
 		    basing_point = 0xFF;
 		    fobos_eth_buf->fobos_protocol_buf_t.data[1] = basing_point;
+		    homing_checking = 0xFF;
 		}
 		else{
 		    fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
@@ -464,8 +475,8 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 	  fobos_eth_protocol_send(FOBOS_CMD_BASING_STATEMENT, 2, fobos_eth_buf);
 	break;
 
-	case FOBOS_CMD_START://24, линейное перемещение мотора
-#define CMD_START
+	case FOBOS_CMD_MOTION://24, линейное перемещение мотора
+#define CMD_MOTION
 	  /*if(xHoming == NULL)
 	    xHoming = xTaskCreate(homing_process, "homing", 128, (void*)0, tskIDLE_PRIORITY, &xHoming_Handle);*/
 	  {
@@ -484,6 +495,11 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 		    xPosition_func = xTaskCreate(position_mode_process_right, "MotorRIGHT", 128,(void*)0, 0, &xPosition_Handle);
 		    fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
 		  }
+		else if(fobos_eth_buf->fobos_protocol_buf_t.data[0] == 1){ // calibration position
+		    if(xPosition_func == NULL)
+		    xPosition_func = xTaskCreate(position_mode_process_calibration, "MotorCALIB", 128,(void*)0, 0, &xPosition_Handle);
+		    fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
+		}
 		else
 		  {
 		    fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NR;
@@ -492,12 +508,12 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 	    else{
 		fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_PA;
 	    }
-	    fobos_eth_protocol_send(FOBOS_CMD_START, fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N, fobos_eth_buf);
+	    fobos_eth_protocol_send(FOBOS_CMD_MOTION, fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N, fobos_eth_buf);
 	  }
 	  break;
 
-	case FOBOS_CMD_START_STATUS: //25 cmd
-#define CMD_START_STATUS
+	case FOBOS_CMD_MOTION_STATUS: //25 cmd
+#define CMD_MOTION_STATUS
 	  if(fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N == 0)
 	  {
 	      uint8_t can_data_tx[8] = {0};//can_data_tx[0] младший байт
@@ -525,7 +541,7 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 	      fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_PA;
 	    }
 	  fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N = 3;
-	  fobos_eth_protocol_send(FOBOS_CMD_START_STATUS, fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N, fobos_eth_buf);
+	  fobos_eth_protocol_send(FOBOS_CMD_MOTION_STATUS, fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N, fobos_eth_buf);
 	  break;
 
 	case FOBOS_CMD_STOP://30 cmd
@@ -889,6 +905,63 @@ static void position_mode_process_right(){
    }
 
    	can_data_tx[0] = 0x03;
+   	canopen_req_resp_sdo(0x600+1, 0x2B,0x2080,0,can_data_tx, &canopen_rcv);
+
+   	can_data_tx[0] = 0x3F;
+   	canopen_req_resp_sdo(0x600+1, 0x2B,0x6040,0,can_data_tx, &canopen_rcv);
+   	  xPosition_func = NULL;
+   	  vTaskDelete(xPosition_Handle);
+}
+
+static void position_mode_process_calibration(){
+  uint8_t can_data_tx[4] = {0};//can_data_tx[0] младший байт
+   canopen_u canopen_rcv;
+   HAL_IWDG_Refresh(&hiwdg1);
+   //111111111122222222223333333333444444444455555555556666666666777777777788888888889999999999AAAAAAAAAABB //51 символ
+   //AWD: move forward(hex): 	05 4B 08 00 03 AA 00 FB		05 4B 08 00 03 DE 00 C7	//990 max
+   //AWD: move backward(hex): 	05 4B 08 00 83 AA 00 7B		05 4B 08 00 83 DE 00 47	//-990 max
+   //AWD: stop(hex):				05 4B 08 00 00 00 00 A8
+
+   canopen_req_resp_sdo(0x600+1, SDO_REQUEST,0x6061,0,can_data_tx, &canopen_rcv);//mode request: 1 - profile position mode
+   if(canopen_rcv.values_t.data[0] != 0x01){
+   can_data_tx[0] = 6;//shutdown
+   canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);
+   can_data_tx[0] = 1;//profile position mode
+   canopen_req_resp_sdo(0x600+1, SDO_1BYTE_REQ,0x6060,0,can_data_tx, &canopen_rcv);	HAL_IWDG_Refresh(&hiwdg1);
+
+   while((canopen_rcv.values_t.data[0] & 0b00000111) != 1){
+       canopen_req_resp_sdo(0x600+1, SDO_REQUEST,0x6041,0,can_data_tx, &canopen_rcv); HAL_IWDG_Refresh(&hiwdg1);
+   }
+
+   can_data_tx[0] = 0x07;//switch on
+   canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);	HAL_IWDG_Refresh(&hiwdg1);
+   canopen_req_resp_sdo(0x600+1, SDO_REQUEST,0x6041,0,can_data_tx, &canopen_rcv);	HAL_IWDG_Refresh(&hiwdg1);
+   HAL_IWDG_Refresh(&hiwdg1);
+   while((canopen_rcv.values_t.data[0] & 0b01100111) != 0x23)
+       canopen_req_resp_sdo(0x600+1, SDO_REQUEST,0x6041,0,can_data_tx, &canopen_rcv);
+
+     can_data_tx[0] = 0x0F;//operation EN
+     canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);
+     canopen_req_resp_sdo(0x600+1, SDO_REQUEST,0x6041,0,can_data_tx, &canopen_rcv);
+     while((canopen_rcv.values_t.data[0] & 0b01100111) != 0x27)
+ 	      canopen_req_resp_sdo(0x600+1, SDO_REQUEST,0x6041,0,can_data_tx, &canopen_rcv);
+   }
+   else{
+ 	can_data_tx[0] = 0x07;//switch on
+         canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);	HAL_IWDG_Refresh(&hiwdg1);
+         canopen_req_resp_sdo(0x600+1, SDO_REQUEST,0x6041,0,can_data_tx, &canopen_rcv);		HAL_IWDG_Refresh(&hiwdg1);
+
+         while((canopen_rcv.values_t.data[0] & 0b01100111) != 0x23)
+           canopen_req_resp_sdo(0x600+1, SDO_REQUEST,0x6041,0,can_data_tx, &canopen_rcv);
+
+ 	can_data_tx[0] = 0x0F;//operation EN
+ 	canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);	HAL_IWDG_Refresh(&hiwdg1);
+ 	canopen_req_resp_sdo(0x600+1, SDO_REQUEST,0x6041,0,can_data_tx, &canopen_rcv);		HAL_IWDG_Refresh(&hiwdg1);
+ 	while((canopen_rcv.values_t.data[0] & 0b01100111) != 0x27)
+ 	  canopen_req_resp_sdo(0x600+1, SDO_REQUEST,0x6041,0,can_data_tx, &canopen_rcv);
+   }
+
+   	can_data_tx[0] = 0x01;//CALIBRATION POSITION!!!! 90.000 мкм
    	canopen_req_resp_sdo(0x600+1, 0x2B,0x2080,0,can_data_tx, &canopen_rcv);
 
    	can_data_tx[0] = 0x3F;
