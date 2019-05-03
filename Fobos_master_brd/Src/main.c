@@ -54,9 +54,12 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "FreeRTOS.h"
 #include "fobos_eth.h"
 #include "own_defines.h"
 #include "can_bus_operations.h"
+
+#include "queue.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -732,12 +735,15 @@ void DigIOTask_func(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-      uint8_t buf[8] = {1,2,3,4,5,6,7,8}, i=0;
-      while(i<10){
-      can_bus_tx(0x120+i,8,buf);
-      i++;
-      }
-      vTaskDelay(300);
+      uint8_t buf[8] = {0x43,0x05,0x10,0,0,0,0,0}, i=0;
+
+      can_bus_tx(0x622,0,buf);
+      can_bus_tx(0x80,8,buf);
+      vTaskDelay(10);
+      if(xQueueReceive(xQueue_brd, buf, 10)){
+      	  static uint8_t a = 1;
+      	  LED_VD5(a^=1);
+            }
      /* static uint8_t a=1;
             vTaskDelay(800);
             LED_VD7(a^=1);

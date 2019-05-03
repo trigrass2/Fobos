@@ -5,6 +5,9 @@
  *      Author: zilkov
  */
 #include "can_bus_operations.h"
+#include "FreeRTOS.h"
+#include "queue.h"
+#include "task.h"
 extern FDCAN_HandleTypeDef hfdcan2;
 uint8_t can_bus_tx(uint16_t ID, uint8_t length, uint8_t *data){
 
@@ -26,7 +29,7 @@ uint8_t can_bus_tx(uint16_t ID, uint8_t length, uint8_t *data){
 }
 
 void can_bus_rcv_task(){
-  uint8_t a;
+  extern QueueHandle_t xQueue_brd;
   for(;;){
       uint8_t can_rx_data[8] = {0};
       FDCAN_RxHeaderTypeDef RxHeader;
@@ -34,14 +37,17 @@ void can_bus_rcv_task(){
 	if(HAL_FDCAN_GetRxMessage(&hfdcan2, FDCAN_RX_FIFO0, &RxHeader, can_rx_data) == HAL_OK){
 	    switch (RxHeader.Identifier) {
 	      case 0x722:
-
+		xQueueSend(xQueue_brd,can_rx_data,0);
 		break;
-	      default:
+	      case 0x00:
+		{
+		  static uint8_t a=0;
+		  LED_VD7(a^=1);
+		}
 		break;
 	    }
 	}
       }
-      LED_VD7(RESET);
-      //taskYIELD();
+      taskYIELD();
   }
 }
