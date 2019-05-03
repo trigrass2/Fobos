@@ -49,8 +49,8 @@ static uint16_t socket_port = 15000;
 static uint8_t ip_gateway_adr[4] = {192,168,100,2};
 static uint8_t subnet_mask_adr[4] = {255,255,255,0};
 static uint8_t source_hardware_adr[6] = {0x00,0x08,0xDC,0x0F,0x00,0x01};
-static uint8_t ip_source_adr[4] = {192,168,184,1};
-//static uint8_t ip_source_adr[4] = {192,168,101,170};
+static uint8_t ip_source_adr[4] = {192,168,100,1};
+//static uint8_t ip_source_adr[4] = {192,168,184,1};
 static uint8_t ip_destination_adr[4] = {192,168,100,2};
 static uint32_t timeout_period = 1000;
 static wiz_NetInfo wiz_NetData;
@@ -89,7 +89,7 @@ void EthernetTask_func(void const * argument)
   PIN_PWDN(RESET);
   PIN_nRESET(SET);
   PIN_nCS1(SET);
-  DIG_OUT4(SET);
+  DIG_OUT4(SET); //интерлок
   xQueue_Scanning_start = xQueueCreate(1, sizeof(uint8_t));
   if(xQueue_Scanning_start == NULL)
     Error_Handler();
