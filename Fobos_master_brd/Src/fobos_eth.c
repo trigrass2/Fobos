@@ -411,12 +411,12 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 		    }
 		    else{
 		      fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_PA;
-		      fobos_eth_protocol_send(FOBOS_CMD_WORK, 1, fobos_eth_buf);
+		      fobos_eth_protocol_send(FOBOS_CMD_ROTATION, 1, fobos_eth_buf);
 		    }
 		  }
 		  else{
 			  fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_PA;
-			  fobos_eth_protocol_send(FOBOS_CMD_WORK, 1, fobos_eth_buf);
+			  fobos_eth_protocol_send(FOBOS_CMD_ROTATION, 1, fobos_eth_buf);
 		      }
 			break;
 	case FOBOS_CMD_LAMP://22 cmd
