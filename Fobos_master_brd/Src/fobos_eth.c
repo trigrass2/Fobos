@@ -102,7 +102,9 @@ void EthernetTask_func(void const * argument)
   xQueue_Scanning_start = xQueueCreate(1, sizeof(uint8_t));
   if(xQueue_Scanning_start == NULL)
     Error_Handler();
-
+	TimerHandle_t xTimer_period_reset;
+  	xTimer_period_reset = xTimerCreate("Period timer", 150, pdTRUE, (void*)0, vTimerCallback);
+  	xTimerStart(xTimer_period_reset, 0);
 	vTaskDelay(300);
 
 	wiz_NetData.dhcp = 2;
@@ -120,9 +122,7 @@ void EthernetTask_func(void const * argument)
 	DHCP_init(SOCKET5, dhcp_buf);
 	taskEXIT_CRITICAL();
 	//DHCP===*/
-	TimerHandle_t xTimer_period_reset;
-	xTimer_period_reset = xTimerCreate("Period timer", 200, pdTRUE, (void*)0, vTimerCallback);
-	xTimerStart(xTimer_period_reset, 0);
+
 	  {
 	      uint8_t nmt_msg[2] = {0x81, 1};
 	      can_tx_func(&hfdcan2, 0, 2, nmt_msg);
@@ -172,14 +172,14 @@ void EthernetTask_func(void const * argument)
 	  switch (getSn_SR(SOCKET0)){
 	  case SOCK_ESTABLISHED:
 	  {
-	    if(xTimerIsTimerActive(xTimer_period_reset) != pdFALSE)
-	    xTimerStop(xTimer_period_reset, 0);
+	    /*if(xTimerIsTimerActive(xTimer_period_reset) != pdFALSE)
+	    xTimerStop(xTimer_period_reset, 0);*/
 
 	    /*if(xSemaphoreTake(Mutex_Eth,200) == pdTRUE){*/
 		  LED_VD2(SET);
 		  LED_VD1(SET);
-		  uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
-		  can_tx_func(&hfdcan2, 0x622, 0, buf);
+		  //uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
+		  //can_tx_func(&hfdcan2, 0x622, 0, buf);
 		  volatile fobos_protocol_buf_u fobos_eth_buf;
 		  for(int i=0; i<10; i++)
 		    fobos_eth_buf.fobos_protocol_buf_t.data[i] = 0;
@@ -199,8 +199,8 @@ void EthernetTask_func(void const * argument)
 		  break;
 
 	  case SOCK_CLOSED:
-	    /*if(xTimerIsTimerActive(xTimer_period_reset) == pdFALSE)
-	    xTimerStart(xTimer_period_reset, 0);*/
+	    if(xTimerIsTimerActive(xTimer_period_reset) == pdFALSE)
+	    xTimerStart(xTimer_period_reset, 0);
 	    {
 	      static uint8_t a=0;
 	      if(a == 0){
@@ -389,23 +389,23 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 	  {
 	    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	    //запрос к линейному приводу о положении
-	      vTaskDelay(50);
+	      /*vTaskDelay(50);
 	      uint8_t can_data_buf[8] = {0x10,0};
-	      can_tx_func(&hfdcan2, 0x620+2, 2, can_data_buf);
+	      can_tx_func(&hfdcan2, 0x620+2, 2, can_data_buf);*/
 	      vTaskDelay(100);
 	      if(basing_point == 0)
 	      {
 	      if(xHoming == NULL)
 	    xHoming = xTaskCreate(homing_process, "homing", 128, (void*)0, tskIDLE_PRIORITY, &xHoming_Handle);
+	  }
 	      fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
 	      fobos_eth_protocol_send(FOBOS_CMD_BASING, 1, fobos_eth_buf);
-	  }
-	      else{
+	      /*else{
 		  if(xPosition_func == NULL)
       xPosition_func = xTaskCreate(position_mode_process_right, "MotorRIGHT", 128,(void*)0, 0, &xPosition_Handle);
 		  fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
 		  fobos_eth_protocol_send(FOBOS_CMD_BASING, 1, fobos_eth_buf);
-	      }
+	      }*/
 	  }
 	  else{
 	      fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_PA;
