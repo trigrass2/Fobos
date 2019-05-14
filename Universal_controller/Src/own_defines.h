@@ -42,6 +42,6 @@ struct queue_t{
 };
 
 uint32_t check_adr_func();
-char can_tx_func(FDCAN_HandleTypeDef *hfdcan, unsigned int ID, uint32_t data_lenght, uint8_t *data, uint32_t can_buf_num);
+char can_tx_func(unsigned int ID, uint32_t data_lenght, uint8_t *data);
 
 #endif /* OWN_DEFINES_H_ */

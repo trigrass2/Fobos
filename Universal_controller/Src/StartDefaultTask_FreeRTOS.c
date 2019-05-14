@@ -29,7 +29,7 @@ void adc_measure(uint8_t address){
 	adc_measure_buf[1] <<= 4;
 	adc_measure_buf[1] |= adc_measure_buf[2];
 	SPI_SS_ADC(SET);
-	can_tx_func(&hfdcan2, address + 0x60 + 0x600 + 0x100, 2, adc_measure_buf, FDCAN_TX_BUFFER3);
+	can_tx_func(address + 0x60 + 0x600 + 0x100, 2, adc_measure_buf);
 }
 
 /* USER CODE END Header_StartDefaultTask */
@@ -108,7 +108,7 @@ void StartDefaultTask(void const * argument)
 			uint8_t tx_data[2];
 			tx_data[0] = ports.digital_outputs;
 			tx_data[1] = ports.digital_inputs;
-			can_tx_func(&hfdcan2, ((address&0x1F)+0x100+0x620), 2, tx_data, FDCAN_TX_BUFFER1);
+			can_tx_func(((address&0x1F)+0x100+0x620), 2, tx_data);
 			static char a=1;
 			LED_VD5(a^=1);
 	  }//*/

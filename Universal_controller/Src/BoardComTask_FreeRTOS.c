@@ -13,7 +13,7 @@
 /* USER CODE END Header_board_com_task */
 #include "BoardComTask_FreeRTOS.h"
 
-char can_tx_func(FDCAN_HandleTypeDef *hfdcan, unsigned int ID, uint32_t data_lenght, uint8_t *data, uint32_t can_buf_num)
+char can_tx_func(unsigned int ID, uint32_t data_lenght, uint8_t *data)
 {
 	/* Prepare Tx Header */
 	FDCAN_TxHeaderTypeDef TxHeader;
@@ -27,8 +27,9 @@ char can_tx_func(FDCAN_HandleTypeDef *hfdcan, unsigned int ID, uint32_t data_len
 	TxHeader.TxEventFifoControl = FDCAN_TX_EVENT;
 	TxHeader.MessageMarker = 0;
 
-	HAL_FDCAN_AddMessageToTxBuffer(hfdcan, &TxHeader, data, can_buf_num);
-	HAL_FDCAN_EnableTxBufferRequest(hfdcan, can_buf_num);
+	/*HAL_FDCAN_AddMessageToTxBuffer(hfdcan, &TxHeader, data, can_buf_num);
+	HAL_FDCAN_EnableTxBufferRequest(hfdcan, can_buf_num);*/
+	HAL_FDCAN_AddMessageToTxFifoQ(&hfdcan2, &TxHeader, data);
 	  return 0xFF;
 }
 
@@ -103,7 +104,7 @@ void rs485_tx_task(void const * argument){
 				buf_tx.data[0] = 0xFF;
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, RESET);
 			taskEXIT_CRITICAL();
-			can_tx_func(&hfdcan2, CAN_ID + 0x100 + 0x640, 1, buf_tx.data, FDCAN_TX_BUFFER0);
+			can_tx_func(CAN_ID + 0x100 + 0x640, 1, buf_tx.data);
 			for(int i=0; i<buf_tx.lenght; i++)
 			buf_tx.data[i] = 0;
 			buf_tx.lenght = 0;
@@ -143,7 +144,7 @@ void rs485_rx_task(void const * argument)
 		  			  buf[0] = buf_rx.lenght;
 		  			  for(int i=1; i <= buf_rx.lenght; i++)
 		  				  buf[i] = buf_rx.data[i-1];
-		  			  can_tx_func(&hfdcan2, 0x7A0+CAN_ID, 8, buf, FDCAN_TX_BUFFER0);
+		  			  can_tx_func(0x7A0+CAN_ID, 8, buf);
 		  		  }
 		  		  else if(buf_rx.lenght > 7)
 		  		  {
@@ -168,7 +169,7 @@ void rs485_rx_task(void const * argument)
 		  			  uint32_t can_buf_num = FDCAN_TX_BUFFER0;
 		  			  while(count_pack_num < count_packs)
 		  			  {
-		  				  can_tx_func(&hfdcan2, 0x6A0+0x100+CAN_ID, 8, can_tx_data[count_pack_num], can_buf_num);
+		  				  can_tx_func(0x6A0+0x100+CAN_ID, 8, can_tx_data[count_pack_num]);
 		  				  can_buf_num <<= 1;
 		  				  count_pack_num++;
 		  			  }
@@ -180,11 +181,58 @@ void rs485_rx_task(void const * argument)
   /* USER CODE END rs485_rx_task */
 }
 
+static volatile TaskHandle_t RotationHandle = NULL;
+static BaseType_t Rotation_func;
+
+#define START_STOP_BTN_PUSH		DIG_OUT3(SET);vTaskDelay(80);DIG_OUT3(RESET);
+#define TERMINAL_S3			DIG_IN1 //Датчик поворота нижний
+#define TERMINAL_S4			DIG_IN2 //Датчик поворота верхний
+#define TERMINAL_S1			DIG_IN7 //Датчик поворота нижний аварийный
+#define TERMINAL_S2			DIG_IN8 //Датчик поворота верхний аварийный
+#define DIR_TO_AP			DIG_OUT4(SET); LED_VD5(SET);
+#define DIR_TO_LAT			DIG_OUT4(RESET); LED_VD5(RESET);
+
+static volatile uint8_t motion_flag = 0;//С-рама находится в движении или нет? 0 - не движется, !0 - движется
+
+#include "semphr.h"
+
+static void vRotation_LAT_view(){
+  if(TERMINAL_S3)
+  {
+    motion_flag = 0xFF;
+    DIR_TO_LAT;
+    START_STOP_BTN_PUSH;
+    while(TERMINAL_S3) vTaskDelay(1);
+    START_STOP_BTN_PUSH;
+    motion_flag = 0;
+  }
+  Rotation_func = NULL;
+  vTaskDelete(RotationHandle);
+}
+
+static void vRotation_AP_view(){
+    if(TERMINAL_S4)
+    {
+      motion_flag = 0xFF;
+      DIR_TO_AP;
+      START_STOP_BTN_PUSH;
+      while(TERMINAL_S4) vTaskDelay(1);
+      START_STOP_BTN_PUSH;
+      motion_flag = 0;
+    }
+    Rotation_func = NULL;
+    vTaskDelete(RotationHandle);
+}
+
+
+
 #define CANOPEN_4BYTES_TX	0x43
 #define CANOPEN_CMD_SYNC	0x1005
+
 void board_com_task(void const * argument)//communicates with CAN-bus
 {
   /* USER CODE BEGIN board_com_task */
+
 	vTaskDelay(10);
 	FDCAN_RxHeaderTypeDef RxHeader, RxHeader_rst_msg;
 	RxHeader_rst_msg.FilterIndex = 1;
@@ -198,9 +246,9 @@ void board_com_task(void const * argument)//communicates with CAN-bus
 	FDCAN_Config(CAN_ID);
 	HAL_IWDG_Refresh(&hiwdg1);
 	{
-		char adr_buf = (uint8_t)CAN_ID;
-		uint8_t buf[2] = {adr_buf, '1'};
-		can_tx_func(&hfdcan2, 0, 2, &buf[0], FDCAN_TX_BUFFER0);
+	    char adr_buf = (uint8_t)CAN_ID;
+	    uint8_t buf[2] = {adr_buf, '1'};
+	    can_tx_func(0, 2, &buf[0]);
 	}
 
 	volatile digital_ports ports;
@@ -218,16 +266,15 @@ extern UART_HandleTypeDef huart6;
 			  if(cmd == CANOPEN_CMD_SYNC)
 			  HAL_IWDG_Refresh(&hiwdg1);
 
-			  static char a=0;
+			  static char a=1;
 			  LED_VD6(a^=1);
 		  }
-
 	  }
 
 	  if(can_protocol_data_analyzing(&hfdcan2, &RxHeader, Rx_Can_Data))
 	  {
 		  HAL_IWDG_Refresh(&hiwdg1);
-		  static char a=0;
+		  static char a=1;
 		  LED_VD6(a^=1);
 		  uint32_t address = RxHeader.Identifier;
 		  uint32_t DataLength = RxHeader.DataLength >> 16;
@@ -237,9 +284,42 @@ extern UART_HandleTypeDef huart6;
 			{
 				if(DataLength)
 				{
+				    if((Rx_Can_Data[0]&0xF0) == 0){
 					ports.digital_inputs = 0;
 					ports.digital_outputs = Rx_Can_Data[0];
-					xQueueSendToFront(xQueue_digital_ports, &ports, 5);
+					xQueueSend(xQueue_digital_ports, &ports, 0);
+				    }
+				    else{
+					ports.digital_inputs = 0;
+					ports.digital_outputs = 0xF0 & Rx_Can_Data[0];
+					switch(ports.digital_outputs){
+					  case 0x10://AP
+					    if(Rotation_func == NULL)
+					      Rotation_func = xTaskCreate(vRotation_AP_view, "AP", 64, (void*)0,1,&RotationHandle);
+					    break;
+					  case 0x20://LAT
+					    if(Rotation_func == NULL)
+					      Rotation_func = xTaskCreate(vRotation_LAT_view, "LAT", 64, (void*)0,1,&RotationHandle);
+					    break;
+					  case 0x30://stop
+					    if(motion_flag){
+					    if(RotationHandle){
+						vTaskDelete(RotationHandle);
+						Rotation_func = NULL;
+					    }
+						START_STOP_BTN_PUSH;
+						motion_flag = 0;
+					    }
+					    break;
+					}
+					uint8_t tx_data[2];//data0 - digout, data1 - digin pins
+					tx_data[0] = ports.digital_outputs;
+
+					tx_data[1] = (DIG_IN8<<7)|(DIG_IN7<<6)|(DIG_IN6<<5)|(DIG_IN5<<4)
+								|(DIG_IN4<<3)|(DIG_IN3<<2)|(DIG_IN2<<1)|(DIG_IN1);
+
+					can_tx_func(((address&0x1F)+0x620+0x100), 2, tx_data);
+				    }
 				}
 				else
 				{
@@ -250,7 +330,7 @@ extern UART_HandleTypeDef huart6;
 						tx_data[1] = (DIG_IN8<<7)|(DIG_IN7<<6)|(DIG_IN6<<5)|(DIG_IN5<<4)
 									|(DIG_IN4<<3)|(DIG_IN3<<2)|(DIG_IN2<<1)|(DIG_IN1);
 
-						can_tx_func(&hfdcan2, ((address&0x1F)+0x620+0x100), 2, tx_data, FDCAN_TX_BUFFER4);
+						can_tx_func(((address&0x1F)+0x620+0x100), 2, tx_data);
 				}
 			}
 			break;
@@ -275,13 +355,13 @@ extern UART_HandleTypeDef huart6;
 						}
 						taskEXIT_CRITICAL();
 
-						can_tx_func(&hfdcan2, ((address&0x1F)+0x640+0x100), 2, tx_data, FDCAN_TX_BUFFER4);
+						can_tx_func(((address&0x1F)+0x640+0x100), 2, tx_data);
 					}
 					else if(Rx_Can_Data[0] == 0xEE){
 					    buf_tx.lenght = 0;
 					    cnt_bytes = 0;
 					    uint8_t tx_data[2] = {0xE0,0};
-					    can_tx_func(&hfdcan2, ((address&0x1F)+0x640+0x100), 2, tx_data, FDCAN_TX_BUFFER4);
+					    can_tx_func(((address&0x1F)+0x640+0x100), 2, tx_data);
 					}
 					else if(buf_tx.lenght <= 7)
 					{
@@ -316,12 +396,13 @@ extern UART_HandleTypeDef huart6;
 				      |(DIG_IN4<<3)|(DIG_IN3<<2)|(DIG_IN2<<1)|(DIG_IN1);
 			  tx_data[0] = (DIG_OUT4_READ << 3) | (DIG_OUT3_READ << 2)
 				      | (DIG_OUT2_READ << 1) | DIG_OUT1_READ;
-				can_tx_func(&hfdcan2,0x720+CAN_ID, 2, tx_data, FDCAN_TX_BUFFER4);
+				can_tx_func(0x720+CAN_ID, 2, tx_data);
 			}//0x720
 			break;
 		}//switch
 	  }
-	  vTaskResume(rs485_com_rxHandle);
+	  vTaskDelay(2);
+	  //vTaskResume(rs485_com_rxHandle);
   }
 }
 

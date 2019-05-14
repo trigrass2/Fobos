@@ -121,9 +121,22 @@ void rs485_rx_task(void const * argument);
 void ADC_Task(void const * argument);
 void rs485_tx_task(void const * argument);
 
+
+
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
+TaskHandle_t probeHandle = NULL;
 
+
+
+static void probe(){
+  //vTaskDelay(50);
+  while(1)
+  LED_VD6(RESET);
+  //vTaskDelay(500);
+
+  vTaskDelete(probeHandle);
+}
 
 /* USER CODE END PFP */
 
@@ -173,7 +186,7 @@ int main(void)
   MX_TIM7_Init();
   MX_SPI4_Init();
   MX_FDCAN2_Init();
-  MX_IWDG1_Init();
+  //MX_IWDG1_Init();
   //MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
   LED_VD5(SET);//IO ports
@@ -199,27 +212,29 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 1024);
+  /*osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 1024);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of board_com */
-  osThreadDef(board_com, board_com_task, osPriorityNormal, 0, 512);
+  osThreadDef(board_com, board_com_task, osPriorityNormal, 0, 700);
   board_comHandle = osThreadCreate(osThread(board_com), NULL);
 
   /* definition and creation of rs485_com_rx */
-  osThreadDef(rs485_com_rx, rs485_rx_task, osPriorityAboveNormal, 0, 128);
+  /*osThreadDef(rs485_com_rx, rs485_rx_task, osPriorityAboveNormal, 0, 128);
   rs485_com_rxHandle = osThreadCreate(osThread(rs485_com_rx), NULL);
 
   /* definition and creation of ADC */
-  osThreadDef(ADC, ADC_Task, osPriorityNormal, 0, 128);
+  /*osThreadDef(ADC, ADC_Task, osPriorityNormal, 0, 128);
   ADCHandle = osThreadCreate(osThread(ADC), NULL);
 
   /* definition and creation of rs485_com_tx */
-  osThreadDef(rs485_com_tx, rs485_tx_task, osPriorityNormal, 0, 128);
+  /*osThreadDef(rs485_com_tx, rs485_tx_task, osPriorityNormal, 0, 128);
   rs485_com_txHandle = osThreadCreate(osThread(rs485_com_tx), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
+
+  /*xTaskCreate(probe, "probe",128,(void*)0, 0, &probeHandle);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
@@ -397,9 +412,9 @@ static void MX_FDCAN2_Init(void)
   hfdcan2.Init.RxBuffersNbr = 0;
   hfdcan2.Init.RxBufferSize = FDCAN_DATA_BYTES_8;
   hfdcan2.Init.TxEventsNbr = 0;
-  hfdcan2.Init.TxBuffersNbr = 5;
-  hfdcan2.Init.TxFifoQueueElmtsNbr = 0;
-  hfdcan2.Init.TxFifoQueueMode = FDCAN_TX_QUEUE_OPERATION;
+  hfdcan2.Init.TxBuffersNbr = 0;
+  hfdcan2.Init.TxFifoQueueElmtsNbr = 10;
+  hfdcan2.Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
   hfdcan2.Init.TxElmtSize = FDCAN_DATA_BYTES_8;
   hfdcan2.msgRam.StandardFilterSA = 0;
   hfdcan2.msgRam.ExtendedFilterSA = 0;
