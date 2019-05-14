@@ -598,7 +598,10 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 	  {
 	    uint8_t can_data_tx[4] = {0x06,0,0,0};//can_data_tx[0] младший байт
 	    canopen_u canopen_rcv;
+
 	    canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ,0x6040,0,can_data_tx, &canopen_rcv);
+	    can_data_tx[0] = 0x30;
+	    can_tx_func(&hfdcan2,0x622,2,can_data_tx);
 	    fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
 	    fobos_eth_protocol_send(FOBOS_CMD_STOP, 1, fobos_eth_buf);
 	  }
