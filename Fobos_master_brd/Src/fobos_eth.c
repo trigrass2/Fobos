@@ -107,6 +107,8 @@ void EthernetTask_func(void const * argument)
   	xTimerStart(xTimer_period_reset, 0);
 	vTaskDelay(300);
 
+	DIG_OUT3(SET);//ENABLE signal
+
 	wiz_NetData.dhcp = 2;
 	memcpy(wiz_NetData.sn, subnet_mask_adr, 4);
 	memcpy(wiz_NetData.ip, ip_source_adr, 4);
@@ -149,6 +151,7 @@ void EthernetTask_func(void const * argument)
 	    }*/
 	  }//*/
 	}
+
 	DIG_OUT4(SET);
 	LED_VD1(SET);
   /* Infinite loop */
@@ -172,6 +175,7 @@ void EthernetTask_func(void const * argument)
 	  switch (getSn_SR(SOCKET0)){
 	  case SOCK_ESTABLISHED:
 	  {
+	    DIG_OUT3(SET);//ENABLE signal for KOLLARMORGEN's drive
 	    /*if(xTimerIsTimerActive(xTimer_period_reset) != pdFALSE)
 	    xTimerStop(xTimer_period_reset, 0);*/
 
@@ -194,6 +198,7 @@ void EthernetTask_func(void const * argument)
 		  break;
 	  case SOCK_CLOSE_WAIT:
 		  //xTimerStart(xTimer_period_reset, 0);
+	    DIG_OUT3(RESET);//ENABLE signal for KOLLARMORGEN's drive
 		  disconnect(SOCKET0);
 		  LED_VD2(RESET);
 		  break;
@@ -210,6 +215,7 @@ void EthernetTask_func(void const * argument)
 		  motor_state_indication = 0;
 	      }
 	    }
+	    DIG_OUT3(RESET);//ENABLE signal for KOLLARMORGEN's drive
 	    LED_VD1(SET);
 	    socket(SOCKET0,Sn_MR_TCP,socket_port,0x00);
 	    LED_VD2(RESET);
