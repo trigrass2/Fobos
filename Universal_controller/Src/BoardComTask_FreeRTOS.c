@@ -232,8 +232,8 @@ static void vRotation_AP_view(){
 void board_com_task(void const * argument)//communicates with CAN-bus
 {
   /* USER CODE BEGIN board_com_task */
-
-	vTaskDelay(10);
+	DIG_OUT2(RESET);
+	vTaskDelay(300);
 	FDCAN_RxHeaderTypeDef RxHeader, RxHeader_rst_msg;
 	RxHeader_rst_msg.FilterIndex = 1;
 	uint8_t Rx_Can_Data[8] = {0};
@@ -253,6 +253,7 @@ void board_com_task(void const * argument)//communicates with CAN-bus
 
 	volatile digital_ports ports;
 extern UART_HandleTypeDef huart6;
+DIG_OUT2(SET);
   /* Infinite loop */
   for(;;)
   {

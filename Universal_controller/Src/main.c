@@ -186,7 +186,7 @@ int main(void)
   MX_TIM7_Init();
   MX_SPI4_Init();
   MX_FDCAN2_Init();
-  //MX_IWDG1_Init();
+  MX_IWDG1_Init();
   //MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
   LED_VD5(SET);//IO ports
@@ -455,7 +455,7 @@ static void MX_IWDG1_Init(void)
   hiwdg1.Instance = IWDG1;
   hiwdg1.Init.Prescaler = IWDG_PRESCALER_16;
   hiwdg1.Init.Window = 4095;
-  hiwdg1.Init.Reload = 600;// 250ms
+  hiwdg1.Init.Reload = 3000;//600;// 250ms
   if (HAL_IWDG_Init(&hiwdg1) != HAL_OK)
   {
     Error_Handler();
