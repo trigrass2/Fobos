@@ -176,14 +176,14 @@ void EthernetTask_func(void const * argument)
 	  case SOCK_ESTABLISHED:
 	  {
 	    DIG_OUT3(SET);//ENABLE signal for KOLLARMORGEN's drive
-	    /*if(xTimerIsTimerActive(xTimer_period_reset) != pdFALSE)
-	    xTimerStop(xTimer_period_reset, 0);*/
+	    if(xTimerIsTimerActive(xTimer_period_reset) != pdFALSE)
+	    xTimerStop(xTimer_period_reset, 0);
 
 	    /*if(xSemaphoreTake(Mutex_Eth,200) == pdTRUE){*/
 		  LED_VD2(SET);
 		  LED_VD1(SET);
-		  //uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
-		  //can_tx_func(&hfdcan2, 0x622, 0, buf);
+		  uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
+		  can_tx_func(&hfdcan2, 0x622, 0, buf);
 		  volatile fobos_protocol_buf_u fobos_eth_buf;
 		  for(int i=0; i<10; i++)
 		    fobos_eth_buf.fobos_protocol_buf_t.data[i] = 0;
@@ -204,8 +204,8 @@ void EthernetTask_func(void const * argument)
 		  break;
 
 	  case SOCK_CLOSED:
-	    if(xTimerIsTimerActive(xTimer_period_reset) == pdFALSE)
-	    xTimerStart(xTimer_period_reset, 0);
+	    /*if(xTimerIsTimerActive(xTimer_period_reset) == pdFALSE)
+	    xTimerStart(xTimer_period_reset, 0);*/
 	    {
 	      static uint8_t a=0;
 	      if(a == 0){
