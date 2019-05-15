@@ -7,5 +7,10 @@
 *.o
 *.so
 
-Fobos_master_brd/[Dd]ebug
+Fobos_master_brd/[Dd]ebug/
+!Fobos_master_brd/[Dd]ebug/Fobos_master_brd.hex
+
 Universal_controller/[Dd]ebug
+!Universal_controller/[Dd]ebug/Universal_controller.hex
+
+.metadata/
