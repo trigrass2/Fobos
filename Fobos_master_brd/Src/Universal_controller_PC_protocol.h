@@ -3,9 +3,9 @@
 /*
  * Universal_controller_PC_protocol.h
  *
- *  Created on: 20th may 2019
+ *  Created on: 23rd may 2019
  *      Author: Zilkov
- *      Protocol version: 15.1
+ *      Protocol version: 16.0
  */
 
 #ifndef UNIVERSAL_CONTROLLER_PC_PROTOCOL_H_
@@ -121,7 +121,7 @@
  * 	===TX
  * 	CMD = 10	N = 0
  * 	===RX
- *	CMD = 10	N = 3	DATA0 = 0..6		// Статус ответа. Значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
+ *	CMD = 10	N = 10	DATA0 = 0..6		// Статус ответа. Значение из диапазона FOBOS_ETH_ERR_NO...FOBOS_ETH_ERR_CMD
  *                      	DATA1 - Bit's number (см. АДН175.03.50.000 Э4):
  * 						0 - состояние "датчик поворота рабочий нижний" Lateral view (0 - сработал концевик)	(S3)
  *                      			1 - состояние "датчик поворота рабочий верхний"	AP view	 (0 - сработал концевик)	(S4)
@@ -141,6 +141,9 @@
  *						6 - не исп.(по умолч. 0)
  *						7 - не исп.(по умолч. 0)
  *				DATA3 = 0 (если рама не сбазирована), !0 (если рама сбазирована)
+ *				DATA4 = 0 (если мотор НЕ достиг заданной точки), !0 (достиг)
+ *				DATA5..DATA8 = Положение сервопривода (DATA5 - low byte, DATA8 - high byte)
+ *				DATA9 = 0 (не готов), !0 (готов) состояние готовности мотора
  *
  * 	Положение сервопривода (значение энкодера)
  *	===TX

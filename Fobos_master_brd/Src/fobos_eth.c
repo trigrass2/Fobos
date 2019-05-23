@@ -295,36 +295,98 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 #define SENSOR_STATE
 	  if(fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N == 0)
 		{
-			fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
-			fobos_eth_buf->fobos_protocol_buf_t.data[1] = 0;
-			fobos_eth_buf->fobos_protocol_buf_t.data[2] = 0;
+			for(int i=0; i<9; i++)
+			fobos_eth_buf->fobos_protocol_buf_t.data[i] = 0;
 			uint8_t sensors_state = 0;
 
-			fobos_eth_buf->fobos_protocol_buf_t.data[1] = terminals_statements & 0xC3;//S1,S2 ... S4,S3 в соответствии с единицами в байте.
+			fobos_eth_buf->fobos_protocol_buf_t.data[1] = terminals_statements & 0xC3;//S1,S2 ... S4,S3 в соответствии с единицами в байте. //Концевики С-рамы
 			if(TABLE_LOCK_SENSOR_LEFT)
 				sensors_state |= 0x08;
 			if(TABLE_LOCK_SENSOR_RIGHT)
 				sensors_state |= 0x10;
-			fobos_eth_buf->fobos_protocol_buf_t.data[2] = sensors_state;
+			fobos_eth_buf->fobos_protocol_buf_t.data[2] = sensors_state;//срабатывание датчиков стола
 			if(motor_emergency == 0x0F)
-			fobos_eth_buf->fobos_protocol_buf_t.data[2] |= 0b00000110;
+			fobos_eth_buf->fobos_protocol_buf_t.data[2] |= 0b00000110;//сработал один из аварийных концевиков линейного мотора
 
 			//>>>>>>>>>>>> Рама сбазирована data[3]
-
-			//<<<<<<<<<<<<
+			{
+			    if(motor_state_indication)
+			    {
+				uint8_t can_data_tx[4] = {6,0,0,0};//can_data_tx[0] младший байт
+				canopen_u canopen_rcv;
+				if(basing_point){
+				    fobos_eth_buf->fobos_protocol_buf_t.data[3] = basing_point;
+				}
+				else
+				{
+				  canopen_req_resp_sdo(0x600+1, 0x40,0x6061,0,can_data_tx, &canopen_rcv);
+				  if(canopen_rcv.values_t.data[0] == 6)
+				  {
+				      canopen_req_resp_sdo(0x600+1, 0x40,0x6041,0,can_data_tx, &canopen_rcv);
+				      if((canopen_rcv.values_t.data[1]&0x16) == 0x16 && (canopen_rcv.values_t.data[0]&0xB7) == 0xB7)
+				      {
+					  basing_point = 0xFF;
+					  fobos_eth_buf->fobos_protocol_buf_t.data[3] = basing_point;
+				      }
+				      else{
+					  fobos_eth_buf->fobos_protocol_buf_t.data[3] = 0;
+				      }
+				  }
+				  else
+				  {
+				    fobos_eth_buf->fobos_protocol_buf_t.data[3] = basing_point;
+				  }
+				}//else from if(basing_point)
+			  }
+			  else{
+			      fobos_eth_buf->fobos_protocol_buf_t.data[3] = 0;
+			  }
+		      }
+			//<<<<<<<<<<<< Рама сбазирована?
 			//>>>>>>>>>>>> Линейный мотор достиг заданной точки data[4]
-			//<<<<<<<<<<<<
-			//>>>>>>>>>>>> С-рама находится в положении data[5]
-			//<<<<<<<<<<<<
-			//>>>>>>>>>>>> Положение сервопривода data[6-9]
-			//<<<<<<<<<<<<
-			//>>>>>>>>>>>> Состояние готовности мотора data[10]
-			//<<<<<<<<<<<<
-			fobos_eth_protocol_send(FOBOS_SENSORS_STATE, 3, fobos_eth_buf);
+			{
+			      uint8_t can_data_tx[8] = {0};//can_data_tx[0] младший байт
+			       canopen_u canopen_rcv;
+
+			       if(basing_point == 0 /*&& motor_state_indication == 0*/){
+				   fobos_eth_buf->fobos_protocol_buf_t.data[4] = 0;//контроль достижения заданной точки
+			       }
+			       else {
+				   canopen_req_resp_sdo(0x600+1, SDO_REQUEST,0x6061,0,can_data_tx, &canopen_rcv);//mode request: 1 - profile position mode
+			       if(canopen_rcv.values_t.data[0] == 0x01){
+				      canopen_req_resp_sdo(0x600+1, SDO_REQUEST,0x6041,0,can_data_tx, &canopen_rcv);
+				      fobos_eth_buf->fobos_protocol_buf_t.data[4] = 0;//контроль достижения заданной точки
+				      if(canopen_rcv.values_t.data[1] == 0x16)
+				      fobos_eth_buf->fobos_protocol_buf_t.data[4] = 1;
+				  }
+			       }
+			}
+			//<<<<<<<<<<<< Линейный мотор достиг заданной точки data[4]
+			//>>>>>>>>>>>> Положение сервопривода data[5-8]
+			{
+			  canopen_u canopen_rcv = {0};
+			  uint8_t can_data_tx[8] = {0}, temp_lim_switches = 0;
+			  if(motor_state_indication){
+			  canopen_req_resp_sdo(0x600+1, SDO_REQUEST, 0x6064, 0, can_data_tx, &canopen_rcv);
+
+			  fobos_eth_buf->fobos_protocol_buf_t.data[5] = canopen_rcv.values_t.data[3];
+			  fobos_eth_buf->fobos_protocol_buf_t.data[6] = canopen_rcv.values_t.data[2];
+			  fobos_eth_buf->fobos_protocol_buf_t.data[7] = canopen_rcv.values_t.data[1];
+			  fobos_eth_buf->fobos_protocol_buf_t.data[8] = canopen_rcv.values_t.data[0];
+			  }
+			  else{
+			      for(int i=5; i<=8;i++)
+			      fobos_eth_buf->fobos_protocol_buf_t.data[i] = 0;
+			  }
+			}
+			//<<<<<<<<<<<< Положение сервопривода data[5-8]
+			//>>>>>>>>>>>> Состояние готовности мотора data[9]
+			fobos_eth_buf->fobos_protocol_buf_t.data[9] = motor_state_indication;
+			//<<<<<<<<<<<< Состояние готовности мотора data[9]
+			fobos_eth_protocol_send(FOBOS_SENSORS_STATE, 10, fobos_eth_buf);
 		}
 		else{
 		      fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_PA;
-		      fobos_eth_buf->fobos_protocol_buf_t.data[1] = 0;
 		      fobos_eth_protocol_send(FOBOS_SENSORS_STATE, 1, fobos_eth_buf);
 		    }
 		break;
@@ -631,7 +693,7 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 	case FOBOS_EMB_SOFT_VER:
 	{
 	  if(fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N == 0){
-		char string_data[] = {"Fobos embedded software version 15"};
+		char string_data[] = {"Fobos embedded software version 16.0"};
 		int length = strlen(string_data)+1;
 		fobos_eth_buf->fobos_protocol_buf_t.CMD = FOBOS_EMB_SOFT_VER;
 		fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
