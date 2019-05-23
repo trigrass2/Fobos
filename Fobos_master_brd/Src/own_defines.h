@@ -49,7 +49,7 @@ uint32_t check_adr_func();
 #define XRAY_GEN_START(state) 		DIG_OUT1(state)
 #define INTERLOCKS_STATE		DIG_IN8
 #define MOTOR_STO_EN(state)		DIG_OUT3(state)
-#define TABLE_MAGNETS(state)		DIG_OUT3(state)
+#define TABLE_MAGNETS(state)		DIG_OUT2(state)
 #define TABLE_LOCK_SENSOR_LEFT		DIG_IN4
 #define TABLE_LOCK_SENSOR_RIGHT		DIG_IN5
 #define EMERGENCY_LIMIT_SW1		DIG_IN2

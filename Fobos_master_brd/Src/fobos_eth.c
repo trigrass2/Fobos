@@ -17,6 +17,10 @@
 #include "semphr.h"
 #include "internet/dhcp.h"
 
+#include "internet/httpServer/httpParser.h"
+#include "internet/httpServer/httpServer.h"
+#include "internet/httpServer/httpUtil.h"
+
 #define	SDO_1BYTE_REQ	0x2F
 #define	SDO_2BYTES_REQ	0x2B
 #define	SDO_3BYTES_REQ	0x27
@@ -48,6 +52,7 @@ extern IWDG_HandleTypeDef hiwdg1;
 /* USER CODE END Header_EthernetTask_func */
 static uint16_t socket_port = 15000;
 static uint8_t ip_gateway_adr[4] = {192,168,100,2};
+static uint8_t ip_dns_adr[4] = {192,168,100,1};
 static uint8_t subnet_mask_adr[4] = {255,255,255,0};
 static uint8_t source_hardware_adr[6] = {0x00,0x08,0xDC,0x0F,0x00,0x01};
 static uint8_t ip_source_adr[4] = {192,168,100,1};
@@ -113,18 +118,18 @@ void EthernetTask_func(void const * argument)
 	memcpy(wiz_NetData.sn, subnet_mask_adr, 4);
 	memcpy(wiz_NetData.ip, ip_source_adr, 4);
 	memcpy(wiz_NetData.mac, source_hardware_adr,6);
+	//memcpy(wiz_NetData.dns, ip_dns_adr, 4);
 	wizchip_setnetinfo(&wiz_NetData);
 
 	setsockopt(SOCKET0, SO_DESTPORT, &socket_port);
 	//setsockopt(SOCKET0, SO_DESTIP, ip_destination_adr);
 	setRTR(timeout_period);
 
-	/*//DHCP>>>
-	taskENTER_CRITICAL();
+	//DHCP>>>
+	/*taskENTER_CRITICAL();
 	DHCP_init(SOCKET5, dhcp_buf);
-	taskEXIT_CRITICAL();
+	taskEXIT_CRITICAL();*/
 	//DHCP===*/
-
 	  {
 	      uint8_t nmt_msg[2] = {0x81, 1};
 	      can_tx_func(&hfdcan2, 0, 2, nmt_msg);
@@ -154,6 +159,11 @@ void EthernetTask_func(void const * argument)
 
 	DIG_OUT4(SET);
 	LED_VD1(SET);
+
+	//>>>RS485
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, SET);
+	extern UART_HandleTypeDef huart6;
+	//<<<RS485
   /* Infinite loop */
   for(;;)
   {
@@ -179,7 +189,6 @@ void EthernetTask_func(void const * argument)
 	    if(xTimerIsTimerActive(xTimer_period_reset) != pdFALSE)
 	    xTimerStop(xTimer_period_reset, 0);
 
-	    /*if(xSemaphoreTake(Mutex_Eth,200) == pdTRUE){*/
 		  LED_VD2(SET);
 		  LED_VD1(SET);
 		  uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
@@ -187,13 +196,15 @@ void EthernetTask_func(void const * argument)
 		  volatile fobos_protocol_buf_u fobos_eth_buf;
 		  for(int i=0; i<10; i++)
 		    fobos_eth_buf.fobos_protocol_buf_t.data[i] = 0;
+		  uint16_t eth_pkg_length;
+		  //eth_pkg_length = getSn_RX_RSR(SOCKET0);
 		  taskENTER_CRITICAL();
 		  recv(SOCKET0,fobos_eth_buf.data_to_transmit, 258);
 		  taskEXIT_CRITICAL();
 		  eth_cmds_analysis(&fobos_eth_buf);
+
 		  LED_VD1(RESET);
 		  HAL_IWDG_Refresh(&hiwdg1);
-	   /* }*/
 	  }
 		  break;
 	  case SOCK_CLOSE_WAIT:
@@ -284,27 +295,31 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 #define SENSOR_STATE
 	  if(fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N == 0)
 		{
-			volatile FDCAN_RxHeaderTypeDef RxHeader;
-			RxHeader.Identifier = 0;
 			fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
 			fobos_eth_buf->fobos_protocol_buf_t.data[1] = 0;
 			fobos_eth_buf->fobos_protocol_buf_t.data[2] = 0;
-			uint8_t sensors_state = 0, temp_lim_switches = 0;
-			uint8_t can_rx_data[8] = {0};
+			uint8_t sensors_state = 0;
 
 			fobos_eth_buf->fobos_protocol_buf_t.data[1] = terminals_statements & 0xC3;//S1,S2 ... S4,S3 в соответствии с единицами в байте.
 			if(TABLE_LOCK_SENSOR_LEFT)
-				sensors_state |= 0x01;
-			if(EMERGENCY_LIMIT_SW1)
-				sensors_state |= 0x02;
-			if(EMERGENCY_LIMIT_SW2)
-				sensors_state |= 0x04;
-			if(TABLE_LOCK_SENSOR_RIGHT)
 				sensors_state |= 0x08;
-
+			if(TABLE_LOCK_SENSOR_RIGHT)
+				sensors_state |= 0x10;
+			fobos_eth_buf->fobos_protocol_buf_t.data[2] = sensors_state;
 			if(motor_emergency == 0x0F)
 			fobos_eth_buf->fobos_protocol_buf_t.data[2] |= 0b00000110;
 
+			//>>>>>>>>>>>> Рама сбазирована data[3]
+
+			//<<<<<<<<<<<<
+			//>>>>>>>>>>>> Линейный мотор достиг заданной точки data[4]
+			//<<<<<<<<<<<<
+			//>>>>>>>>>>>> С-рама находится в положении data[5]
+			//<<<<<<<<<<<<
+			//>>>>>>>>>>>> Положение сервопривода data[6-9]
+			//<<<<<<<<<<<<
+			//>>>>>>>>>>>> Состояние готовности мотора data[10]
+			//<<<<<<<<<<<<
 			fobos_eth_protocol_send(FOBOS_SENSORS_STATE, 3, fobos_eth_buf);
 		}
 		else{
@@ -376,7 +391,7 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf){
 		fobos_eth_protocol_send(FOBOS_SERVOMOTOR_PLACEMENT, 2, fobos_eth_buf);
 	      }
 		break;
-	case FOBOS_STATEMENT:
+	case FOBOS_STATEMENT://готовность мотора к работе
 	  if(fobos_eth_buf->fobos_protocol_buf_t.bytes_in_packet_N == 0)
 	    {
 	      fobos_eth_buf->fobos_protocol_buf_t.data[0] = FOBOS_ETH_ERR_NO;
@@ -942,6 +957,8 @@ void vTimerCallback(TimerHandle_t Timer){
 
 	HAL_IWDG_Refresh(&hiwdg1);
 	extern FDCAN_HandleTypeDef hfdcan2;
+	terminals_statements = (DIG_IN8<<7)|(DIG_IN7<<6)|(DIG_IN6<<5)|(DIG_IN5<<4)
+			      |(DIG_IN4<<3)|(DIG_IN3<<2)|(DIG_IN2<<1)|(DIG_IN1);
 	//uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
 	//can_tx_func(&hfdcan2, 0x80, 8, buf);
 	uint8_t buf[8];
@@ -1332,17 +1349,26 @@ uint8_t can_protocol_data_analyzing(FDCAN_HandleTypeDef *hfdcan,
 	//if(HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_BUFFER0, pRxHeader, pRxData) == HAL_OK)
 	{
 		volatile uint32_t address = pRxHeader->Identifier;
-		/*if(address == 0x81)
-		  motor_emergency = 0x0F;*/
-		if(address == 0x722){
-		    uint8_t buf[8];
+		if(address == 0x81){
+		  motor_emergency = 0x0F;
+		}
+		else if(address == 0x722){
+		    volatile uint8_t buf[8];
 		    memcpy(buf,pRxData,2);
 		    terminals_statements = buf[1];
+		    //terminals_statements = *(pRxData+1);
 		}
 		else if(address == 0x701){
-		    uint8_t can_open_tx[8] = {0x2B,0x40,0x60,0,0x06,0,0,0};
-		    can_tx_func(hfdcan, 0x601,8,can_open_tx);
-		    vTaskDelay(100);
+		    uint8_t can_data_tx[4] = {0x80,0,0,0};//can_data_tx[0] младший байт
+		    canopen_u canopen_rcv;
+		    canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);
+		    can_data_tx[0] = 0x06;
+		    canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);
+		    can_data_tx[0] = 0x07;
+		    canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);//*/
+		    /*uint8_t can_open_tx[8] = {0x2B,0x40,0x60,0,0x06,0,0,0};
+		    can_tx_func(hfdcan, 0x601,8,can_open_tx);*/
+		    vTaskDelay(300);
 		    motor_state_indication = 0xFF;
 		}
 

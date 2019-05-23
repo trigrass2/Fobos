@@ -56,6 +56,8 @@
 /* USER CODE BEGIN Includes */
 #include "fobos_eth.h"
 #include "own_defines.h"
+
+#include "webserver.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -171,7 +173,7 @@ int main(void)
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
 
-  xTimer_btn_timer = xTimerCreate("Btn timer", 2000, pdFALSE, (void*)0, vTimerCallback1);
+  //xTimer_btn_timer = xTimerCreate("Btn timer", 10000, pdFALSE, (void*)0, vTimerCallback1);
   /* USER CODE END RTOS_TIMERS */
 
   /* Create the thread(s) */
@@ -180,13 +182,13 @@ int main(void)
   EthTaskHandle = osThreadCreate(osThread(EthTask), NULL);
 
   /* definition and creation of DigIOTask */
-  osThreadDef(DigIOTask, DigIOTask_func, osPriorityIdle, 0, 128);
+  osThreadDef(DigIOTask, DigIOTask_func, osPriorityLow, 0, 128);
   DigIOTaskHandle = osThreadCreate(osThread(DigIOTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  /*if(xTaskCreate(vFobos_Start_Process, "Fobos_start_scan", 256, (void*)1, osPriorityAboveNormal, xFobos_scan_Handle) != pdPASS)
-    Error_Handler();
+  /*if(xTaskCreate(website_server, "website_server", 2048, (void*)0, osPriorityAboveNormal, &xFobos_scan_Handle) != pdPASS)
+      Error_Handler();
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
@@ -484,7 +486,7 @@ static void MX_USART6_UART_Init(void)
 
   /* USER CODE END USART6_Init 1 */
   huart6.Instance = USART6;
-  huart6.Init.BaudRate = 9600;
+  huart6.Init.BaudRate = 115200;//9600;
   huart6.Init.WordLength = UART_WORDLENGTH_8B;
   huart6.Init.StopBits = UART_STOPBITS_1;
   huart6.Init.Parity = UART_PARITY_NONE;
@@ -699,7 +701,7 @@ void FDCAN_Config(uint32_t adr)
 
 void vTimerCallback1(TimerHandle_t Timer){
 	LED_VD7(SET);
-	DIG_OUT3(RESET);//magnets for table
+	DIG_OUT2(RESET);//magnets for table
 }
 extern uint8_t canopen_transmit(uint16_t COB_ID, uint8_t control_field, uint16_t index, uint8_t subindex, uint8_t *data);
 
@@ -716,7 +718,6 @@ extern uint8_t canopen_transmit(uint16_t COB_ID, uint8_t control_field, uint16_t
 void DigIOTask_func(void const * argument)
 {
   /* USER CODE BEGIN DigIOTask_func */
-	XRAY_GEN_START(RESET);
 	MOTOR_STO_EN(SET);
 	TABLE_MAGNETS(RESET);
 	vTaskDelay(150);
@@ -740,17 +741,16 @@ void DigIOTask_func(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-      if(0)
 	  if(BTN_STATE)
 	  {
 		  btn_press_val <<= 1;
 		  btn_press_val |= 1;
+		  if(TABLE_LOCK_SENSOR_LEFT || TABLE_LOCK_SENSOR_RIGHT)
 		  if(btn_press_val == 0xFF && BTN_STATE != prev_btn_state && BTN_STATE - prev_btn_state > 0)
 		  {
-			  xTimerStart(xTimer_btn_timer, 0);
-			  DIG_OUT3(SET);
-			  LED_VD7(RESET);
-			  prev_btn_state = BTN_STATE;
+		      TABLE_MAGNETS(SET);
+		      LED_VD7(RESET);
+		      prev_btn_state = BTN_STATE;
 		  }
 	  }
 	  else
@@ -759,17 +759,11 @@ void DigIOTask_func(void const * argument)
 		  prev_btn_state = 0;
 	  }
 
-	  /*if(INTERLOCKS_STATE == 0)
-		  XRAY_GEN_START(RESET);*/
-
-	  vTaskDelay(3);
-     /* static uint8_t a=1;
-            vTaskDelay(800);
-            LED_VD7(a^=1);
-            DIG_OUT1(a);
-            DIG_OUT2(a);
-            DIG_OUT3(a);
-            DIG_OUT4(a);*/
+	  if(!TABLE_LOCK_SENSOR_LEFT & !TABLE_LOCK_SENSOR_RIGHT){
+	      TABLE_MAGNETS(RESET);
+	      LED_VD7(SET);
+	  }
+	  vTaskDelay(1);
   }
   /* USER CODE END DigIOTask_func */
 }
