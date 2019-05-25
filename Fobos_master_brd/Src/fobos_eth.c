@@ -35,6 +35,7 @@ void eth_cmds_analysis(volatile fobos_protocol_buf_u *fobos_eth_buf);
 void feedback_params(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy, uint8_t tx_bytes);
 uint8_t confirmation(fobos_protocol_buf_u *fobos_eth_buf, uint8_t *data_for_copy);//ethernet params confirmation
 void vTimerCallback(TimerHandle_t);
+void vTimerCallback_check_motor(TimerHandle_t Timer);
 void vFobos_Start_Process();
 static void homing_process();
 static void position_mode_process(uint8_t );
@@ -66,7 +67,7 @@ static char can_tx_func(FDCAN_HandleTypeDef *hfdcan, unsigned int ID, uint32_t d
 typedef void * TimerHandle_t;
 uint8_t dhcp_buf[580] = {0};
 
-static uint8_t motor_state_indication = 0;
+static uint8_t motor_state_indication = 0, first_init = 0;
 
 typedef union canopen{
   struct{
@@ -93,6 +94,8 @@ QueueHandle_t xQueue_Scanning_start = NULL;
 
 SemaphoreHandle_t Mutex_Eth = NULL;
 
+TimerHandle_t xTimer_period_reset, xTimer_motor_ready_status;
+
 void EthernetTask_func(void const * argument)
 {
   /* USER CODE BEGIN 5 */
@@ -107,10 +110,13 @@ void EthernetTask_func(void const * argument)
   xQueue_Scanning_start = xQueueCreate(1, sizeof(uint8_t));
   if(xQueue_Scanning_start == NULL)
     Error_Handler();
-	TimerHandle_t xTimer_period_reset;
   	xTimer_period_reset = xTimerCreate("Period timer", 150, pdTRUE, (void*)0, vTimerCallback);
   	xTimerStart(xTimer_period_reset, 0);
+
 	vTaskDelay(300);
+
+	xTimer_motor_ready_status = xTimerCreate("Check READY mot tmr", 450, pdTRUE, (void*)0, vTimerCallback_check_motor);
+	xTimerStart(xTimer_motor_ready_status, 0);
 
 	DIG_OUT3(SET);//ENABLE signal
 
@@ -132,12 +138,12 @@ void EthernetTask_func(void const * argument)
 	//DHCP===*/
 	  {
 	      uint8_t nmt_msg[2] = {0x81, 1};
-	      can_tx_func(&hfdcan2, 0, 2, nmt_msg);
+	      //can_tx_func(&hfdcan2, 0, 2, nmt_msg);
 	  }
 	extern IWDG_HandleTypeDef hiwdg1;
 	{
-	  uint8_t can_data_rx1[8] = {0};
-	  /*FDCAN_RxHeaderTypeDef RxHeader;
+	  /*uint8_t can_data_rx1[8] = {0};
+	  FDCAN_RxHeaderTypeDef RxHeader;
 	  while(RxHeader.Identifier != 0x701)
 	    {
 	      can_protocol_data_analyzing(&hfdcan2, &RxHeader, can_data_rx1);
@@ -145,9 +151,9 @@ void EthernetTask_func(void const * argument)
 	  }*/
 
 	  {
-	    canopen_u canopen_rcv;
+	    /*canopen_u canopen_rcv;
 	    uint8_t can_data_tx[4] = {6,0,0,0};
-	    /*while(canopen_rcv.values_t.COB_ID != 0x580+1 && canopen_rcv.values_t.index != 0x6040)
+	    while(canopen_rcv.values_t.COB_ID != 0x580+1 && canopen_rcv.values_t.index != 0x6040)
 	    {
 		vTaskDelay(50);
 		HAL_IWDG_Refresh(&hiwdg1);
@@ -162,7 +168,7 @@ void EthernetTask_func(void const * argument)
 
 	//>>>RS485
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, SET);
-	extern UART_HandleTypeDef huart6;
+	//extern UART_HandleTypeDef huart6;
 	//<<<RS485
   /* Infinite loop */
   for(;;)
@@ -196,8 +202,7 @@ void EthernetTask_func(void const * argument)
 		  volatile fobos_protocol_buf_u fobos_eth_buf;
 		  for(int i=0; i<10; i++)
 		    fobos_eth_buf.fobos_protocol_buf_t.data[i] = 0;
-		  uint16_t eth_pkg_length;
-		  //eth_pkg_length = getSn_RX_RSR(SOCKET0);
+		  //uint16_t eth_pkg_length;
 		  taskENTER_CRITICAL();
 		  recv(SOCKET0,fobos_eth_buf.data_to_transmit, 258);
 		  taskEXIT_CRITICAL();
@@ -209,7 +214,7 @@ void EthernetTask_func(void const * argument)
 		  break;
 	  case SOCK_CLOSE_WAIT:
 		  //xTimerStart(xTimer_period_reset, 0);
-	    DIG_OUT3(RESET);//ENABLE signal for KOLLARMORGEN's drive
+		  DIG_OUT3(RESET);//ENABLE signal for KOLLARMORGEN's drive
 		  disconnect(SOCKET0);
 		  LED_VD2(RESET);
 		  break;
@@ -221,8 +226,11 @@ void EthernetTask_func(void const * argument)
 	      static uint8_t a=0;
 	      if(a == 0){
 		  a++;
-		  uint8_t nmt_msg[2] = {0x81, 1};
-		  can_tx_func(&hfdcan2, 0, 2, nmt_msg);
+		  //uint8_t nmt_msg[2] = {0x81, 1};
+		  //can_tx_func(&hfdcan2, 0, 2, nmt_msg);
+		  uint8_t can_tx_data[4] = {0x06,0,0,0};
+		  canopen_u canopen_rcv;
+		  canopen_req_resp_sdo(0x601, 0x6040, 0,0, can_tx_data, &canopen_rcv);
 		  motor_state_indication = 0;
 	      }
 	    }
@@ -1023,8 +1031,14 @@ void vTimerCallback(TimerHandle_t Timer){
 			      |(DIG_IN4<<3)|(DIG_IN3<<2)|(DIG_IN2<<1)|(DIG_IN1);
 	//uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
 	//can_tx_func(&hfdcan2, 0x80, 8, buf);
-	uint8_t buf[8];
+	uint8_t buf[4] = {0};
 	can_tx_func(&hfdcan2, 0x622, 0, buf);
+	canopen_transmit(0x601, SDO_REQUEST, 0x6041, 0, buf);
+}
+
+void vTimerCallback_check_motor(TimerHandle_t Timer){
+  motor_state_indication = 0;
+  first_init = 0;
 }
 
 static void position_mode_process_calibration(){
@@ -1411,27 +1425,56 @@ uint8_t can_protocol_data_analyzing(FDCAN_HandleTypeDef *hfdcan,
 	//if(HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_BUFFER0, pRxHeader, pRxData) == HAL_OK)
 	{
 		volatile uint32_t address = pRxHeader->Identifier;
-		if(address == 0x81){
-		  motor_emergency = 0x0F;
-		}
-		else if(address == 0x722){
-		    volatile uint8_t buf[8];
-		    memcpy(buf,pRxData,2);
-		    terminals_statements = buf[1];
-		    //terminals_statements = *(pRxData+1);
-		}
-		else if(address == 0x701){
-		    uint8_t can_data_tx[4] = {0x80,0,0,0};//can_data_tx[0] младший байт
-		    canopen_u canopen_rcv;
-		    canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);
-		    can_data_tx[0] = 0x06;
-		    canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);
-		    can_data_tx[0] = 0x07;
-		    canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);//*/
-		    /*uint8_t can_open_tx[8] = {0x2B,0x40,0x60,0,0x06,0,0,0};
-		    can_tx_func(hfdcan, 0x601,8,can_open_tx);*/
-		    vTaskDelay(300);
-		    motor_state_indication = 0xFF;
+		switch(address){
+		  case 0x81:
+		    {
+		      uint8_t buf[8];
+		      memccpy(buf,pRxData,8);
+		      if(buf[0] == 0x80 && buf[1] == 0x84)
+			;
+		      else
+		      motor_emergency = 0x0F;
+		    }
+		  break;
+		  case 0x722:
+		    {
+		      volatile uint8_t buf[8];
+		      memcpy(buf,pRxData,2);
+		      terminals_statements = buf[1];
+		    }
+		    break;
+		  /*case 0x701:
+		    {
+		      uint8_t can_data_tx[4] = {0x80,0,0,0};//can_data_tx[0] младший байт
+		      canopen_u canopen_rcv;
+		      canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);
+		      can_data_tx[0] = 0x06;
+		      canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);
+		      can_data_tx[0] = 0x07;
+		      canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);
+		      //uint8_t can_open_tx[8] = {0x2B,0x40,0x60,0,0x06,0,0,0};
+		      //can_tx_func(hfdcan, 0x601,8,can_open_tx);
+		      vTaskDelay(300);
+		      motor_state_indication = 0xFF;
+		    }
+		    break;*/
+		  case 0x581:
+		    {
+		      xTimerReset(xTimer_motor_ready_status,0);
+		      if(!first_init){
+			  first_init++;
+			  uint8_t can_data_tx[4] = {0x80,0,0,0};//can_data_tx[0] младший байт
+			  canopen_u canopen_rcv;
+			  canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);
+			  can_data_tx[0] = 0x06;
+			  canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);
+			  can_data_tx[0] = 0x07;
+			  canopen_req_resp_sdo(0x600+1, SDO_2BYTES_REQ, 0x6040, 0, can_data_tx, &canopen_rcv);
+			  vTaskDelay(300);
+		      }
+		      motor_state_indication = 0xFF;
+		    }
+		    break;
 		}
 
 		static char a=0;

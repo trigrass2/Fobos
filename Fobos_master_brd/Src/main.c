@@ -114,7 +114,7 @@ void vTimerCallback1(TimerHandle_t);
 void vFobos_Start_Process();
 
 /* USER CODE BEGIN PFP */
-
+void test_task();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -188,6 +188,8 @@ int main(void)
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /*if(xTaskCreate(website_server, "website_server", 2048, (void*)0, osPriorityAboveNormal, &xFobos_scan_Handle) != pdPASS)
+      Error_Handler();*/
+    /*if(xTaskCreate(test_task, "website_server", 2048, (void*)0, osPriorityAboveNormal, &xFobos_scan_Handle) != pdPASS)
       Error_Handler();
   /* USER CODE END RTOS_THREADS */
 
@@ -643,7 +645,6 @@ uint32_t check_adr_func(){
 
 char can_tx_func(FDCAN_HandleTypeDef *hfdcan, unsigned int ID, uint32_t data_lenght, uint8_t *data, uint32_t can_buf_num)
 {
-	/* Prepare Tx Header */
 	FDCAN_TxHeaderTypeDef TxHeader;
 	TxHeader.Identifier = ID;
 	TxHeader.IdType = FDCAN_STANDARD_ID;
@@ -704,8 +705,15 @@ void vTimerCallback1(TimerHandle_t Timer){
 	DIG_OUT2(RESET);//magnets for table
 }
 extern uint8_t canopen_transmit(uint16_t COB_ID, uint8_t control_field, uint16_t index, uint8_t subindex, uint8_t *data);
+//extern char can_tx_func(FDCAN_HandleTypeDef *hfdcan, unsigned int ID, uint32_t data_lenght, uint8_t *data);
+void test_task(){
 
-
+  for(;;){
+      vTaskDelay(250);
+      uint8_t data[4];
+      canopen_transmit(0x555, 0x6040,0,0,data);
+  }
+}
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_DigIOTask_func */
@@ -718,22 +726,13 @@ extern uint8_t canopen_transmit(uint16_t COB_ID, uint8_t control_field, uint16_t
 void DigIOTask_func(void const * argument)
 {
   /* USER CODE BEGIN DigIOTask_func */
-	MOTOR_STO_EN(SET);
+	//MOTOR_STO_EN(SET);
 	TABLE_MAGNETS(RESET);
-	vTaskDelay(150);
-	int CAN_id = check_adr_func();
-	{
-		uint8_t buf[] = {0x43, 0x05, 0x10,0,0,0,0,0};
-		buf[3] = (uint8_t)CAN_id;
-		vTaskDelay(100);
-		can_tx_func(&hfdcan2, 0x80, 8, buf, FDCAN_TX_BUFFER0);
-		vTaskDelay(100);
-		can_tx_func(&hfdcan2, 0x80, 8, buf, FDCAN_TX_BUFFER0);
-	}
 	LED_VD5(SET);
 	LED_VD6(SET);
 	LED_VD7(SET);
 
+	vTaskDelay(150);
 
 	//timer creating
 	uint8_t prev_btn_state = 0, btn_press_val = 0;
@@ -758,12 +757,12 @@ void DigIOTask_func(void const * argument)
 		  btn_press_val = 0;
 		  prev_btn_state = 0;
 	  }
-
 	  if(!TABLE_LOCK_SENSOR_LEFT & !TABLE_LOCK_SENSOR_RIGHT){
 	      TABLE_MAGNETS(RESET);
 	      LED_VD7(SET);
 	  }
 	  vTaskDelay(1);
+
   }
   /* USER CODE END DigIOTask_func */
 }
