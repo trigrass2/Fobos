@@ -57,7 +57,7 @@
 #include "fobos_eth.h"
 #include "own_defines.h"
 
-#include "webserver.h"
+//#include "webserver.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
